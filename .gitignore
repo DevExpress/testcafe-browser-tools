@@ -1,0 +1,12 @@
+.idea
+.DS_Store
+lib
+node_modules
+
+*.suo
+*.user
+
+
+src/*/win/bin/**
+src/*/win/obj/**
+src/*/mac/bin/**
