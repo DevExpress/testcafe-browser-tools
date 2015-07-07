@@ -12,7 +12,7 @@ namespace ShotWindow {
         const int GW_CHILD = 5;
         const int GW_HWNDNEXT = 2;
 
-        //Exports
+        //Imports
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr GetWindowInfo(IntPtr hWnd, ref WindowInfo pwi);
 
@@ -53,13 +53,10 @@ namespace ShotWindow {
             public ushort wCreatorVersion;
 
             public WindowInfo(Boolean? filler)
-                : this()   // Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
+                : this()   // NOTE: Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
             {
                 cbSize = (UInt32)(Marshal.SizeOf(typeof(WindowInfo)));
             }
-
-
-
         }
 
         static WindowInfo GetWindowInfo(IntPtr hwnd, string browser) {
@@ -73,8 +70,8 @@ namespace ShotWindow {
                     GetWindowRect(hostHWND, ref wi.rcClient);
             }
             else if(browser == "firefox") {
-                // Window client area has border
-                wi.rcClient.top += 1;      // For client area in FireFox v28 and lower this border is absent.
+                // NOTE: Window client area has border
+                wi.rcClient.top += 1;      // NOTE: For client area in FireFox v28 and lower this border is absent.
                 wi.rcClient.left += 1;
                 wi.rcClient.bottom -= 1;
                 wi.rcClient.right -= 1;
@@ -107,20 +104,18 @@ namespace ShotWindow {
         }
 
         static Bitmap ShotWindow(IntPtr hwnd, WindowInfo wi, string browser) {
-            // Copy browser window
             Bitmap windowBitmap = new Bitmap(wi.rcWindow.right - wi.rcWindow.left, wi.rcWindow.bottom - wi.rcWindow.top, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             Graphics graphicsWindow = Graphics.FromImage(windowBitmap);
             IntPtr hdc = graphicsWindow.GetHdc();
 
             PrintWindow(hwnd, hdc, 0);
 
-            if(browser == "ie") // HACK for IE
+            if(browser == "ie") // HACK: for IE
                 PrintWindow(hwnd, hdc, 0);
 
             graphicsWindow.ReleaseHdc(hdc);
             graphicsWindow.Flush();
 
-            // Copy browser client area
             Bitmap clientAreaBitmap = windowBitmap.Clone(new Rectangle(
                 new Point(wi.rcClient.left - wi.rcWindow.left, wi.rcClient.top - wi.rcWindow.top),
                 new Size(wi.rcClient.right - wi.rcClient.left, wi.rcClient.bottom - wi.rcClient.top)), PixelFormat.Format32bppRgb);
@@ -134,10 +129,10 @@ namespace ShotWindow {
 
         }
 
-        static void SaveBitmap(Bitmap bmp, string folderPath, string fileName) {
+        static void SaveBitmap(Bitmap bmp, string dirPath, string fileName) {
             try {
-                if(!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+                if(!Directory.Exists(dirPath))
+                    Directory.CreateDirectory(dirPath);
             }
             catch(Exception e) {
                 Console.Error.Write(e.Message);
@@ -145,7 +140,7 @@ namespace ShotWindow {
             }
 
             try {
-                bmp.Save(folderPath + @"\" + fileName);
+                bmp.Save(dirPath + @"\" + fileName);
             }
             catch(Exception e) {
                 Console.Error.Write(e.Message);
@@ -173,21 +168,21 @@ namespace ShotWindow {
             }
 
             IntPtr hwnd = (IntPtr)Convert.ToInt32(args[0]);
-            string browser = args[1];   //"chrome" || "ie" || "firefox" || "opera"
-            string folderPath = args[2];   //Path to screenshots folder
-            string fileName = args[3];   //Screenshot file name
-            
+            string browser = args[1];   //NOTE: "chrome" || "ie" || "firefox" || "opera"
+            string dirPath = args[2];
+            string fileName = args[3];
+
             WindowInfo windowInfo = GetWindowInfo(hwnd, browser);
             Bitmap screenshot = ShotWindow(hwnd, windowInfo, browser);
-            SaveBitmap(screenshot, folderPath, fileName);
+            SaveBitmap(screenshot, dirPath, fileName);
 
             if(createThumbnail) {
-                string thumbnailFolderPath = args[4];
+                string thumbnailDirPath = args[4];
                 int thumbnailWidth = Convert.ToInt32(args[5]);
                 int thumbnailHeight = Convert.ToInt32(args[6]);
 
                 Bitmap thumbnail = ResizeBitmap(screenshot, thumbnailWidth, thumbnailHeight);
-                SaveBitmap(thumbnail, thumbnailFolderPath, fileName);
+                SaveBitmap(thumbnail, thumbnailDirPath, fileName);
             }
         }
     }

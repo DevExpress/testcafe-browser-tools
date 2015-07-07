@@ -1,62 +1,64 @@
 import path from 'path';
-import execFile from './utils/exec-file.js';
-import os from './utils/os.js';
-import relativeFileName from './utils/relative-file-name.js';
+import execFile from './utils/exec-file';
+import OS from './utils/os';
+import NATIVES from './natives';
 
-const FIND_WINDOW_WIN_EXEC_PATH  = relativeFileName('bin/find-window.exe');
-const CLOSE_WINDOW_WIN_EXEC_PATH = relativeFileName('bin/close-window.exe');
-const SHOT_WINDOW_WIN_EXEC_PATH  = relativeFileName('bin/shot-window.exe');
-
-const FIND_WINDOW_MAC_SCRIPT_PATH  = relativeFileName('bin/find-window.scpt');
-const CLOSE_WINDOW_MAC_SCRIPT_PATH = relativeFileName('bin/close-window.scpt');
-const SHOT_WINDOW_MAC_EXEC_PATH    = relativeFileName('bin/shot-window');
 
 const SCREENSHOT_THUMBNAIL_WIDTH  = 240;
 const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
 
 
 async function findWindow (pageUrl) {
-    var execFilePath = os.mac ? FIND_WINDOW_MAC_SCRIPT_PATH : FIND_WINDOW_WIN_EXEC_PATH;
+    var res = await execFile(NATIVES.findWindow, [pageUrl]);
 
-    var res = await execFile(execFilePath, [pageUrl]);
-
-    if (os.win) {
+    if (OS.win) {
         var windowParams = res.split(' ');
 
         return { hwnd: windowParams[0], browser: windowParams[1] };
     }
 
-    if (os.mac)
+    if (OS.mac)
         return { processName: res.trim() };
 }
 
 // NOTE: in IE, we search for a window by the page URL, while in other browsers, we do this by the window title. So,
 // if you need to find a window in a non-IE browser, put the page URL to the window title before running this.
 export async function screenshot (pageUrl, screenshotPath) {
-    var folderPath          = path.dirname(screenshotPath);
-    var fileName            = path.basename(screenshotPath);
-    var thumbnailFolderPath = path.join(folderPath, 'thumbnails');
+    var screenshotDirPath = path.dirname(screenshotPath);
+    var fileName          = path.basename(screenshotPath);
+    var thumbnailDirPath  = path.join(screenshotDirPath, 'thumbnails');
+    var windowDescription = void 0;
 
-    if (os.win) {
+    /*eslint-disable indent*/
+    //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
+    if (OS.win) {
         var { hwnd, browser } = await findWindow(pageUrl);
 
-        await execFile(SHOT_WINDOW_WIN_EXEC_PATH, [hwnd, browser, folderPath, fileName, thumbnailFolderPath,
-            SCREENSHOT_THUMBNAIL_WIDTH, SCREENSHOT_THUMBNAIL_HEIGHT]);
+        windowDescription = [hwnd, browser];
     }
-    else if (os.mac)
-    await execFile(SHOT_WINDOW_MAC_EXEC_PATH, [pageUrl, folderPath, fileName, thumbnailFolderPath,
-    SCREENSHOT_THUMBNAIL_WIDTH, SCREENSHOT_THUMBNAIL_HEIGHT]);
+    else if (OS.mac)
+        windowDescription = [pageUrl];
+    /*eslint-enable indent*/
 
-
+    await execFile(NATIVES.shotWindow, windowDescription.concat([
+        screenshotDirPath,
+        fileName,
+        thumbnailDirPath,
+        SCREENSHOT_THUMBNAIL_WIDTH,
+        SCREENSHOT_THUMBNAIL_HEIGHT
+    ]));
 }
 
 export async function close (pageUrl) {
-    var windowParams = await findWindow(pageUrl);
+    var windowDescription    = await findWindow(pageUrl);
+    var closeWindowArguments = void 0;
 
-    if (os.win)
-        await execFile(CLOSE_WINDOW_WIN_EXEC_PATH, [windowParams.hwnd]);
-    else if (os.mac)
-        await execFile(CLOSE_WINDOW_MAC_SCRIPT_PATH, [pageUrl, windowParams.processName]);
+    if (OS.win)
+        closeWindowArguments = [windowDescription.hwnd];
+    else if (OS.mac)
+        closeWindowArguments = [pageUrl, windowDescription.processName];
+
+    await execFile(NATIVES.closeWindow, closeWindowArguments);
 }
 
 //TODO:

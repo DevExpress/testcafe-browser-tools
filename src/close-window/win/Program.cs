@@ -8,7 +8,7 @@ namespace CloseWindow {
         //Const
         const UInt32 WM_CLOSE = 0x10;
 
-        //Exports
+        //Imports
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         static extern IntPtr PostMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
 

@@ -13,7 +13,7 @@ namespace FindWindow {
         const UInt32 WM_GETTEXT = 0x0D;
         const int MAX_STRING_SIZE = 32768;
 
-        //Exports
+        //Imports
         [DllImport("user32")]
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
@@ -41,7 +41,7 @@ namespace FindWindow {
         private delegate bool EnumWindowsProc(IntPtr windowHandle, IntPtr lParam);
 
         static List<IEWindow> ieWindows = new List<IEWindow>();
-        
+
         private static string windowMark = null;
 
         private static void FillIEWindows() {
@@ -86,7 +86,7 @@ namespace FindWindow {
             }
 
             string title = GetWindowTitle(hwnd).ToLower();
-            
+
             if(title.Contains(windowMark.ToLower())) {
                 uint processID = 0;
                 GetWindowThreadProcessId(hwnd, out processID);
@@ -108,12 +108,13 @@ namespace FindWindow {
                 Environment.Exit(1);
             }
 
-            //NOTE: we found the window by it's url in IE and by it's title in other browsers.
-            //So if you need to find not IE browser, put the page's url to the window title before run it.
+            // NOTE: in IE, we search for a window by the page URL, while in other browsers, we do this by the window
+            // title. So, if you need to find a window in a non-IE browser, put the page URL to the window title before
+            // running this.
             windowMark = args[0];
 
-            
-            //Repeat attempt to find window 10 times with 300ms delay
+
+            //NOTE: Repeat attempt to find window 10 times with 300ms delay
             for(int i = 0; i < 10; i++) {
                 FillIEWindows();
                 EnumWindows(EnumWindowsCallback, IntPtr.Zero);

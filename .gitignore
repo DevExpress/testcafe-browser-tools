@@ -5,7 +5,7 @@ node_modules
 
 *.suo
 *.user
-
+*.sln
 
 src/*/win/bin/**
 src/*/win/obj/**
