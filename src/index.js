@@ -9,8 +9,8 @@ const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
 
 
 async function findWindow (pageUrl) {
-    if (!(OS.win || OS.mac))
-        return {};
+    if (OS.linux)
+        return null;
 
     var res = await execFile(NATIVES.findWindow, [pageUrl]);
 
