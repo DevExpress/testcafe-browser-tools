@@ -1,5 +1,6 @@
 all: clean build
 clean:
-	rm -r bin/*
+	rm ${DEST}/shot-window || true
 build:
-	clang -o bin/shot-window -framework Cocoa src/shot-window.m
+	mkdir ${DEST} || true
+	clang -o ${DEST}/shot-window -framework Cocoa shot-window.m
