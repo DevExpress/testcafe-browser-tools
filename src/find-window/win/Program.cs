@@ -11,7 +11,7 @@ namespace FindWindow {
         //Const
         const UInt32 SMTO_ABORTIFHUNG = 0x0002;
         const UInt32 WM_GETTEXT = 0x0D;
-        const int MAX_STRING_SIZE = 32768;
+        const UInt32 WM_GETTEXTLENGTH = 0x000E;
 
         //Imports
         [DllImport("user32")]
@@ -24,7 +24,10 @@ namespace FindWindow {
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr SendMessageTimeout(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam, UInt32 fuFlags, UInt32 uTimeout, out IntPtr lpdwResult);
+        public static extern IntPtr SendMessageTimeout(IntPtr hWnd, UInt32 Msg, IntPtr wParam, StringBuilder lParam, UInt32 fuFlags, UInt32 uTimeout, IntPtr lpdwResult);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SendMessageTimeout(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam, UInt32 fuFlags, UInt32 uTimeout, out long lpdwResult);
 
         //Utils
         private struct IEWindow {
@@ -61,18 +64,16 @@ namespace FindWindow {
         }
 
         private static string GetWindowTitle(IntPtr hwnd) {
-            IntPtr result;
-            string title = string.Empty;
+            long titleLength = 0;
 
-            IntPtr memoryHandle = Marshal.AllocCoTaskMem(MAX_STRING_SIZE);
-            Marshal.Copy(title.ToCharArray(), 0, memoryHandle, title.Length);
+            SendMessageTimeout(hwnd, WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero, SMTO_ABORTIFHUNG, (UInt32)1000, out titleLength);
 
-            SendMessageTimeout(hwnd, WM_GETTEXT, (IntPtr)MAX_STRING_SIZE, memoryHandle, SMTO_ABORTIFHUNG, (UInt32)1000, out result);
-
-            title = Marshal.PtrToStringAuto(memoryHandle);
-            Marshal.FreeCoTaskMem(memoryHandle);
-
-            return title;
+            if(titleLength > 0) {
+                StringBuilder titleBuilder = new StringBuilder((int)titleLength + 1);
+                SendMessageTimeout(hwnd, WM_GETTEXT, (IntPtr)titleBuilder.Capacity, titleBuilder, SMTO_ABORTIFHUNG, (UInt32)1000, IntPtr.Zero);
+                return titleBuilder.ToString();
+            } else
+                return "";
         }
 
         private static bool EnumWindowsCallback(IntPtr hwnd, IntPtr lParam) {

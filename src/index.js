@@ -13,15 +13,19 @@ async function findWindow (pageUrl) {
         return null;
 
     var res = await execFile(NATIVES.findWindow, [pageUrl]);
+    var windowParams = [];
 
     if (OS.win) {
-        var windowParams = res.split(' ');
+        windowParams = res.split(' ');
 
         return { hwnd: windowParams[0], browser: windowParams[1] };
     }
 
-    if (OS.mac)
-        return { processName: res.trim() };
+    if (OS.mac) {
+        windowParams = res.split('\n');
+
+        return { processName: windowParams[0], windowName: windowParams[1] };
+    }
 }
 
 // NOTE: in IE, we search for a window by the page URL, while in other browsers, we do this by the window title. So,
@@ -61,7 +65,7 @@ export async function close (pageUrl) {
     if (OS.win)
         closeWindowArguments = [windowDescription.hwnd];
     else if (OS.mac)
-        closeWindowArguments = [pageUrl, windowDescription.processName];
+        closeWindowArguments = [windowDescription.windowName, windowDescription.processName];
     else
         return;
 
