@@ -7,8 +7,8 @@
     <ProjectGuid>{7C5ABA0D-970C-4E8E-962C-A006AEE1E271}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>shot_window</RootNamespace>
-    <AssemblyName>shot-window</AssemblyName>
+    <RootNamespace>Screenshot</RootNamespace>
+    <AssemblyName>screenshot</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
