@@ -9,4 +9,3 @@ node_modules
 
 src/*/win/bin/**
 src/*/win/obj/**
-src/*/mac/bin/**
