@@ -1,6 +1,7 @@
 .idea
 .DS_Store
 lib
+test/playground/screenshots
 node_modules
 
 *.suo

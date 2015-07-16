@@ -1,18 +1,29 @@
+import fs from 'fs';
 import path from 'path';
-import execFile from './utils/exec-file';
+import { exec, execFile } from './utils/exec';
 import OS from './utils/os';
 import NATIVES from './natives';
+import * as browserInstallations from './installations';
+import { MESSAGES, getText } from './messages';
 
 
 const SCREENSHOT_THUMBNAIL_WIDTH  = 240;
 const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
 
 
+// Promisified node API
+function exists (filePath) {
+    return new Promise(resolve => fs.exists(filePath, resolve));
+}
+
+
+export var getInstallations = browserInstallations.get;
+
 async function findWindow (pageUrl) {
     if (OS.linux)
         return null;
 
-    var res = await execFile(NATIVES.findWindow, [pageUrl]);
+    var res          = await execFile(NATIVES.findWindow, [pageUrl]);
     var windowParams = [];
 
     if (OS.win) {
@@ -70,6 +81,42 @@ export async function close (pageUrl) {
         return;
 
     await execFile(NATIVES.closeWindow, closeWindowArguments);
+}
+
+export async function open (browserInfo, pageUrl) {
+    if (!browserInfo.path)
+        throw new Error(getText(MESSAGES.browserPathNotSet));
+
+    var fileExists = await exists(browserInfo.path);
+
+    if (!fileExists)
+        throw new Error(getText(MESSAGES.unableToRunBrowser, browserInfo.path));
+
+    var command = '';
+
+    /*eslint-disable indent*/
+    //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
+    if (OS.win) {
+        command = [
+            'start',
+            '/D"' + path.dirname(browserInfo.path) + '"',
+            path.basename(browserInfo.path),
+            [browserInfo.cmd],
+            pageUrl
+        ].join(' ');
+    }
+    else if (OS.mac)
+        command = browserInfo.macOpenCmd(browserInfo.path, pageUrl, browserInfo.cmd);
+    else
+        return; //TODO: support OS.linux
+    /*eslint-enable indent*/
+
+    try {
+        await exec(command);
+    }
+    catch (err) {
+        throw new Error(getText(MESSAGES.unableToRunBrowser, browserInfo.path));
+    }
 }
 
 //TODO:

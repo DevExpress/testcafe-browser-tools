@@ -1,0 +1,31 @@
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+
+button {
+    margin: 0 5px;
+}
+
+.installation, .browser {
+    padding-bottom: 5px;
+}
+
+.installation-name, .browser-name {
+    font-weight: bold;
+    width: 70px;
+    display: inline-block;
+}
+
+.installation-path {
+    display: inline-block;
+}
+
+.browser-id {
+    display: inline-block;
+    width: 50px;
+}
