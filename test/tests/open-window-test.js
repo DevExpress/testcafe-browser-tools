@@ -1,7 +1,7 @@
 var expect         = require('chai').expect;
 var browserNatives = require('../../lib/index');
 
-describe('Open()', function () {
+describe('open', function () {
     it('Should raise an error if browser path is not specified', function (done) {
         var browserInfo = {
             path: ''

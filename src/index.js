@@ -1,20 +1,14 @@
-import fs from 'fs';
 import path from 'path';
+import Mustache from 'mustache';
 import { exec, execFile } from './utils/exec';
 import OS from './utils/os';
 import NATIVES from './natives';
 import * as browserInstallations from './installations';
 import { MESSAGES, getText } from './messages';
-
+import exists from './utils/fs-exists-promised';
 
 const SCREENSHOT_THUMBNAIL_WIDTH  = 240;
 const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
-
-
-// Promisified node API
-function exists (filePath) {
-    return new Promise(resolve => fs.exists(filePath, resolve));
-}
 
 
 export var getInstallations = browserInstallations.get;
@@ -23,8 +17,15 @@ async function findWindow (pageUrl) {
     if (OS.linux)
         return null;
 
-    var res          = await execFile(NATIVES.findWindow, [pageUrl]);
+    var res          = null;
     var windowParams = [];
+
+    try {
+        res = await execFile(NATIVES.findWindow, [pageUrl]);
+    }
+    catch (err) {
+        return null;
+    }
 
     if (OS.win) {
         windowParams = res.split(' ');
@@ -50,9 +51,12 @@ export async function screenshot (pageUrl, screenshotPath) {
     /*eslint-disable indent*/
     //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
     if (OS.win) {
-        var { hwnd, browser } = await findWindow(pageUrl);
+        var windowParams = await findWindow(pageUrl);
 
-        windowDescription = [hwnd, browser];
+        if (!windowParams)
+            return;
+
+        windowDescription = [windowParams.hwnd, windowParams.browser];
     }
     else if (OS.mac)
         windowDescription = [pageUrl];
@@ -70,7 +74,11 @@ export async function screenshot (pageUrl, screenshotPath) {
 }
 
 export async function close (pageUrl) {
-    var windowDescription    = await findWindow(pageUrl);
+    var windowDescription = await findWindow(pageUrl);
+
+    if (!windowDescription)
+        return;
+
     var closeWindowArguments = void 0;
 
     if (OS.win)
@@ -97,16 +105,18 @@ export async function open (browserInfo, pageUrl) {
     /*eslint-disable indent*/
     //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
     if (OS.win) {
-        command = [
-            'start',
-            '/D"' + path.dirname(browserInfo.path) + '"',
-            path.basename(browserInfo.path),
-            [browserInfo.cmd],
-            pageUrl
-        ].join(' ');
+        var browserDirPath      = path.dirname(browserInfo.path);
+        var browserExecFileName = path.basename(browserInfo.path);
+
+        command = `start /D "${browserDirPath}" ${browserExecFileName} ${browserInfo.cmd} ${pageUrl}`;
     }
-    else if (OS.mac)
-        command = browserInfo.macOpenCmd(browserInfo.path, pageUrl, browserInfo.cmd);
+    else if (OS.mac) {
+        command = Mustache.render(browserInfo.macOpenCmdTemplate, {
+            path:    browserInfo.path,
+            cmd:     browserInfo.cmd,
+            pageUrl: pageUrl
+        });
+    }
     else
         return; //TODO: support OS.linux
     /*eslint-enable indent*/

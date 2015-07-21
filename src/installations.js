@@ -1,7 +1,6 @@
-import fs from 'fs';
-import childProcess from 'child_process';
-import Promise from 'promise';
 import OS from './utils/os';
+import exists from './utils/fs-exists-promised';
+import { exec } from './utils/exec';
 import NATIVES from './natives';
 
 // Const
@@ -12,34 +11,34 @@ const ALIASES = {
     },
 
     'ff': {
-        nameRe:     /firefox|mozilla/i,
-        cmd:        '-new-window',
-        macOpenCmd: (path, pageUrl, cmd) => `open -a "${path}" ${pageUrl} --args ${cmd}`
+        nameRe:             /firefox|mozilla/i,
+        cmd:                '-new-window',
+        macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
     },
 
     'chrome': {
-        nameRe:     /chrome/i,
-        cmd:        '--new-window',
-        macOpenCmd: (path, pageUrl, cmd) => `open -n -a "${path}" --args ${pageUrl} ${cmd}`
+        nameRe:             /chrome/i,
+        cmd:                '--new-window',
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
     },
 
     'chromium': {
-        nameRe:     /chromium/i,
-        cmd:        '--new-window',
-        macOpenCmd: (path, pageUrl, cmd) => `open -n -a "${path}" --args ${pageUrl} ${cmd}`
+        nameRe:             /chromium/i,
+        cmd:                '--new-window',
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
     },
 
     'opera': {
-        nameRe:     /opera/i,
-        cmd:        '--new-window',
-        macOpenCmd: (path, pageUrl, cmd) => `open -n -a "${path}" --args ${pageUrl} ${cmd}`
+        nameRe:             /opera/i,
+        cmd:                '--new-window',
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
     },
 
     'safari': {
-        nameRe:     /safari/i,
-        cmd:        '',
-        path:       NATIVES.openWindow,
-        macOpenCmd: (path, pageUrl, cmd) => `/usr/bin/osascript "${path}" ${pageUrl} --args ${cmd}`
+        nameRe:             /safari/i,
+        cmd:                '',
+        path:               NATIVES.openWindow,
+        macOpenCmdTemplate: '/usr/bin/osascript "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
     }
 };
 
@@ -48,24 +47,16 @@ const ALIASES = {
 var installationsCache = null;
 
 
-// Promisified node API
-var exec = Promise.denodeify(childProcess.exec);
-
-function exists (path) {
-    return new Promise(resolve => fs.exists(path, resolve));
-}
-
-
 // Find installations for different platforms
 async function addInstallation (installations, name, instPath) {
     var fileExists = await exists(instPath);
 
     if (fileExists) {
         Object.keys(ALIASES).some((alias) => {
-            var { nameRe, cmd, macOpenCmd, path } = ALIASES[alias];
+            var { nameRe, cmd, macOpenCmdTemplate, path } = ALIASES[alias];
 
             if (nameRe.test(name)) {
-                installations[alias] = { path: path || instPath, cmd, macOpenCmd };
+                installations[alias] = { path: path || instPath, cmd, macOpenCmdTemplate };
                 return true;
             }
 
