@@ -12,12 +12,12 @@ var Promise      = require('promise');
 
 var exec = Promise.denodeify(childProcess.exec);
 
-// Windows natives
-gulp.task('clean-win-natives', function (cb) {
+// Windows bin
+gulp.task('clean-win-bin', function (cb) {
     del('bin/win', cb);
 });
 
-gulp.task('build-win-natives', ['clean-win-natives'], function () {
+gulp.task('build-win-executables', ['clean-win-bin'], function () {
     return gulp
         .src('src/**/*.csproj')
         .pipe(msbuild({
@@ -25,19 +25,19 @@ gulp.task('build-win-natives', ['clean-win-natives'], function () {
         }));
 });
 
-gulp.task('copy-win-natives', ['build-win-natives'], function () {
+gulp.task('copy-win-executables', ['build-win-executables'], function () {
     return gulp
         .src('src/**/win/bin/Release/*.exe')
         .pipe(flatten())
         .pipe(gulp.dest('bin/win'));
 });
 
-// Mac natives
-gulp.task('clean-mac-natives', function (callback) {
+// Mac bin
+gulp.task('clean-mac-bin', function (callback) {
     del('bin/mac', callback);
 });
 
-gulp.task('build-mac-natives', ['clean-mac-natives'], function () {
+gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
     function make (options) {
         return through.obj(function (file, enc, callback) {
             if (file.isNull()) {
@@ -51,9 +51,7 @@ gulp.task('build-mac-natives', ['clean-mac-natives'], function () {
                 .then(function () {
                     callback(null, file);
                 })
-                .catch(function (error) {
-                    callback(error);
-                });
+                .catch(callback);
         });
     }
 
@@ -64,7 +62,7 @@ gulp.task('build-mac-natives', ['clean-mac-natives'], function () {
         }));
 });
 
-gulp.task('copy-mac-natives', ['clean-mac-natives'], function () {
+gulp.task('copy-mac-scripts', ['clean-mac-bin'], function () {
     return gulp
         .src('src/**/mac/*.scpt')
         .pipe(flatten())
@@ -117,5 +115,5 @@ gulp.task('build-lib', ['clean-lib'], function () {
         .pipe(gulp.dest('lib'));
 });
 
-gulp.task('build-win', ['build-lib', 'build-win-natives', 'copy-win-natives']);
-gulp.task('build-mac', ['build-lib', 'build-mac-natives', 'copy-mac-natives']);
+gulp.task('build-win', ['build-lib', 'copy-win-executables']);
+gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
