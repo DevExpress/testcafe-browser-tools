@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace ShotWindow {
+namespace Screenshot {
     class Program {
         //Consts
         const int GW_CHILD = 5;
@@ -103,7 +103,7 @@ namespace ShotWindow {
             return wi;
         }
 
-        static Bitmap ShotWindow(IntPtr hwnd, WindowInfo wi, string browser) {
+        static Bitmap Screenshot(IntPtr hwnd, WindowInfo wi, string browser) {
             Bitmap windowBitmap = new Bitmap(wi.rcWindow.right - wi.rcWindow.left, wi.rcWindow.bottom - wi.rcWindow.top, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             Graphics graphicsWindow = Graphics.FromImage(windowBitmap);
             IntPtr hdc = graphicsWindow.GetHdc();
@@ -173,7 +173,7 @@ namespace ShotWindow {
             string fileName = args[3];
 
             WindowInfo windowInfo = GetWindowInfo(hwnd, browser);
-            Bitmap screenshot = ShotWindow(hwnd, windowInfo, browser);
+            Bitmap screenshot = Screenshot(hwnd, windowInfo, browser);
             SaveBitmap(screenshot, dirPath, fileName);
 
             if(createThumbnail) {

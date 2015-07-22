@@ -4,6 +4,7 @@ var gulp         = require('gulp');
 var babel        = require('gulp-babel');
 var eslint       = require('gulp-eslint');
 var flatten      = require('gulp-flatten');
+var mocha        = require('gulp-mocha');
 var msbuild      = require('gulp-msbuild');
 var del          = require('del');
 var through      = require('through2');
@@ -70,11 +71,34 @@ gulp.task('copy-mac-natives', ['clean-mac-natives'], function () {
         .pipe(gulp.dest('bin/mac'));
 });
 
+// Test
+gulp.task('run-playground-win', ['build-win'], function () {
+    require('./test/playground/index');
+});
+
+gulp.task('run-playground-mac', ['build-mac'], function () {
+    require('./test/playground/index');
+});
+
+gulp.task('test-lib', ['build-lib'], function () {
+    return gulp
+        .src('test/tests/*-test.js')
+        .pipe(mocha({
+            ui:       'bdd',
+            reporter: 'spec',
+            timeout:  typeof v8debug === 'undefined' ? 2000 : Infinity // NOTE: disable timeouts in debug
+        }));
+});
+
+gulp.task('test', ['lint', 'test-lib']);
+
 // General tasks
 gulp.task('lint', function () {
     return gulp
         .src([
             'src/**/*.js',
+            'test/**/*.js',
+            '!test/playground/public/**/*',
             'Gulpfile.js'
         ])
         .pipe(eslint())
