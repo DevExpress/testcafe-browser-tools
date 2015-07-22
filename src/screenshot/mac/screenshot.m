@@ -1,6 +1,6 @@
 //
 //  shot_window.m
-//  ShotWindow
+//  Screenshot
 //
 
 #import <Cocoa/Cocoa.h>

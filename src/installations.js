@@ -37,7 +37,7 @@ const ALIASES = {
     'safari': {
         nameRe:             /safari/i,
         cmd:                '',
-        path:               NATIVES.openWindow,
+        path:               NATIVES.open,
         macOpenCmdTemplate: '/usr/bin/osascript "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
     }
 };

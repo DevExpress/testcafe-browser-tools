@@ -94,7 +94,7 @@ namespace FindWindow {
 
                 string processName = Process.GetProcessById((int)processID).ProcessName.ToLower();
 
-                //NOTE: IE has two windows with the same title. We found actual window with the FindInIEWindow function
+                //NOTE: IE has two windows with the same title. We are searching for the target window by using the FindInIEWindow function.
                 if(processName == "iexplore") {
                     return true;
                 }

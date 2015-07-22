@@ -6,17 +6,17 @@ var NATIVES = void 0;
 
 if (OS.win) {
     NATIVES = {
-        findWindow:  toAbsPath('../bin/win/find-window.exe'),
-        closeWindow: toAbsPath('../bin/win/close-window.exe'),
-        shotWindow:  toAbsPath('../bin/win/screenshot.exe')
+        findWindow: toAbsPath('../bin/win/find-window.exe'),
+        close:      toAbsPath('../bin/win/close.exe'),
+        screenshot: toAbsPath('../bin/win/screenshot.exe')
     };
 }
 else if (OS.mac) {
     NATIVES = {
-        openWindow:  toAbsPath('../bin/mac/open-window.scpt'),
-        findWindow:  toAbsPath('../bin/mac/find-window.scpt'),
-        closeWindow: toAbsPath('../bin/mac/close-window.scpt'),
-        shotWindow:  toAbsPath('../bin/mac/screenshot')
+        open:       toAbsPath('../bin/mac/open.scpt'),
+        findWindow: toAbsPath('../bin/mac/find-window.scpt'),
+        close:      toAbsPath('../bin/mac/close.scpt'),
+        screenshot: toAbsPath('../bin/mac/screenshot')
     };
 }
 /*eslint-disable indent*/

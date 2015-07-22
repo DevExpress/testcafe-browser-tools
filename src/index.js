@@ -64,7 +64,7 @@ export async function screenshot (pageUrl, screenshotPath) {
         return;
     /*eslint-enable indent*/
 
-    await execFile(NATIVES.shotWindow, windowDescription.concat([
+    await execFile(NATIVES.screenshot, windowDescription.concat([
         screenshotDirPath,
         fileName,
         thumbnailDirPath,
@@ -88,7 +88,7 @@ export async function close (pageUrl) {
     else
         return;
 
-    await execFile(NATIVES.closeWindow, closeWindowArguments);
+    await execFile(NATIVES.close, closeWindowArguments);
 }
 
 export async function open (browserInfo, pageUrl) {
