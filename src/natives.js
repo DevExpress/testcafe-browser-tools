@@ -8,7 +8,8 @@ if (OS.win) {
     NATIVES = {
         findWindow: toAbsPath('../bin/win/find-window.exe'),
         close:      toAbsPath('../bin/win/close.exe'),
-        screenshot: toAbsPath('../bin/win/screenshot.exe')
+        screenshot: toAbsPath('../bin/win/screenshot.exe'),
+        resize:     toAbsPath('../bin/win/resize.exe')
     };
 }
 else if (OS.mac) {
@@ -16,7 +17,8 @@ else if (OS.mac) {
         open:       toAbsPath('../bin/mac/open.scpt'),
         findWindow: toAbsPath('../bin/mac/find-window.scpt'),
         close:      toAbsPath('../bin/mac/close.scpt'),
-        screenshot: toAbsPath('../bin/mac/screenshot')
+        screenshot: toAbsPath('../bin/mac/screenshot'),
+        resize:     toAbsPath('../bin/mac/resize.scpt')
     };
 }
 /*eslint-disable indent*/

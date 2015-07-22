@@ -1,14 +1,16 @@
-var path           = require('path');
-var browserNatives = require('../../lib/index');
-var exec           = require('../../lib/utils/exec').exec;
-var OS             = require('../../lib/utils/os');
-var toAbsPath      = require('../../lib/utils/to-abs-path');
+var path             = require('path');
+var browserNatives   = require('../../lib/index');
+var exec             = require('../../lib/utils/exec').exec;
+var OS               = require('../../lib/utils/os');
+var toAbsPath        = require('../../lib/utils/to-abs-path');
+var getViewportSizes = require('../../lib/utils/get-viewport-sizes');
 
 
 var installations  = {};
 var browsers       = [];
 var browserCounter = 0;
 var port           = null;
+var sizes          = [];
 
 function getBrowserById (id) {
     return browsers.filter(function (item) {
@@ -37,20 +39,27 @@ function runAsyncForBrowser (browserId, response, fn) {
 exports.init = function (appPort) {
     port = appPort;
 
-    return browserNatives.getInstallations()
-        .then(function (res) {
-            installations = res;
-        });
+    return Promise.all([
+        browserNatives.getInstallations()
+            .then(function (res) {
+                installations = res;
+            }),
+        getViewportSizes('')
+            .then(function (res) {
+                sizes = res;
+            })
+    ]);
 };
 
 exports.index = function (req, res) {
     res.render('index', {
         installations: installations,
-        browsers:      browsers
+        browsers:      browsers,
+        sizes:         sizes
     });
 };
 
-exports.openBrowser = function (req, res) {
+exports.open = function (req, res) {
     var browser = {
         pageUrl:     'http://localhost:' + port + '/test-page/' + Date.now(),
         browserInfo: installations[req.body.browser],
@@ -61,7 +70,7 @@ exports.openBrowser = function (req, res) {
     return browserNatives.open(browser.browserInfo, browser.pageUrl)
         .then(function () {
             browsers.push(browser);
-            res.render('browser', { browser: browser });
+            res.render('browser', { browser: browser, sizes: sizes });
         })
         .catch(function (err) {
             res.statusCode = 500;
@@ -69,7 +78,7 @@ exports.openBrowser = function (req, res) {
         });
 };
 
-exports.closeBrowser = function (req, res) {
+exports.close = function (req, res) {
     function close (browser) {
         return browserNatives.close(browser.pageUrl)
             .then(function () {
@@ -81,6 +90,21 @@ exports.closeBrowser = function (req, res) {
     }
 
     runAsyncForBrowser(req.body.browserId, res, close);
+};
+
+exports.resize = function (req, res) {
+    function resize (browser) {
+        var args = req.body.paramsType === 'width-height' ?
+                   [Number(req.body.width), Number(req.body.height)] :
+                   [req.body.deviceName, req.body.orientation];
+
+        return browserNatives.resize.apply(browserNatives, [browser.pageUrl].concat(args))
+            .then(function () {
+                res.end();
+            });
+    }
+
+    runAsyncForBrowser(req.body.browserId, res, resize);
 };
 
 exports.takeScreenshot = function (req, res) {

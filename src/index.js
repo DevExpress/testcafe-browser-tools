@@ -6,12 +6,28 @@ import NATIVES from './natives';
 import * as browserInstallations from './installations';
 import { MESSAGES, getText } from './messages';
 import exists from './utils/fs-exists-promised';
+import getViewportSizes from './utils/get-viewport-sizes';
+
 
 const SCREENSHOT_THUMBNAIL_WIDTH  = 240;
 const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
 
 
 export var getInstallations = browserInstallations.get;
+
+async function parseResizeArgs (args) {
+    if (typeof args[0] === 'number' && typeof args[1] === 'number')
+        return { width: args[0], height: args[1] };
+
+    var sizes = await getViewportSizes(args[0]);
+
+    if (!sizes.length)
+        throw new Error(getText(MESSAGES.deviceNotFound, args[0]));
+
+    return args[1] !== 'portrait' ?
+           { width: sizes[0].landscapeWidth, height: sizes[0].portraitWidth } :
+           { width: sizes[0].portraitWidth, height: sizes[0].landscapeWidth };
+}
 
 async function findWindow (pageUrl) {
     if (OS.linux)
@@ -129,6 +145,24 @@ export async function open (browserInfo, pageUrl) {
     }
 }
 
-//TODO:
-/*export function resize () {
- }*/
+export async function resize (pageUrl, ...args) {
+    var windowDescription = await findWindow(pageUrl);
+
+    if (!windowDescription)
+        return;
+
+    var resizeArguments = void 0;
+
+    if (OS.win)
+        resizeArguments = [windowDescription.hwnd];
+    else if (OS.mac)
+        resizeArguments = [windowDescription.windowName, windowDescription.processName];
+    else
+        return;
+
+    var { width, height } = await parseResizeArgs(args);
+
+    resizeArguments = resizeArguments.concat([width, height]);
+
+    await execFile(NATIVES.resize, resizeArguments);
+}

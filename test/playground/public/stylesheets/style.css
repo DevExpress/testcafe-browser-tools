@@ -11,11 +11,11 @@ button {
     margin: 0 5px;
 }
 
-.installation, .browser {
+.installation {
     padding-bottom: 5px;
 }
 
-.installation-name, .browser-name {
+.installation-name {
     font-weight: bold;
     width: 70px;
     display: inline-block;
@@ -25,7 +25,84 @@ button {
     display: inline-block;
 }
 
-.browser-id {
-    display: inline-block;
+.browser-id, .browser-name {
     width: 50px;
 }
+
+.spacer {
+    width: 100%;
+}
+
+.browser {
+    width: 100%;
+    border: 1px solid #000000;
+    border-radius: 9px;
+    margin-bottom: 10px;
+}
+
+.browser-header {
+    background: linear-gradient(to bottom, #0069d3 5%, #007fff 100%);
+    background-color: #0069d3;
+}
+
+.browser-header > td {
+    border: solid #000000;
+    border-width: 0 0 1px 0;
+    text-align: center;
+    padding: 7px;
+    font-size: 18px;
+    font-family: monospace;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.browser-header > td:first-child {
+    border-top-left-radius: 9px;
+}
+
+.browser-header > td:last-child {
+    border-top-right-radius: 9px;
+}
+
+.browser-action > td {
+    border-bottom: 1px solid #000000;
+    text-align: left;
+    padding: 7px;
+    font-size: 12px;
+    font-family: sans-serif;
+    font-weight: normal;
+    color: #000000;
+}
+
+.browser-action:last-child > td {
+    border-bottom-width: 0;
+}
+
+.resize-args {
+    letter-spacing: 0;
+    word-spacing: 0;
+}
+
+.resize-args-option {
+    vertical-align: top;
+    display: inline-block;
+    border-right: 1px solid black;
+    padding: 12px 8px 0;
+}
+
+.resize-args-option:last-child {
+    border-width: 0;
+}
+
+.resize-args-table {
+    padding-top: 8px;
+}
+
+.resize-args-table td {
+    padding: 2px 0;
+}
+
+.device-name {
+    width: 175px;
+}
+

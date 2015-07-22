@@ -5,7 +5,7 @@ $(document).ready(function () {
 
             $.ajax({
                 method:  'POST',
-                url:     '/close-browser',
+                url:     '/close',
                 data:    {
                     browserId: $btn.data('browser-id')
                 },
@@ -33,6 +33,26 @@ $(document).ready(function () {
                 }
             });
         });
+
+        $browser.find('.resize-browser-button').click(function () {
+            var $btn = $(this);
+
+            $.ajax({
+                method: 'POST',
+                url:    '/resize',
+                data:   {
+                    browserId:   $btn.data('browser-id'),
+                    paramsType:  $browser.find('.params-type:checked').val(),
+                    width:       $browser.find('.width').val(),
+                    height:      $browser.find('.height').val(),
+                    deviceName:  $browser.find('.device-name').val(),
+                    orientation: $browser.find('.orientation:checked').val()
+                },
+                error:  function (xhr) {
+                    alert(xhr.statusText + ': ' + xhr.responseText);
+                }
+            });
+        });
     }
 
     $('.browser').each(function () {
@@ -47,7 +67,7 @@ $(document).ready(function () {
 
             $.ajax({
                 method:  'POST',
-                url:     '/open-browser',
+                url:     '/open',
                 data:    {
                     browser: $btn.data('browser')
                 },

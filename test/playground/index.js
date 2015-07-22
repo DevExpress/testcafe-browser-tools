@@ -20,8 +20,9 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.get('/*', routes.noCache);
 
 app.get('/', routes.index);
-app.post('/open-browser', routes.openBrowser);
-app.post('/close-browser', routes.closeBrowser);
+app.post('/open', routes.open);
+app.post('/close', routes.close);
+app.post('/resize', routes.resize);
 app.post('/take-screenshot', routes.takeScreenshot);
 app.get('/test-page/:id', routes.sandboxPage);
 
