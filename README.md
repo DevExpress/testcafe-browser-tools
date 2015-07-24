@@ -2,21 +2,51 @@
 
 [![Build Status](https://travis-ci.org/superroma/testcafe-browser-natives.svg)](https://travis-ci.org/superroma/testcafe-browser-natives)
 
-The TestCafe Browser Natives module provides API functions that allow you to perform various actions with a browser window. These actions require different native applications for different operating systems (Windows and MacOS).
+Testcafe Browser Natives is a TestCafe library for performing platform-dependent actions on browser windows.
+#Build Process
+To build the binaries from source files, execute the gulp task corresponding to your operating system:
+```
+'copy-win-executables'
+'build-mac-executables'
+'copy-mac-script'
+```
+Note that the application for a particular platform must be built on a machine with the same platform.
+You can find the pre-build native binaries in the bin directory. So, you do not need to build them yourself.
+#Install
+
+```js
+$ npm install testcafe-browser-natives
+```
+#API Reference
 
 **Important note**: Most of the provided functions use a page URL to identify a browser window. However, depending on a browser, a browser window can be identified by a page URL or a web page title. Therefore, before calling the functions, you need to pass the page URL to the document title. Here is an example:
 ```
 document.title = document.location.toString()
 ```
 
-
 ##getInstallations
-Returns the **browsersInfo** object that provides information about all the browsers installed on the machine.
-```
+Returns the list of the **browserInfo** objects that contain information about the browsers installed on the machine.
+```js
 async getInstallations()
 ```
-Below is the sample structure of the **browsersInfo** object:
+
+Here is an example of the **browserInfo** object structure.
+```js
+{
+    path: 'C:\\ProgramFiles\\...\\chrome.exe', 
+    cmd: '--new-window', 
+    macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}' 
+}
 ```
+
+**path** – String (required). The path to the executable file that starts the browser.
+
+**cmd** -  String (required). Additional command line parameters.
+
+**macOpenCmdTemplate** – A [Mustache template](https://github.com/janl/mustache.js#templates) that provides parameters for launching the browser on a MacOS machine.
+
+Below is the sample output of the **getInstallation** function:
+```js
 {
     chrome: {
         path: 'C:\\ProgramFiles\\...\\chrome.exe', 
@@ -30,34 +60,16 @@ Below is the sample structure of the **browsersInfo** object:
         macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
     }
 }
-
 ```
-
-**path** – String (required). The path to the executable file that starts the browser.
-
-**cmd** -  String (required). Additional command line parameters.
-
-**macOpenCmdTemplate** – A [Mustache template](https://github.com/janl/mustache.js#templates)  that provides parameters for launching the browser on a MacOS machine.
-
 
 ##open
 Opens the web page in a new instance of the browser.
-```
+```js
 async open(browserInfo, pageUrl)
 ```
-**browserInfo** – Object (required). Provides information on the browser where the web page should be opened. See the object structure below.
+**browserInfo** – Object (required). Provides information on the browser where the web page should be opened. See the object structure above.
 
 **pageUrl** – String (required). Specifies the web page URL.
-
-Here is an example of the **browserInfo** object structure. The object has the same fields as the **browsersInfo** object has.
-```
-{
-    path: 'C:\\ProgramFiles\\...\\chrome.exe', 
-    cmd: '--new-window', 
-    macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}' 
-}
-```
-
 
 ##close
 Closes the browser window where the specified web page is opened.
@@ -91,8 +103,29 @@ async resize(pageUrl, width, height)
 
 The other version of the **resize** function allows you to change the browser window size according to the screen size of the target device.
 ```
-async resize(pageUrl, deviceName) 
+async resize(pageUrl, deviceName, orientation) 
 ```
 **pageUrl** – String (required). Specifies the URL of the web page opened in the browser.
 
 **deviceName**  – String (required). Specifies the name of the target device. You can use the values specified in the **Device Name** column of [this table](http://viewportsizes.com/).
+
+**orientation** - String (optional). Specifies the device orientation: *"portrait"* or *"landscape"* (by default).
+
+#Testing
+
+To run automated tests:
+```
+$ npm test
+```
+Since the module functionality depends on browsers available on a testing machine and you cannot predict expected returned values for some functions, the automated tests cover only a part of the functionality.  
+To test all the functions provided by the module, use the playground. To run it, execute the gulp task corresponding to your operating system:
+```
+$ gulp run-playground-win 
+$ gulp run-playground-mac
+$ gulp run-playground-linux
+```
+This will open the Playground web page at [http://localhost:1334/](http://localhost:1334/) , where you can manually check if the functions work correctly.
+
+#Author
+
+Developer Express Inc.([devexpress.com](devexpress.com))
