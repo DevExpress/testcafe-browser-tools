@@ -4,23 +4,26 @@
 
 Testcafe Browser Natives is a TestCafe library for performing platform-dependent actions on browser windows.
 #Build Process
-To build the binaries from source files, execute the gulp task corresponding to your operating system:
+To build the native binaries from source files, execute the gulp task corresponding to your operating system:
 ```
-'copy-win-executables'
-'build-mac-executables'
-'copy-mac-script'
+'build-win'
+'build-mac'
+'build-linux'
 ```
 Note that the application for a particular platform must be built on a machine with the same platform.
-You can find the pre-build native binaries in the bin directory. So, you do not need to build them yourself.
+
+The *bin* directory contains the pre-build native binaries. It can be convenient to use the ready binaries for contributors whose contribution does not affect the native modules.
+This also prevents end users from having to install additional modules and utilities needed for building.
+
 #Install
 
-```js
+```
 $ npm install testcafe-browser-natives
 ```
 #API Reference
 
 **Important note**: Most of the provided functions use a page URL to identify a browser window. However, depending on a browser, a browser window can be identified by a page URL or a web page title. Therefore, before calling the functions, you need to pass the page URL to the document title. Here is an example:
-```
+```js
 document.title = document.location.toString()
 ```
 
@@ -128,4 +131,4 @@ This will open the Playground web page at [http://localhost:1334/](http://localh
 
 #Author
 
-Developer Express Inc.([devexpress.com](devexpress.com))
+Developer Express Inc.([http://devexpress.com](http://devexpress.com))
