@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/superroma/testcafe-browser-natives.svg)](https://travis-ci.org/superroma/testcafe-browser-natives)
 
-Testcafe Browser Natives is a TestCafe library for performing platform-dependent actions on browser windows.
+Testcafe Browser Natives is a TestCafe library for performing platform-dependent actions on browser windows. 
+Working with browsers is specific for each operating system and requires native code to deal with. Since TestCafe supports painless and simple installation, this package encapsulates pre-built binaries for all supported platforms and JS-wrappers around them. This helps us avoid running *post-npm-install* build actions on end-user machines.
+ 
 #Build Process
 To build the native binaries from source files, execute the gulp task corresponding to your operating system:
 ```
@@ -13,7 +15,6 @@ To build the native binaries from source files, execute the gulp task correspond
 Note that the application for a particular platform must be built on a machine with the same platform.
 
 The *bin* directory contains the pre-build native binaries. It can be convenient to use the ready binaries for contributors whose contribution does not affect the native modules.
-This also prevents end users from having to install additional modules and utilities needed for building.
 
 #Install
 
