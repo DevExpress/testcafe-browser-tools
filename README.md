@@ -128,7 +128,7 @@ $ gulp run-playground-win
 $ gulp run-playground-mac
 $ gulp run-playground-linux
 ```
-This will open the Playground web page at [http://localhost:1334/](http://localhost:1334/) , where you can manually check if the functions work correctly.
+This will open the Playground web page at [http://localhost:1334/](http://localhost:1334/), where you can manually check if the functions work correctly.
 
 #Author
 
