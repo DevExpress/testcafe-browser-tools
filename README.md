@@ -49,7 +49,7 @@ Here is an example of the **browserInfo** object structure.
 
 **macOpenCmdTemplate** – A [Mustache template](https://github.com/janl/mustache.js#templates) that provides parameters for launching the browser on a MacOS machine.
 
-Below is the sample output of the **getInstallation** function:
+Below is the sample output of the **getInstallations** function:
 ```js
 {
     chrome: {
