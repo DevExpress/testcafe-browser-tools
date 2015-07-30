@@ -1,7 +1,7 @@
 import OS from './utils/os';
 import exists from './utils/fs-exists-promised';
 import { exec } from './utils/exec';
-import NATIVES from './natives';
+import BINARIES from './binaries';
 
 // Const
 const ALIASES = {
@@ -37,7 +37,7 @@ const ALIASES = {
     'safari': {
         nameRe:             /safari/i,
         cmd:                '',
-        path:               NATIVES.open,
+        path:               BINARIES.open,
         macOpenCmdTemplate: '/usr/bin/osascript "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
     }
 };

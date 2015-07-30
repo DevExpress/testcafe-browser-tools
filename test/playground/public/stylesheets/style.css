@@ -3,10 +3,6 @@ body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-    color: #00B7FF;
-}
-
 button {
     margin: 0 5px;
 }
@@ -104,5 +100,17 @@ button {
 
 .device-name {
     width: 175px;
+}
+
+.browser-screenshot-path {
+    display: block;
+    margin: 3px 0;
+}
+
+.browser-screenshots {
+    margin: 5px 0 0 2px;
+}
+.browser-screenshots-container {
+    margin: 10px 0 0 10px
 }
 

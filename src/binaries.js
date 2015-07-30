@@ -2,10 +2,10 @@ import OS from './utils/os';
 import toAbsPath from './utils/to-abs-path';
 
 
-var NATIVES = void 0;
+var BINARIES = void 0;
 
 if (OS.win) {
-    NATIVES = {
+    BINARIES = {
         findWindow: toAbsPath('../bin/win/find-window.exe'),
         close:      toAbsPath('../bin/win/close.exe'),
         screenshot: toAbsPath('../bin/win/screenshot.exe'),
@@ -13,7 +13,7 @@ if (OS.win) {
     };
 }
 else if (OS.mac) {
-    NATIVES = {
+    BINARIES = {
         open:       toAbsPath('../bin/mac/open.scpt'),
         findWindow: toAbsPath('../bin/mac/find-window.scpt'),
         close:      toAbsPath('../bin/mac/close.scpt'),
@@ -24,7 +24,7 @@ else if (OS.mac) {
 /*eslint-disable indent*/
 //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
 else if (OS.linux)
-    NATIVES = {};
+    BINARIES = {};
 /*eslint-enable indent*/
 
-export default NATIVES;
+export default BINARIES;

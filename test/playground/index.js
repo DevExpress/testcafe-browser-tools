@@ -12,9 +12,16 @@ var PORT = 1334;
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('view engine', 'mustache');
+app.set('partials', {
+    browser:       'browser',
+    browsers:      'browsers',
+    installations: 'installations',
+    screenshots:   'screenshots'
+});
+app.engine('mustache', require('hogan-express'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.get('/*', routes.noCache);
@@ -24,6 +31,7 @@ app.post('/open', routes.open);
 app.post('/close', routes.close);
 app.post('/resize', routes.resize);
 app.post('/take-screenshot', routes.takeScreenshot);
+app.get('/get-screenshot/:path', routes.getScreenshot);
 app.get('/test-page/:id', routes.sandboxPage);
 
 app.get('/*', routes.notFound);

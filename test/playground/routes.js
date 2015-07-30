@@ -1,16 +1,23 @@
-var path             = require('path');
-var browserNatives   = require('../../lib/index');
-var exec             = require('../../lib/utils/exec').exec;
-var OS               = require('../../lib/utils/os');
-var toAbsPath        = require('../../lib/utils/to-abs-path');
-var getViewportSizes = require('../../lib/utils/get-viewport-sizes');
+var path           = require('path');
+var viewport       = require('viewport-list');
+var Promise        = require('promise');
+var browserNatives = require('../../lib/index');
+var exec           = require('../../lib/utils/exec').exec;
+var OS             = require('../../lib/utils/os');
+var toAbsPath      = require('../../lib/utils/to-abs-path');
 
 
-var installations  = {};
-var browsers       = [];
-var browserCounter = 0;
-var port           = null;
-var sizes          = [];
+const SIZE_RE = /(\d+)x(\d+)/;
+
+
+var installationsList = [];
+var installations     = null;
+var browsers          = [];
+var browserCounter    = 0;
+var port              = null;
+var deviceNames       = [];
+
+var getViewports = Promise.denodeify(viewport);
 
 function getBrowserById (id) {
     return browsers.filter(function (item) {
@@ -34,6 +41,32 @@ function runAsyncForBrowser (browserId, response, fn) {
     }
 }
 
+function getDeviceNames () {
+    return getViewports([''])
+        .then(function (devices) {
+            return devices.map(function (item) {
+                return SIZE_RE.test(item.size) ?
+                       { deviceName: item.name } :
+                       null;
+            }).filter(function (item) {
+                return item !== null;
+            });
+        });
+}
+
+function objectToList (object, keyName) {
+    var list = [];
+
+    Object.keys(object).forEach(function (key) {
+        var value = object[key];
+
+        value[keyName] = key;
+
+        list.push(value);
+    });
+
+    return list;
+}
 
 //API
 exports.init = function (appPort) {
@@ -42,21 +75,24 @@ exports.init = function (appPort) {
     return Promise.all([
         browserNatives.getInstallations()
             .then(function (res) {
-                installations = res;
+                installations     = res;
+                installationsList = objectToList(res, 'name');
             }),
-        getViewportSizes('')
+        getDeviceNames()
             .then(function (res) {
-                sizes = res;
+                deviceNames = res;
             })
     ]);
 };
 
 exports.index = function (req, res) {
-    res.render('index', {
-        installations: installations,
-        browsers:      browsers,
-        sizes:         sizes
-    });
+    res.locals = {
+        installationsList: installationsList,
+        browsers:          browsers,
+        deviceNames:       deviceNames
+    };
+
+    res.render('index');
 };
 
 exports.open = function (req, res) {
@@ -64,13 +100,15 @@ exports.open = function (req, res) {
         pageUrl:     'http://localhost:' + port + '/test-page/' + Date.now(),
         browserInfo: installations[req.body.browser],
         id:          'br-' + browserCounter++,
-        name:        req.body.browser
+        name:        req.body.browser,
+        screenshots: []
     };
 
     return browserNatives.open(browser.browserInfo, browser.pageUrl)
         .then(function () {
             browsers.push(browser);
-            res.render('browser', { browser: browser, sizes: sizes });
+            res.locals = { id: browser.id, name: browser.name, deviceNames: deviceNames };
+            res.render('browser');
         })
         .catch(function (err) {
             res.statusCode = 500;
@@ -124,9 +162,22 @@ exports.takeScreenshot = function (req, res) {
 
         return browserNatives.screenshot(browser.pageUrl, screenshotPath)
             .then(function () {
-                return exec((OS.mac ? 'open ' : '') + screenshotPath);
+                var screenshotIsNotAdded = browser.screenshots.filter(function (item) {
+                        return item.path === screenshotPath;
+                    }).length === 0;
+
+                if (screenshotIsNotAdded)
+                    browser.screenshots.push({
+                        path: screenshotPath,
+                        url:  '/get-screenshot/' + encodeURIComponent(screenshotPath)
+                    });
+
+                exec((OS.mac ? 'open ' : '') + screenshotPath);
+
+                res.locals = { screenshots: browser.screenshots };
+                res.render('screenshots');
             })
-            .then(function () {
+            .catch(function () {
                 res.end();
             });
     }
@@ -134,8 +185,26 @@ exports.takeScreenshot = function (req, res) {
     runAsyncForBrowser(req.body.browserId, res, screenshot);
 };
 
+exports.getScreenshot = function (req, res) {
+    var screenshotPath = decodeURIComponent(req.params.path);
+    var i              = 0;
+    var j              = 0;
+
+    for (i = 0; i < browsers.length; i++) {
+        for (j = 0; j < browsers[i].screenshots.length; j++) {
+            if (browsers[i].screenshots[j].path === screenshotPath) {
+                res.sendfile(screenshotPath);
+                return;
+            }
+        }
+    }
+
+    res.status(404).send('Not found');
+};
+
 exports.sandboxPage = function (req, res) {
-    res.render('test-page', { id: req.params.id });
+    res.locals = { id: req.params.id };
+    res.render('test-page');
 };
 
 exports.notFound = function (req, res) {
