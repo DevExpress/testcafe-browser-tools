@@ -1,8 +1,8 @@
 import path from 'path';
 import findWindow from './find-window';
-import OS from './utils/os';
-import { execFile } from './utils/exec';
-import BINARIES from './binaries';
+import OS from '../utils/os';
+import { execFile } from '../utils/exec';
+import BINARIES from '../binaries';
 
 
 const SCREENSHOT_THUMBNAIL_WIDTH  = 240;

@@ -1,7 +1,7 @@
-import OS from './utils/os';
-import exists from './utils/fs-exists-promised';
-import { exec } from './utils/exec';
-import BINARIES from './binaries';
+import OS from '../utils/os';
+import exists from '../utils/fs-exists-promised';
+import { exec } from '../utils/exec';
+import BINARIES from '../binaries';
 
 // Const
 const ALIASES = {
@@ -138,7 +138,7 @@ async function findBrowsers () {
 
 
 // API
-export async function get () {
+export default async function () {
     if (!installationsCache)
         installationsCache = await findBrowsers();
 

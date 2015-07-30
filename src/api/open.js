@@ -1,9 +1,9 @@
 import path from 'path';
 import Mustache from 'mustache';
-import OS from './utils/os';
-import { exec } from './utils/exec';
-import exists from './utils/fs-exists-promised';
-import { MESSAGES, getText } from './messages';
+import OS from '../utils/os';
+import { exec } from '../utils/exec';
+import exists from '../utils/fs-exists-promised';
+import { MESSAGES, getText } from '../messages';
 
 
 export default async function (browserInfo, pageUrl) {

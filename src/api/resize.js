@@ -1,10 +1,10 @@
 import viewport from 'viewport-list';
 import Promise from 'promise';
-import OS from './utils/os';
-import { execFile } from './utils/exec';
-import BINARIES from './binaries';
 import findWindow from './find-window';
-import { MESSAGES, getText } from './messages';
+import OS from '../utils/os';
+import { execFile } from '../utils/exec';
+import BINARIES from '../binaries';
+import { MESSAGES, getText } from '../messages';
 
 
 const SIZE_RE = /(\d+)x(\d+)/;
@@ -38,7 +38,7 @@ async function getDeviceSize (deviceName) {
     return size;
 }
 
-async function parseResizeArgs (args) {
+async function parseArgs (args) {
     if (typeof args[0] === 'number' && typeof args[1] === 'number')
         return { width: args[0], height: args[1] };
 
@@ -50,7 +50,6 @@ async function parseResizeArgs (args) {
     return args[1] === 'portrait' ?
            { width: size.portraitWidth, height: size.landscapeWidth } :
            { width: size.landscapeWidth, height: size.portraitWidth };
-
 }
 
 
@@ -69,7 +68,7 @@ export default async function (pageUrl, ...args) {
     else
         return;
 
-    var { width, height } = await parseResizeArgs(args);
+    var { width, height } = await parseArgs(args);
 
     resizeArguments = resizeArguments.concat([width, height]);
 

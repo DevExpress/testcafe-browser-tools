@@ -1,7 +1,7 @@
 import findWindow from './find-window';
-import OS from './utils/os';
-import { execFile } from './utils/exec';
-import BINARIES from './binaries';
+import OS from '../utils/os';
+import { execFile } from '../utils/exec';
+import BINARIES from '../binaries';
 
 
 export default async function (pageUrl) {

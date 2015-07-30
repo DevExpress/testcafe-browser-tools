@@ -1,12 +1,12 @@
-import * as browserInstallations from './installations';
-import open from './open';
-import close from './close';
-import resize from './resize';
-import screenshot from './screenshot';
+import getInstallations from './api/get-installations';
+import open from './api/open';
+import close from './api/close';
+import resize from './api/resize';
+import screenshot from './api/screenshot';
 
 
 export default {
-    getInstallations: browserInstallations.get,
+    getInstallations,
     open,
     close,
     resize,

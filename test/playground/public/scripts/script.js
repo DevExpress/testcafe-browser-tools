@@ -29,7 +29,6 @@ $(document).ready(function () {
                     screenshotPath: $browser.find('.screenshot-path').val()
                 },
                 success: function (res) {
-                    console.log($browser.find('.browser-screenshots-container'));
                     $browser.find('.browser-screenshots-container').replaceWith(res)
                 },
                 error:  function (xhr) {
@@ -68,7 +67,6 @@ $(document).ready(function () {
 
         $item.find('.open-browser-button').click(function () {
             var $btn = $(this);
-            console.log($btn.data('browser'));
 
             $.ajax({
                 method:  'POST',
