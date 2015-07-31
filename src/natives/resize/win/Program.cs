@@ -125,9 +125,9 @@ namespace ResizeWindow {
             int width  = Convert.ToInt32(args[1]),
                 height = Convert.ToInt32(args[2]);
 
-            //NOTE: if the target window is maximized we should restore it before resizing.
-            // Otherwise WS_MAXIMIZED window style will still be applied to the window, that results in wrong icon in header
-            // and buggy behaviour in some cases.
+            // NOTE: If the target window is maximized, we should restore it before resizing.
+            // Otherwise, the WS_MAXIMIZED style will still be applied to the window, which will result
+            // in a wrong icon displayed in the header and buggy behavior in certain cases.
             if (IsZoomed(hWnd))
                 RestoreDownWindow(hWnd);
 
