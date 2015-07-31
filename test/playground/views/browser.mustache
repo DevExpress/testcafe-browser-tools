@@ -1,0 +1,88 @@
+<table class="browser">
+    <tr class="browser-header">
+        <td class="browser-id">{{ id }}</td>
+        <td class="browser-name">{{ name }}</td>
+        <td class="spacer">&nbsp;</td>
+    </tr>
+
+    <tr class="browser-action">
+        <td colspan="3">
+            <button class="close-browser-button" data-browser-id="{{ id }}">Close</button> <span>the browser</span>
+        </td>
+    </tr>
+    <tr class="browser-action">
+        <td colspan="3">
+            <div><button class="take-screenshot-button" data-browser-id="{{ id }}">Take a screenshot</button>
+                            and save it to the default path or the following one:
+                            <input class="screenshot-path"/></div>
+
+
+                {{> screenshots }}
+
+
+        </td>
+    </tr>
+    <tr class="browser-action">
+        <td colspan="3">
+            <div>
+                <button class="resize-browser-button" data-browser-id="{{ id }}">Resize</button>
+                <span>the browser to the size specified by:</span>
+            </div>
+
+            <div class="resize-args">
+                <div class="resize-args-option">
+                    <div>
+                        <label><input type="radio" checked class="params-type" name="{{ id }}-params-type" value="width-height"/>Width and Height</label>
+                    </div>
+                    <table class="resize-args-table">
+                        <tr>
+                            <td>
+                                <label for="{{ id }}-width">Width: </label>
+                            </td>
+                            <td>
+                                <input type="number" id="{{ id }}-width" class="width"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="{{ id }}-height">Height: </label>
+                            </td>
+                            <td>
+                                <input type="number" id={{ id }}-height" class="height"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="resize-args-option">
+                    <div>
+                        <label><input type="radio" class="params-type" name="{{ id }}-params-type" value="device-name-orientation"/>Device name and
+                                                    Orientation</label>
+                    </div>
+                    <table class="resize-args-table">
+                        <tr>
+                            <td>
+                                <label for="{{ id }}-device-name">Device name: </label>
+                            </td>
+                            <td>
+                                <select id="{{ id }}-device-name" class="device-name" size="1">
+                                    {{# deviceNames }}
+                                        <option value="{{ deviceName }}">{{ deviceName }}</option>
+                                    {{/deviceNames}}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Orientation: </span>
+                            </td>
+                            <td>
+                                <label><input type="radio" checked class="orientation" name="{{ id }}-orientation" value="landscape"/> Landscape</label>
+                                <label><input type="radio" class="orientation" name="{{ id }}-orientation" value="portrait"/> Portrait</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

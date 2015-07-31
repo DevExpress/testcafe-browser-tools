@@ -19,7 +19,7 @@ gulp.task('clean-win-bin', function (cb) {
 
 gulp.task('build-win-executables', ['clean-win-bin'], function () {
     return gulp
-        .src('src/**/*.csproj')
+        .src('src/natives/**/*.csproj')
         .pipe(msbuild({
             targets: ['Clean', 'Build']
         }));
@@ -27,7 +27,7 @@ gulp.task('build-win-executables', ['clean-win-bin'], function () {
 
 gulp.task('copy-win-executables', ['build-win-executables'], function () {
     return gulp
-        .src('src/**/win/bin/Release/*.exe')
+        .src('src/natives/**/win/bin/Release/*.exe')
         .pipe(flatten())
         .pipe(gulp.dest('bin/win'));
 });
@@ -56,7 +56,7 @@ gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
     }
 
     return gulp
-        .src('src/**/mac/Makefile')
+        .src('src/natives/**/mac/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, 'bin/mac')
         }));
@@ -64,7 +64,7 @@ gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
 
 gulp.task('copy-mac-scripts', ['clean-mac-bin'], function () {
     return gulp
-        .src('src/**/mac/*.scpt')
+        .src('src/natives/**/mac/*.scpt')
         .pipe(flatten())
         .pipe(gulp.dest('bin/mac'));
 });

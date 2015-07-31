@@ -1,0 +1,12 @@
+<div class="browser-screenshots-container">
+{{#screenshots.length}}
+    <div>
+        Captured screenshots:
+    </div>
+    <div class="browser-screenshots">
+        {{# screenshots }}
+            <a class="browser-screenshot-path" href="{{ url }}" target="_blank">{{ path }}</a>
+        {{/screenshots}}
+    </div>
+{{/screenshots.length}}
+</div>

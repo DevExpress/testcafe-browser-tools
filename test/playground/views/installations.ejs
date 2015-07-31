@@ -1,8 +1,0 @@
-<% Object.keys(installations).forEach(function (name) { %>
-<% var installation = installations[name]; %>
-<div class="installation">
-    <div class="installation-name"><%= name %></div>
-    <button class="open-browser-button" data-browser="<%=name%>">Open browser</button>
-    <div class="installation-path"><%= installation.path %></div>
-</div>
-<% }); %>
