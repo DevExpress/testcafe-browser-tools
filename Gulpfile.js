@@ -6,6 +6,8 @@ var eslint       = require('gulp-eslint');
 var flatten      = require('gulp-flatten');
 var mocha        = require('gulp-mocha');
 var msbuild      = require('gulp-msbuild');
+var concat       = require('gulp-concat');
+var jsdoc        = require('gulp-jsdoc-to-markdown');
 var del          = require('del');
 var through      = require('through2');
 var Promise      = require('promise');
@@ -115,3 +117,11 @@ gulp.task('build-lib', ['lint', 'clean-lib'], function () {
 
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
 gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
+
+gulp.task('docs', ['build-lib'], function () {
+    return gulp
+        .src('lib/**/*.js')
+        .pipe(concat('API.md'))
+        .pipe(jsdoc({ plugin: 'dmd-plugin-async' }))
+        .pipe(gulp.dest('./'));
+});

@@ -5,7 +5,14 @@ import { exec } from '../utils/exec';
 import exists from '../utils/fs-exists-promised';
 import { MESSAGES, getText } from '../messages';
 
-
+/**
+ * Opens the web page in a new instance of the browser.
+ * @function
+ * @async
+ * @name open
+ * @param {BrowserInfo} browserInfo - Provides information on the browser where the web page should be opened.
+ * @param {string} pageUrl - Specifies the web page URL.
+ */
 export default async function (browserInfo, pageUrl) {
     if (!browserInfo.path)
         throw new Error(getText(MESSAGES.browserPathNotSet));
