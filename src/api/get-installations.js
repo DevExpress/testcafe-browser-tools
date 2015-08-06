@@ -1,3 +1,4 @@
+import Promise from 'promise';
 import OS from '../utils/os';
 import exists from '../utils/fs-exists-promised';
 import { exec } from '../utils/exec';
@@ -94,7 +95,7 @@ async function findMacBrowsers () {
     //NOTE: replace space symbol with the code, because grep splits strings by space.
     var stdout = await exec('ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium" | sed -E "s/ /032/"');
 
-    await * stdout
+    await Promise.all(stdout
         .split('\n')
         .filter(fileName => !!fileName)
         .map(fileName => {
@@ -105,7 +106,7 @@ async function findMacBrowsers () {
             var path = `/Applications/${fileName}`;
 
             return addInstallation(installations, name, path);
-        });
+        }));
 
     return installations;
 }
@@ -114,13 +115,13 @@ async function findLinuxBrowsers () {
     var installations = {};
     var stdout        = await exec('update-alternatives --list x-www-browser');
 
-    await * stdout
+    await Promise.all(stdout
         .split('\n')
         .map(path => {
             var name = path.replace(/.*\/([^\/]+)$/g, '$1');
 
             return addInstallation(installations, name, path);
-        });
+        }));
 
     return installations;
 }
