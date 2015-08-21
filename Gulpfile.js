@@ -78,7 +78,7 @@ gulp.task('run-playground-mac', ['build-mac'], function () {
     require('./test/playground/index');
 });
 
-gulp.task('test-lib', ['build-lib'], function () {
+gulp.task('test', ['build-lib'], function () {
     return gulp
         .src('test/tests/*-test.js')
         .pipe(mocha({
@@ -87,8 +87,6 @@ gulp.task('test-lib', ['build-lib'], function () {
             timeout:  typeof v8debug === 'undefined' ? 2000 : Infinity // NOTE: disable timeouts in debug
         }));
 });
-
-gulp.task('test', ['lint', 'test-lib']);
 
 // General tasks
 gulp.task('lint', function () {
@@ -108,7 +106,7 @@ gulp.task('clean-lib', function (cb) {
     del('lib', cb);
 });
 
-gulp.task('build-lib', ['clean-lib'], function () {
+gulp.task('build-lib', ['lint', 'clean-lib'], function () {
     return gulp
         .src('src/**/*.js')
         .pipe(babel())
