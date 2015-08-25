@@ -21,10 +21,7 @@ else if (OS.mac) {
         resize:     toAbsPath('../bin/mac/resize.scpt')
     };
 }
-/*eslint-disable indent*/
-//NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
 else if (OS.linux)
     BINARIES = {};
-/*eslint-enable indent*/
 
 export default BINARIES;
