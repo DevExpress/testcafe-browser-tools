@@ -38,5 +38,6 @@
   "scripts": {
     "test": "gulp test"
   },
-  "main": "./lib/index"
+  "main": "./lib/index",
+  "files": ["lib", "bin"]
 }
