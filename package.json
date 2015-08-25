@@ -4,7 +4,7 @@
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/superroma/testcafe-browser-natives",
   "bugs": "https://github.com/superroma/testcafe-browser-natives/issues",
-  "license": "https://github.com/superroma/testcafe-browser-natives/blob/master/LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "author": "Developer Express Inc.",
   "repository": {
     "type": "git",

@@ -159,11 +159,11 @@ exports.takeScreenshot = function (req, res) {
 
         return browserNatives.screenshot(browser.pageUrl, screenshotPath)
             .then(function () {
-                var screenshotIsNotAdded = browser.screenshots.filter(function (item) {
-                        return item.path === screenshotPath;
-                    }).length === 0;
+                var screenshots = browser.screenshots.filter(function (item) {
+                    return item.path === screenshotPath;
+                });
 
-                if (screenshotIsNotAdded) {
+                if (screenshots.length === 0) {
                     browser.screenshots.push({
                         path: screenshotPath,
                         url:  '/get-screenshot/' + encodeURIComponent(screenshotPath)

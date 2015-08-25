@@ -1,5 +1,5 @@
 export const MESSAGES = {
-    browserPathNotSet:       'Unable to run the browser. The browser path is not specified.',
+    browserPathNotSet:       'Unable to run the browser. The browser path or command template is not specified.',
     unableToRunBrowser:      'Unable to run the browser. The file at {path} does not exist or is not executable.',
     deviceSizeAliasNotFound: 'Unable to get the device size. The device "{deviceName}" is not found.'
 };
