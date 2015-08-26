@@ -149,8 +149,6 @@ exports.takeScreenshot = function (req, res) {
     function screenshot (browser) {
         var screenshotPath = '';
 
-        /*eslint-disable indent*/
-        //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
         if (req.body.screenshotPath) {
             screenshotPath = path.isAbsolute(req.body.screenshotPath) ?
                              req.body.screenshotPath :
@@ -158,7 +156,6 @@ exports.takeScreenshot = function (req, res) {
         }
         else
             screenshotPath = toAbsPath('./screenshots/' + browser.id + '.jpg');
-        /*eslint-enable indent*/
 
         return browserNatives.screenshot(browser.pageUrl, screenshotPath)
             .then(function () {
@@ -166,11 +163,12 @@ exports.takeScreenshot = function (req, res) {
                         return item.path === screenshotPath;
                     }).length === 0;
 
-                if (screenshotIsNotAdded)
+                if (screenshotIsNotAdded) {
                     browser.screenshots.push({
                         path: screenshotPath,
                         url:  '/get-screenshot/' + encodeURIComponent(screenshotPath)
                     });
+                }
 
                 exec((OS.mac ? 'open ' : '') + screenshotPath);
 

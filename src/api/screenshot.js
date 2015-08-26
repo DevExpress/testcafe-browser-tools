@@ -17,8 +17,6 @@ export default async function (pageUrl, screenshotPath) {
     var thumbnailDirPath  = path.join(screenshotDirPath, 'thumbnails');
     var windowDescription = void 0;
 
-    /*eslint-disable indent*/
-    //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
     if (OS.win) {
         var windowParams = await findWindow(pageUrl);
 
@@ -31,7 +29,6 @@ export default async function (pageUrl, screenshotPath) {
         windowDescription = [pageUrl];
     else
         return;
-    /*eslint-enable indent*/
 
     await execFile(BINARIES.screenshot, windowDescription.concat([
         screenshotDirPath,

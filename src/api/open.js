@@ -17,8 +17,6 @@ export default async function (browserInfo, pageUrl) {
 
     var command = '';
 
-    /*eslint-disable indent*/
-    //NOTE: eslint disabled because of the https://github.com/eslint/eslint/issues/2343 issue
     if (OS.win) {
         var browserDirPath      = path.dirname(browserInfo.path);
         var browserExecFileName = path.basename(browserInfo.path);
@@ -34,7 +32,6 @@ export default async function (browserInfo, pageUrl) {
     }
     else
         return; //TODO: support OS.linux
-    /*eslint-enable indent*/
 
     try {
         await exec(command);
