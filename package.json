@@ -25,11 +25,14 @@
     "body-parser": "^1.13.2",
     "chai": "^3.2.0",
     "del": "^1.2.0",
+    "dmd-plugin-async": "^0.1.1",
     "express": "^3.21.1",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.6.0",
     "gulp-eslint": "^1.0.0",
     "gulp-flatten": "^0.1.0",
+    "gulp-jsdoc-to-markdown": "^1.1.1",
     "gulp-mocha": "^2.1.3",
     "gulp-msbuild": "^0.2.12",
     "hogan-express": "^0.5.2",
@@ -39,5 +42,8 @@
     "test": "gulp test"
   },
   "main": "./lib/index",
-  "files": ["lib", "bin"]
+  "files": [
+    "lib",
+    "bin"
+  ]
 }

@@ -139,6 +139,42 @@ async function findBrowsers () {
 
 
 // API
+/** @typedef {Object} BrowserInfo
+ * @description Object that contains information about the browser installed on the machine.
+ * @property {string} path - The path to the executable file that starts the browser.
+ * @property {string} cmd - Additional command line parameters.
+ * @property {string|undefined} macOpenCmdTemplate - A [Mustache template](https://github.com/janl/mustache.js#templates)
+ *                                                    that provides parameters for launching the browser on a MacOS machine.
+ * @example
+ *  {
+ *       path: 'C:\\ProgramFiles\\...\\firefox.exe',
+ *       cmd: '-new-window',
+ *       macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+ *  }
+ */
+
+/**
+ * Returns the list of the {@link BrowserInfo} objects that contain information about the browsers installed on the machine.
+ * @function
+ * @async
+ * @name getInstallations
+ * @returns {Object.<string, BrowserInfo>} List of the {@link BrowserInfo} objects
+ *   containing information about the browsers installed on the machine.
+ * @example
+ * {
+ *   chrome: {
+ *       path: 'C:\\ProgramFiles\\...\\chrome.exe',
+ *       cmd: '--new-window',
+ *       macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+ *   },
+ *
+ *   firefox: {
+ *       path: 'C:\\ProgramFiles\\...\\firefox.exe',
+ *       cmd: '-new-window',
+ *       macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+ *   }
+ * }
+ */
 export default async function () {
     if (!installationsCache)
         installationsCache = await findBrowsers();

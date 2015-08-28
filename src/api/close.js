@@ -3,7 +3,13 @@ import OS from '../utils/os';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 
-
+/**
+ * Closes the browser window where the specified web page is opened.
+ * @function
+ * @async
+ * @name close
+ * @param {string} pageUrl - Specifies the URL of the web page opened in the browser.
+ */
 export default async function (pageUrl) {
     var windowDescription = await findWindow(pageUrl);
 
