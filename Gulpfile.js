@@ -29,7 +29,10 @@ gulp.task('build-win-executables', ['clean-win-bin'], function () {
 
 gulp.task('copy-win-executables', ['build-win-executables'], function () {
     return gulp
-        .src('src/natives/**/win/bin/Release/*.exe')
+        .src([
+            'src/natives/**/win/bin/Release/*.exe',
+            'src/natives/**/win/bin/Release/*.config'
+        ])
         .pipe(flatten())
         .pipe(gulp.dest('bin/win'));
 });
