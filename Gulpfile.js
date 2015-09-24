@@ -111,17 +111,19 @@ gulp.task('clean-lib', function (cb) {
     del('lib', cb);
 });
 
-gulp.task('build-lib', ['lint', 'clean-lib'], function () {
+gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
     return gulp
         .src('src/**/*.js')
         .pipe(babel())
         .pipe(gulp.dest('lib'));
 });
 
+gulp.task('build-lib', ['transpile-lib', 'docs']);
+
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
 gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
 
-gulp.task('docs', ['build-lib'], function () {
+gulp.task('docs', ['transpile-lib'], function () {
     return gulp
         .src('lib/**/*.js')
         .pipe(concat('API.md'))

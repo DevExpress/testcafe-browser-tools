@@ -100,9 +100,10 @@ Object that contains information about the browser installed on the machine.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| path | <code>string</code> | The path to the executable file that starts the browser. |
+| path | <code>string</code> &#124; <code>undefined</code> | The path to the executable file that starts the browser.  Required on MacOS machines. On Windows machines, it is used when the winOpenCmdTemplate property is undefined. |
 | cmd | <code>string</code> | Additional command line parameters. |
-| macOpenCmdTemplate | <code>string</code> &#124; <code>undefined</code> | A [Mustache template](https://github.com/janl/mustache.js#templates)                                                    that provides parameters for launching the browser on a MacOS machine. |
+| macOpenCmdTemplate | <code>string</code> | A [Mustache template](https://github.com/janl/mustache.js#templates)  that provides parameters for launching the browser on a MacOS machine. |
+| winOpenCmdTemplate | <code>string</code> &#124; <code>undefined</code> | A [Mustache template](https://github.com/janl/mustache.js#templates)  that provides parameters for launching the browser on a Windows machine.  If undefined, the path to the  executable file specified by the path property is used. |
 
 **Example**  
 ```js

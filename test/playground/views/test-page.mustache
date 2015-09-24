@@ -2,8 +2,9 @@
 <html>
 <head>
     <title>Default playground test page</title>
-
-    <script>document.title = document.location.toString()</script>
+    <!-- Microsoft Edge truncates the window title to the hostname if document.title contains only a URL. -->
+    <!-- So, we need to add some characters before the URL in order to bring it to the window title.      -->
+    <script>document.title = 'browser-id:' + document.location.toString()</script>
 </head>
 <body bgcolor="#f5f5dc">
 <h1>This is a playground test page with id {{ id }}</h1>

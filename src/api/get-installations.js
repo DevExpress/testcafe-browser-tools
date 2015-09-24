@@ -40,6 +40,12 @@ const ALIASES = {
         cmd:                '',
         path:               BINARIES.open,
         macOpenCmdTemplate: '/usr/bin/osascript "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+    },
+
+    'edge': {
+        nameRe:             /edge/i,
+        cmd:                '',
+        winOpenCmdTemplate: 'start microsoft-edge:"{{{pageUrl}}}"'
     }
 };
 
@@ -66,6 +72,13 @@ async function addInstallation (installations, name, instPath) {
     }
 }
 
+async function detectMicrosoftEdge () {
+    var regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
+    var stdout = await exec(`chcp 65001 | reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
+
+    return /SUCCESS/.test(stdout) ? ALIASES['edge'] : null;
+}
+
 async function findWindowsBrowsers () {
     var installations = {};
     var regKey        = 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Clients\\StartMenuInternet\\';
@@ -85,6 +98,11 @@ async function findWindowsBrowsers () {
 
         await addInstallation(installations, name, path);
     }
+
+    var edgeAlias = await detectMicrosoftEdge();
+
+    if (edgeAlias)
+        installations['edge'] = edgeAlias;
 
     return installations;
 }
@@ -141,10 +159,14 @@ async function findBrowsers () {
 // API
 /** @typedef {Object} BrowserInfo
  * @description Object that contains information about the browser installed on the machine.
- * @property {string} path - The path to the executable file that starts the browser.
+ * @property {string|undefined} path - The path to the executable file that starts the browser.
+ *  Required on MacOS machines. On Windows machines, it is used when the winOpenCmdTemplate property is undefined.
  * @property {string} cmd - Additional command line parameters.
- * @property {string|undefined} macOpenCmdTemplate - A [Mustache template](https://github.com/janl/mustache.js#templates)
- *                                                    that provides parameters for launching the browser on a MacOS machine.
+ * @property {string} macOpenCmdTemplate - A [Mustache template](https://github.com/janl/mustache.js#templates)
+ *  that provides parameters for launching the browser on a MacOS machine.
+ * @property {string|undefined} winOpenCmdTemplate - A [Mustache template](https://github.com/janl/mustache.js#templates)
+ *  that provides parameters for launching the browser on a Windows machine.  If undefined, the path to the
+ *  executable file specified by the path property is used.
  * @example
  *  {
  *       path: 'C:\\ProgramFiles\\...\\firefox.exe',
