@@ -1,9 +1,9 @@
 var path         = require('path');
 var childProcess = require('child_process');
 var express      = require('express');
+var OS           = require('os-family');
 var bodyParser   = require('body-parser');
 var routes       = require('./routes');
-var OS           = require('../../lib/utils/os');
 
 
 var PORT = 1334;

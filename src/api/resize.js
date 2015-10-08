@@ -1,7 +1,7 @@
 import viewport from 'viewport-list';
 import Promise from 'promise';
 import findWindow from './find-window';
-import OS from '../utils/os';
+import OS from 'os-family';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 import { MESSAGES, getText } from '../messages';

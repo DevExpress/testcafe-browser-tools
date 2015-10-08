@@ -1,6 +1,6 @@
 import path from 'path';
 import Mustache from 'mustache';
-import OS from '../utils/os';
+import OS from 'os-family';
 import { exec } from '../utils/exec';
 import exists from '../utils/fs-exists-promised';
 import { MESSAGES, getText } from '../messages';

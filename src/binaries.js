@@ -1,5 +1,5 @@
-import OS from './utils/os';
-import toAbsPath from './utils/to-abs-path';
+import OS from 'os-family';
+import { toAbsPath } from 'read-file-relative';
 
 
 var BINARIES = void 0;

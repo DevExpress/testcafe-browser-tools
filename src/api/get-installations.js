@@ -1,5 +1,5 @@
 import Promise from 'promise';
-import OS from '../utils/os';
+import OS from 'os-family';
 import exists from '../utils/fs-exists-promised';
 import { exec } from '../utils/exec';
 import BINARIES from '../binaries';

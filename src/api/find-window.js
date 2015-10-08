@@ -1,4 +1,4 @@
-import OS from '../utils/os';
+import OS from 'os-family';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 

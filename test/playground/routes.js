@@ -1,10 +1,10 @@
 var path           = require('path');
 var viewport       = require('viewport-list');
 var Promise        = require('promise');
+var OS             = require('os-family');
 var browserNatives = require('../../lib/index');
 var exec           = require('../../lib/utils/exec').exec;
-var OS             = require('../../lib/utils/os');
-var toAbsPath      = require('../../lib/utils/to-abs-path');
+var toAbsPath      = require('read-file-relative').toAbsPath;
 
 
 const SIZE_RE = /(\d+)x(\d+)/;

@@ -1,6 +1,6 @@
 import childProc from 'child_process';
 import Promise from 'promise';
-import OS from './os';
+import OS from 'os-family';
 
 
 const OSASCRIPT_PATH = '/usr/bin/osascript';
