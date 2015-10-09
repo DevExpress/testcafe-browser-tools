@@ -59,7 +59,7 @@ async function addInstallation (installations, name, instPath) {
     var fileExists = await exists(instPath);
 
     if (fileExists) {
-        Object.keys(ALIASES).some((alias) => {
+        Object.keys(ALIASES).some(alias => {
             var { nameRe, cmd, macOpenCmdTemplate, path } = ALIASES[alias];
 
             if (nameRe.test(name)) {
