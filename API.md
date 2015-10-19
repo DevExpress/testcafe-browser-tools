@@ -3,6 +3,9 @@
 <dt><a href="#close">async close(pageUrl)</a></dt>
 <dd><p>Closes the browser window where the specified web page is opened.</p>
 </dd>
+<dt><a href="#getBrowserInfo">async getBrowserInfo(browser)</a> ⇒ <code><a href="#BrowserInfo">BrowserInfo</a></code></dt>
+<dd><p>Returns information about the specified browser.</p>
+</dd>
 <dt><a href="#getInstallations">async getInstallations()</a> ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code></dt>
 <dd><p>Returns the list of the <a href="#BrowserInfo">BrowserInfo</a> objects that contain information about the browsers installed on the machine.</p>
 </dd>
@@ -35,15 +38,39 @@ Closes the browser window where the specified web page is opened.
 | --- | --- | --- |
 | pageUrl | <code>string</code> | Specifies the URL of the web page opened in the browser. |
 
+<a name="getBrowserInfo"></a>
+## *async* getBrowserInfo(browser) ⇒ <code>[BrowserInfo](#BrowserInfo)</code>
+Returns information about the specified browser.
+
+**Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
+**Returns**: <code>[BrowserInfo](#BrowserInfo)</code> - An object that contains information about the specified browser.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| browser | <code>string</code> | A browser alias ('chrome', 'ff', etc.) or a path to the browser's executable file. |
+
 <a name="getInstallations"></a>
 ## *async* getInstallations() ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code>
 Returns the list of the [BrowserInfo](#BrowserInfo) objects that contain information about the browsers installed on the machine.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
-**Returns**: <code>Object.&lt;string, BrowserInfo&gt;</code> - List of the [BrowserInfo](#BrowserInfo) objects  containing information about the browsers installed on the machine.  
+**Returns**: <code>Object.&lt;string, BrowserInfo&gt;</code> - List of the [BrowserInfo](#BrowserInfo) objects
+  containing information about the browsers installed on the machine.  
 **Example**  
 ```js
-{  chrome: {      path: 'C:\\ProgramFiles\\...\\chrome.exe',      cmd: '--new-window',      macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'  },  firefox: {      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'  }}
+{
+  chrome: {
+      path: 'C:\\ProgramFiles\\...\\chrome.exe',
+      cmd: '--new-window',
+      macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+  },
+
+  firefox: {
+      path: 'C:\\ProgramFiles\\...\\firefox.exe',
+      cmd: '-new-window',
+      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+  }
+}
 ```
 <a name="open"></a>
 ## *async* open(browserInfo, pageUrl)
@@ -107,5 +134,9 @@ Object that contains information about the browser installed on the machine.
 
 **Example**  
 ```js
-{      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}' }
+{
+      path: 'C:\\ProgramFiles\\...\\firefox.exe',
+      cmd: '-new-window',
+      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+ }
 ```
