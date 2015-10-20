@@ -1,6 +1,5 @@
 var expect         = require('chai').expect;
 var browserNatives = require('../../lib/index');
-var messages       = require('../../lib/messages');
 
 describe('open', function () {
     it('Should raise an error if browser path is not specified', function (done) {
@@ -14,7 +13,7 @@ describe('open', function () {
                 throw new Error('Promise rejection expected');
             })
             .catch(function (err) {
-                expect(err.message).eql(messages.getText(messages.MESSAGES.browserPathNotSet));
+                expect(err.message).eql('Unable to run the browser. The browser path or command template is not specified.');
             });
 
         open
@@ -35,7 +34,8 @@ describe('open', function () {
                 throw new Error('Promise rejection expected');
             })
             .catch(function (err) {
-                expect(err.message).eql(messages.getText(messages.MESSAGES.unableToRunBrowser, browserInfo.path));
+                expect(err.message).eql('Unable to run the browser. The file at ./non-existent-browser.exe' +
+                                        ' does not exist or is not executable.');
             });
 
         open
