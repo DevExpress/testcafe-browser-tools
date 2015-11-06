@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-natives",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/superroma/testcafe-browser-natives",
   "bugs": "https://github.com/superroma/testcafe-browser-natives/issues",
