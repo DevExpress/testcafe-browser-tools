@@ -1,7 +1,6 @@
 import find from 'array-find';
 import getInstallations from './get-installations';
 import exists from '../utils/fs-exists-promised';
-import { MESSAGES, getText } from '../messages';
 import ALIASES from '../aliases';
 
 
@@ -32,7 +31,7 @@ export default async function (browser) {
     var fileExists = await exists(browser);
 
     if (!fileExists)
-        throw new Error(getText(MESSAGES.unableToFindBrowser, browser));
+        return null;
 
     var detectedAlias = find(Object.keys(ALIASES), alias => ALIASES[alias].nameRe.test(browser));
 
