@@ -2,13 +2,13 @@
   "name": "testcafe-browser-natives",
   "version": "0.10.1",
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
-  "homepage": "https://github.com/superroma/testcafe-browser-natives",
-  "bugs": "https://github.com/superroma/testcafe-browser-natives/issues",
+  "homepage": "https://github.com/DevExpress/testcafe-browser-natives",
+  "bugs": "https://github.com/DevExpress/testcafe-browser-natives/issues",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Developer Express Inc.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/superroma/testcafe-browser-natives.git"
+    "url": "https://github.com/DevExpress/testcafe-browser-natives.git"
   },
   "engines": {
     "node": ">= 0.10"
