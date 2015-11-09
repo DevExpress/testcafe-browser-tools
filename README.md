@@ -1,6 +1,6 @@
 # testcafe-browser-natives
 
-[![Build Status](https://travis-ci.org/superroma/testcafe-browser-natives.svg)](https://travis-ci.org/superroma/testcafe-browser-natives)
+[![Build Status](https://travis-ci.org/DevExpress/testcafe-browser-natives.svg)](https://travis-ci.org/DevExpress/testcafe-browser-natives)
 
 TestСafe Browser Natives is a TestCafe library for performing platform-dependent actions on browser windows.
 Working with browsers is specific for each operating system and requires native code to deal with. Since TestCafe supports painless and simple installation, this package encapsulates pre-built binaries for all supported platforms and JS-wrappers around them. This helps end-users avoid running *post-npm-install* build actions.
