@@ -93,6 +93,13 @@ namespace Screenshot {
             }
         }
 
+        static bool isWindows10() {
+            string currentVersionKey = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
+            int majorVersion = (int)Microsoft.Win32.Registry.GetValue(currentVersionKey, "CurrentMajorVersionNumber", 0);
+
+            return majorVersion == 10;
+        }
+
         static bool isMSEdgeBrowser(string browser){
             //NOTE: Edge is an Universal Windows App and managed by process 'applicationframehost.exe'.
             return browser == "applicationframehost";
@@ -159,9 +166,13 @@ namespace Screenshot {
             else if(browser == "firefox") {
                 // NOTE: Window client area has border
                 wi.rcClient.top += 1;      // NOTE: For client area in FireFox v28 and lower this border is absent.
-                wi.rcClient.left += 1;
-                wi.rcClient.bottom -= 1;
-                wi.rcClient.right -= 1;
+                
+                // NOTE: FireFox doesn't have left, bottom and right borders on Windows 10
+                if(!isWindows10()) {
+                    wi.rcClient.left += 1;
+                    wi.rcClient.bottom -= 1;
+                    wi.rcClient.right -= 1;
+                }
             }
             else if(browser == "ie") {
                 IntPtr hChildWnd = GetWindow(hwnd, GW_CHILD);
