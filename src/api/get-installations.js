@@ -1,7 +1,7 @@
 import Promise from 'promise';
 import OS from 'os-family';
 import exists from '../utils/fs-exists-promised';
-import { exec } from '../utils/exec';
+import { exec, execWinShellUtf8 } from '../utils/exec';
 import ALIASES from '../aliases';
 
 
@@ -29,7 +29,7 @@ async function addInstallation (installations, name, instPath) {
 
 async function detectMicrosoftEdge () {
     var regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    var stdout = await exec(`chcp 65001 | reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
+    var stdout = await execWinShellUtf8(`reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
 
     return /SUCCESS/.test(stdout) ? ALIASES['edge'] : null;
 }
@@ -41,7 +41,9 @@ async function findWindowsBrowsers () {
     var browserRe     = new RegExp(regKeyEsc + '([^\\\\]+)\\\\shell\\\\open\\\\command' +
                                    '\\s+\\([^)]+\\)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
 
-    var stdout = await exec(`chcp 65001 | reg query ${regKey} /s`);
+    // NOTE: To get the correct result regardless of the Windows localization,
+    // we need to run the command using the UTF-8 codepage.
+    var stdout = await execWinShellUtf8(`reg query ${regKey} /s`);
 
     for (var match = browserRe.exec(stdout); match; match = browserRe.exec(stdout)) {
         var name = match[1].replace(/\.exe$/gi, '');
@@ -65,14 +67,14 @@ async function findWindowsBrowsers () {
 async function findMacBrowsers () {
     var installations = {};
 
-    //NOTE: replace space symbol with the code, because grep splits strings by space.
+    // NOTE: replace the space symbol with code, because grep splits strings by space.
     var stdout = await exec('ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium" | sed -E "s/ /032/"');
 
     await Promise.all(stdout
         .split('\n')
         .filter(fileName => !!fileName)
         .map(fileName => {
-            //NOTE: restore space
+            // NOTE: restore space
             fileName = fileName.replace(/032/g, ' ');
 
             var name = fileName.replace(/.app$/, '');
