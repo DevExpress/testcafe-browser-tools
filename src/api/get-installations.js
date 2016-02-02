@@ -1,4 +1,4 @@
-import Promise from 'promise';
+import Promise from 'pinkie';
 import OS from 'os-family';
 import exists from '../utils/fs-exists-promised';
 import { exec, execWinShellUtf8 } from '../utils/exec';

@@ -1,7 +1,8 @@
 var path           = require('path');
 var viewport       = require('viewport-list');
-var Promise        = require('promise');
+var Promise        = require('pinkie');
 var OS             = require('os-family');
+var pify           = require('pify');
 var browserNatives = require('../../lib/index');
 var exec           = require('../../lib/utils/exec').exec;
 var toAbsPath      = require('read-file-relative').toAbsPath;
@@ -17,7 +18,7 @@ var browserCounter    = 0;
 var port              = null;
 var deviceNames       = [];
 
-var getViewports = Promise.denodeify(viewport);
+var getViewports = pify(viewport, Promise);
 
 function getBrowserById (id) {
     return browsers.filter(function (item) {

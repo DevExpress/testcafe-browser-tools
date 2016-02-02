@@ -1,13 +1,13 @@
 import childProc from 'child_process';
-import Promise from 'promise';
 import OS from 'os-family';
+import promisify from './promisify';
 
 
 const OSASCRIPT_PATH = '/usr/bin/osascript';
 
 
-var execFilePromise = Promise.denodeify(childProc.execFile);
-var execPromise     = Promise.denodeify(childProc.exec);
+var execFilePromise = promisify(childProc.execFile);
+var execPromise     = promisify(childProc.exec);
 
 function endsWith (str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;

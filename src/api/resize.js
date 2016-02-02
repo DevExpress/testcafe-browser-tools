@@ -1,8 +1,8 @@
 import viewport from 'viewport-list';
-import Promise from 'promise';
-import findWindow from './find-window';
 import OS from 'os-family';
+import findWindow from './find-window';
 import { execFile } from '../utils/exec';
+import promisify from '../utils/promisify';
 import BINARIES from '../binaries';
 import { MESSAGES, getText } from '../messages';
 
@@ -10,7 +10,7 @@ import { MESSAGES, getText } from '../messages';
 const SIZE_RE = /(\d+)x(\d+)/;
 
 
-var getDevices = Promise.denodeify(viewport);
+var getDevices = promisify(viewport);
 
 function parseSize (sizeDescription) {
     var match = SIZE_RE.exec(sizeDescription);
@@ -60,7 +60,8 @@ async function parseArgs (args) {
  * @param {string} pageUrl - Specifies the URL of the web page opened in the browser.
  * @param {number} width - Specifies the new window width in pixels.
  * @param {number} height - Specifies the new height in pixels.
- **/ /**
+ **/
+/**
  * Changes the browser window size according to the screen size of the target device.
  * @function
  * @async

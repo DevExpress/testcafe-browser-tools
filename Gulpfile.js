@@ -10,9 +10,10 @@ var concat       = require('gulp-concat');
 var jsdoc        = require('gulp-jsdoc-to-markdown');
 var del          = require('del');
 var through      = require('through2');
-var Promise      = require('promise');
+var Promise      = require('pinkie');
+var pify         = require('pify');
 
-var exec = Promise.denodeify(childProcess.exec);
+var exec = pify(childProcess.exec, Promise);
 
 // Windows bin
 gulp.task('clean-win-bin', function (cb) {
