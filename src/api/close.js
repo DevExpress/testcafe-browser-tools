@@ -1,5 +1,5 @@
-import findWindow from './find-window';
 import OS from 'os-family';
+import findWindow from './find-window';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 
