@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("screenshot")]
-[assembly: AssemblyCopyright("Copyright © 1998-2015 Developer Express Inc.")]
+[assembly: AssemblyCopyright("Copyright © 1998-2016 Developer Express Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

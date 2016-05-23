@@ -17,6 +17,10 @@ namespace ResizeWindow {
                   SW_SHOW = 5,
                   SW_RESTORE = 9;
 
+        const uint SWP_SHOWWINDOW = 0x0040, 
+                   SWP_NOCOPYBITS = 0x0100, 
+                   SWP_NOSENDCHANGING = 0x0400;
+
         [StructLayout(LayoutKind.Sequential)]
         public struct WindowInfo
         {
@@ -42,8 +46,8 @@ namespace ResizeWindow {
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr GetWindowInfo(IntPtr hWnd, ref WindowInfo pwi);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int width, int height, uint uFlags);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Rect {
@@ -94,7 +98,13 @@ namespace ResizeWindow {
             WindowInfo wi = new WindowInfo();
             GetWindowInfo(hWnd, ref wi);
 
-            MoveWindow(hWnd, wi.rcWindow.left, wi.rcWindow.top, width, height, true);
+            SetWindowPos(hWnd, IntPtr.Zero,
+                wi.rcWindow.left,
+                wi.rcWindow.top,
+                width,
+                height,
+                SWP_NOCOPYBITS | SWP_NOSENDCHANGING | SWP_SHOWWINDOW
+            );
         }
 
         private static void ForceForegroundWindow(IntPtr hWnd)

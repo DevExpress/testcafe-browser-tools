@@ -33,6 +33,7 @@ app.post('/resize', routes.resize);
 app.post('/take-screenshot', routes.takeScreenshot);
 app.get('/get-screenshot/:path', routes.getScreenshot);
 app.get('/test-page/:id', routes.sandboxPage);
+app.post('/update-client-area-size/:id', routes.updateClientAreaSize);
 
 app.get('/*', routes.notFound);
 

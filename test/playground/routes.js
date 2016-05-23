@@ -1,8 +1,7 @@
 var path           = require('path');
-var viewport       = require('viewport-list');
+var getViewports   = require('viewport-list');
 var Promise        = require('pinkie');
 var OS             = require('os-family');
-var pify           = require('pify');
 var browserNatives = require('../../lib/index');
 var exec           = require('../../lib/utils/exec').exec;
 var toAbsPath      = require('read-file-relative').toAbsPath;
@@ -18,7 +17,6 @@ var browserCounter    = 0;
 var port              = null;
 var deviceNames       = [];
 
-var getViewports = pify(viewport, Promise);
 
 function getBrowserById (id) {
     return browsers.filter(function (item) {
@@ -32,18 +30,15 @@ function runAsyncForBrowser (browserId, response, fn) {
     if (browser) {
         fn(browser)
             .catch(function (err) {
-                response.statusCode = 500;
-                response.end(err.toString());
+                response.status(500).set('content-type', 'text/plain').end(err.toString());
             });
     }
-    else {
-        response.statusCode = 500;
-        response.end('Browser not found');
-    }
+    else
+        response.status(500).set('content-type', 'text/plain').end('Browser not found');
 }
 
 function getDeviceNames () {
-    return getViewports([''])
+    return getViewports()
         .then(function (devices) {
             return devices.map(function (item) {
                 return SIZE_RE.test(item.size) ?
@@ -97,12 +92,14 @@ exports.index = function (req, res) {
 };
 
 exports.open = function (req, res) {
-    var browser = {
-        pageUrl:     'http://localhost:' + port + '/test-page/' + Date.now(),
-        browserInfo: installations[req.body.browser],
-        id:          'br-' + browserCounter++,
-        name:        req.body.browser,
-        screenshots: []
+    var browserId = 'br-' + browserCounter++;
+    var browser   = {
+        pageUrl:        'http://localhost:' + port + '/test-page/' + browserId,
+        browserInfo:    installations[req.body.browser],
+        id:             browserId,
+        name:           req.body.browser,
+        screenshots:    [],
+        clientAreaSize: null
     };
 
     return browserNatives.open(browser.browserInfo, browser.pageUrl)
@@ -112,8 +109,7 @@ exports.open = function (req, res) {
             res.render('browser');
         })
         .catch(function (err) {
-            res.statusCode = 500;
-            res.end(err.toString());
+            res.status(500).set('content-type', 'text/plain').end(err.toString());
         });
 };
 
@@ -124,7 +120,8 @@ exports.close = function (req, res) {
                 browsers = browsers.filter(function (item) {
                     return item !== browser;
                 });
-                res.end();
+
+                res.set('content-type', 'text/plain').end();
             });
     }
 
@@ -133,13 +130,22 @@ exports.close = function (req, res) {
 
 exports.resize = function (req, res) {
     function resize (browser) {
-        var args = req.body.paramsType === 'width-height' ?
-                   [Number(req.body.width), Number(req.body.height)] :
-                   [req.body.deviceName, req.body.orientation];
-
-        return browserNatives.resize.apply(browserNatives, [browser.pageUrl].concat(args))
+        return Promise.resolve()
             .then(function () {
-                res.end();
+                if (!browser.clientAreaSize)
+                    return Promise.resolve();
+
+                var args = [browser.pageUrl, browser.clientAreaSize.width, browser.clientAreaSize.height];
+
+                if (req.body.paramsType === 'width-height')
+                    args = args.concat([Number(req.body.width), Number(req.body.height)]);
+                else
+                    args = args.concat([req.body.deviceName, req.body.orientation]);
+
+                return browserNatives.resize.apply(browserNatives, args);
+            })
+            .then(function () {
+                res.set('content-type', 'text/plain').end();
             });
     }
 
@@ -177,7 +183,7 @@ exports.takeScreenshot = function (req, res) {
                 res.render('screenshots');
             })
             .catch(function () {
-                res.end();
+                res.set('content-type', 'text/plain').end();
             });
     }
 
@@ -198,7 +204,21 @@ exports.getScreenshot = function (req, res) {
         }
     }
 
-    res.status(404).send('Not found');
+    res.status(404).set('content-type', 'text/plain').send('Not found');
+};
+
+exports.updateClientAreaSize = function (req, res) {
+    function updateClientAreaSize (browser) {
+        browser.clientAreaSize = {
+            width:  Number(req.body.width),
+            height: Number(req.body.height)
+        };
+
+        res.set('content-type', 'text/plain').end();
+        return Promise.resolve();
+    }
+
+    runAsyncForBrowser(req.params.id, res, updateClientAreaSize);
 };
 
 exports.sandboxPage = function (req, res) {
@@ -207,8 +227,7 @@ exports.sandboxPage = function (req, res) {
 };
 
 exports.notFound = function (req, res) {
-    res.status = 404;
-    res.end('Page not found');
+    res.status(404).set('content-type', 'text/plain').end('Page not found');
 };
 
 exports.noCache = function (req, res, next) {

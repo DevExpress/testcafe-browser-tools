@@ -6,19 +6,21 @@ var BINARIES = void 0;
 
 if (OS.win) {
     BINARIES = {
-        findWindow: toAbsPath('../bin/win/find-window.exe'),
-        close:      toAbsPath('../bin/win/close.exe'),
-        screenshot: toAbsPath('../bin/win/screenshot.exe'),
-        resize:     toAbsPath('../bin/win/resize.exe')
+        findWindow:    toAbsPath('../bin/win/find-window.exe'),
+        getWindowSize: toAbsPath('../bin/win/get-window-size.exe'),
+        close:         toAbsPath('../bin/win/close.exe'),
+        screenshot:    toAbsPath('../bin/win/screenshot.exe'),
+        resize:        toAbsPath('../bin/win/resize.exe')
     };
 }
 else if (OS.mac) {
     BINARIES = {
-        open:       toAbsPath('../bin/mac/open.scpt'),
-        findWindow: toAbsPath('../bin/mac/find-window.scpt'),
-        close:      toAbsPath('../bin/mac/close.scpt'),
-        screenshot: toAbsPath('../bin/mac/screenshot'),
-        resize:     toAbsPath('../bin/mac/resize.scpt')
+        open:          toAbsPath('../bin/mac/open.scpt'),
+        findWindow:    toAbsPath('../bin/mac/find-window.scpt'),
+        getWindowSize: toAbsPath('../bin/mac/get-window-size.scpt'),
+        close:         toAbsPath('../bin/mac/close.scpt'),
+        screenshot:    toAbsPath('../bin/mac/screenshot'),
+        resize:        toAbsPath('../bin/mac/resize.scpt')
     };
 }
 else if (OS.linux)

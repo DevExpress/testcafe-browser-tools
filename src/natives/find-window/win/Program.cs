@@ -15,7 +15,7 @@ namespace FindWindow {
 
         const string IE_MAIN_WINDOW_CLASS_NAME = "IEFrame";
         // NOTE: Buffer size is "IEFrame".Length + 1
-        const int CLASS_NAME_BUFFER_SIZE = 8; 
+        const int CLASS_NAME_BUFFER_SIZE = 8;
 
         //Imports
         [DllImport("user32")]
@@ -54,9 +54,9 @@ namespace FindWindow {
 
         private static string GetClassName(IntPtr hwnd) {
             StringBuilder className = new StringBuilder(CLASS_NAME_BUFFER_SIZE);
-            
+
             int classNameLength = GetClassName(hwnd, className, className.Capacity);
-            
+
             return classNameLength > 0 ? className.ToString() : "";
         }
 
@@ -78,7 +78,8 @@ namespace FindWindow {
                     return true;
                 }
 
-                Console.Out.Write("{0} {1}", hwnd, processName);
+                Console.Out.WriteLine(hwnd);
+                Console.Out.WriteLine(processName);
                 Environment.Exit(0);
 
                 return false;

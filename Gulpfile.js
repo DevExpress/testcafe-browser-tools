@@ -8,6 +8,8 @@ var mocha        = require('gulp-mocha');
 var msbuild      = require('gulp-msbuild');
 var concat       = require('gulp-concat');
 var jsdoc        = require('gulp-jsdoc-to-markdown');
+var remoteSrc    = require('gulp-remote-src');
+var changed      = require('gulp-changed');
 var del          = require('del');
 var through      = require('through2');
 var Promise      = require('pinkie');
@@ -51,7 +53,7 @@ gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
                 return;
             }
 
-            var dirPath = path.dirname(file.path);
+            var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
 
             exec('make -C ' + dirPath, { env: options })
                 .then(function () {
@@ -95,6 +97,40 @@ gulp.task('test', ['build-lib'], function () {
 });
 
 // General tasks
+gulp.task('update-device-database', function () {
+    function transform () {
+        return through.obj(function (file, enc, callback) {
+            var deviceDatabase = {};
+
+            JSON
+                .parse(file.contents.toString())
+                .forEach(function (device) {
+                    var deviceId       = device['Device Name'].toLowerCase().split(' ').join('');
+                    var portraitWidth  = Number(device['Portrait Width']);
+                    var landscapeWidth = Number(device['Landscape Width']);
+
+                    if (!isNaN(portraitWidth) && !isNaN(landscapeWidth)) {
+                        deviceDatabase[deviceId] = {
+                            portraitWidth:  portraitWidth,
+                            landscapeWidth: landscapeWidth
+                        };
+                    }
+                });
+
+            file.contents = new Buffer(JSON.stringify(deviceDatabase));
+
+            callback(null, file);
+        });
+    }
+
+    var destDir = 'data/';
+
+    return remoteSrc('devices.json', { base: 'http://viewportsizes.com/' })
+        .pipe(transform())
+        .pipe(changed(destDir, { hasChanged: changed.compareSha1Digest }))
+        .pipe(gulp.dest(destDir));
+});
+
 gulp.task('lint', function () {
     return gulp
         .src([
@@ -119,15 +155,18 @@ gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
         .pipe(gulp.dest('lib'));
 });
 
-gulp.task('build-lib', ['transpile-lib', 'docs']);
+gulp.task('build-lib', ['transpile-lib', 'docs', 'update-device-database']);
 
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
 gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
 
 gulp.task('docs', ['transpile-lib'], function () {
+    var destDir = './';
+
     return gulp
         .src('lib/**/*.js')
         .pipe(concat('API.md'))
         .pipe(jsdoc({ plugin: 'dmd-plugin-async' }))
-        .pipe(gulp.dest('./'));
+        .pipe(changed(destDir, { hasChanged: changed.compareSha1Digest }))
+        .pipe(gulp.dest(destDir));
 });
