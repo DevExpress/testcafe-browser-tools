@@ -13,12 +13,13 @@ namespace FindWindow {
         const UInt32 WM_GETTEXT = 0x0D;
         const UInt32 WM_GETTEXTLENGTH = 0x000E;
 
+        const string IE_MAIN_WINDOW_CLASS_NAME = "IEFrame";
+        // NOTE: Buffer size is "IEFrame".Length + 1
+        const int CLASS_NAME_BUFFER_SIZE = 8; 
+
         //Imports
         [DllImport("user32")]
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        private static extern bool EnumChildWindows(IntPtr hWndStart, EnumWindowsProc callback, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
@@ -29,39 +30,14 @@ namespace FindWindow {
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr SendMessageTimeout(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam, UInt32 fuFlags, UInt32 uTimeout, out long lpdwResult);
 
-        //Utils
-        private struct IEWindow {
-            public IntPtr hwnd;
-            public string url;
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
-            public IEWindow(IntPtr windowHwnd, string windowUrl) {
-                hwnd = windowHwnd;
-                url = windowUrl;
-            }
-        }
 
         //Fields
         private delegate bool EnumWindowsProc(IntPtr windowHandle, IntPtr lParam);
 
-        static List<IEWindow> ieWindows = new List<IEWindow>();
-
         private static string windowMark = null;
-
-        private static void FillIEWindows() {
-            ieWindows.Clear();
-
-            SHDocVw.ShellWindows shellWindows = new SHDocVw.ShellWindows();
-
-            foreach(SHDocVw.WebBrowser ie in shellWindows) {
-                if(Path.GetFileNameWithoutExtension(ie.FullName).ToLower().Equals("iexplore")) {
-                    ieWindows.Add(new IEWindow((IntPtr)ie.HWND, ie.LocationURL.ToLower()));
-                }
-            }
-        }
-
-        private static IEWindow FindInIEWindows(IntPtr hwnd) {
-            return ieWindows.Find(window => window.hwnd.Equals(hwnd) && window.url.Equals(windowMark.ToLower()));
-        }
 
         private static string GetWindowTitle(IntPtr hwnd) {
             long titleLength = 0;
@@ -76,16 +52,19 @@ namespace FindWindow {
                 return "";
         }
 
+        private static string GetClassName(IntPtr hwnd) {
+            StringBuilder className = new StringBuilder(CLASS_NAME_BUFFER_SIZE);
+            
+            int classNameLength = GetClassName(hwnd, className, className.Capacity);
+            
+            return classNameLength > 0 ? className.ToString() : "";
+        }
+
+        private static bool IsIEMainWindow(IntPtr hwnd) {
+            return GetClassName(hwnd).Equals(IE_MAIN_WINDOW_CLASS_NAME);
+        }
+
         private static bool EnumWindowsCallback(IntPtr hwnd, IntPtr lParam) {
-            IEWindow ieWindow = FindInIEWindows(hwnd);
-
-            if(ieWindow.url != null) {
-                Console.Out.Write("{0} {1}", hwnd, "ie");
-                Environment.Exit(0);
-
-                return false;
-            }
-
             string title = GetWindowTitle(hwnd).ToLower();
 
             if(title.Contains(windowMark.ToLower())) {
@@ -94,8 +73,8 @@ namespace FindWindow {
 
                 string processName = Process.GetProcessById((int)processID).ProcessName.ToLower();
 
-                //NOTE: IE has two windows with the same title. We are searching for the target window by using the FindInIEWindow function.
-                if(processName == "iexplore") {
+                // NOTE: IE has two windows with the same title. We are searching for the main window by its class name.
+                if(processName == "iexplore" && !IsIEMainWindow(hwnd)) {
                     return true;
                 }
 
@@ -114,15 +93,10 @@ namespace FindWindow {
                 Environment.Exit(1);
             }
 
-            // NOTE: in IE, we search for a window by the page URL, while in other browsers, we do this by the window
-            // title. So, if you need to find a window in a non-IE browser, put the page URL to the window title before
-            // running this.
             windowMark = args[0];
 
-
-            //NOTE: Repeat attempt to find window 10 times with 300ms delay
+            // NOTE: Repeat the attempt to find the window ten times with 300ms delay
             for(int i = 0; i < 10; i++) {
-                FillIEWindows();
                 EnumWindows(EnumWindowsCallback, IntPtr.Zero);
                 Thread.Sleep(300);
             }

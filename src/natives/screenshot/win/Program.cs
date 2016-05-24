@@ -100,9 +100,9 @@ namespace Screenshot {
             return majorVersion == 10;
         }
 
-        static bool isMSEdgeBrowser(string browser){
-            //NOTE: Edge is an Universal Windows App and managed by process 'applicationframehost.exe'.
-            return browser == "applicationframehost";
+        static bool isMSEdgeBrowser(string processName){
+            // NOTE: Edge is a Universal Windows App and it is managed by the "applicationframehost" process.
+            return processName == "applicationframehost";
         }
 
         static int GetWindowVisibleArea(WindowInfo wi, Screen s) {
@@ -153,17 +153,17 @@ namespace Screenshot {
             return resultWindowRect;
         }
 
-        static WindowInfo GetWindowInfo(IntPtr hwnd, string browser) {
+        static WindowInfo GetWindowInfo(IntPtr hwnd, string processName) {
             WindowInfo wi = new WindowInfo();
             GetWindowInfo(hwnd, ref wi);
 
-            if(browser == "chrome") {
+            if(processName == "chrome") {
                 IntPtr hostHWND = FindWindowEx(hwnd, IntPtr.Zero, "Chrome_RenderWidgetHostHWND", IntPtr.Zero);
 
                 if(hostHWND != IntPtr.Zero)
                     GetWindowRect(hostHWND, ref wi.rcClient);
             }
-            else if(browser == "firefox") {
+            else if(processName == "firefox") {
                 // NOTE: Window client area has border
                 wi.rcClient.top += 1;      // NOTE: For client area in FireFox v28 and lower this border is absent.
                 
@@ -174,7 +174,7 @@ namespace Screenshot {
                     wi.rcClient.right -= 1;
                 }
             }
-            else if(browser == "ie") {
+            else if(processName == "iexplore") {
                 IntPtr hChildWnd = GetWindow(hwnd, GW_CHILD);
                 StringBuilder sb = new StringBuilder(256);
 
@@ -251,14 +251,14 @@ namespace Screenshot {
             return windowBitmap;
         }
 
-        static Bitmap PrintWindow(IntPtr hwnd, WindowInfo wi, string browser) {
+        static Bitmap PrintWindow(IntPtr hwnd, WindowInfo wi, string processName) {
             Bitmap windowBitmap = new Bitmap(wi.rcWindow.right - wi.rcWindow.left, wi.rcWindow.bottom - wi.rcWindow.top, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             Graphics graphicsWindow = Graphics.FromImage(windowBitmap);
             IntPtr hdc = graphicsWindow.GetHdc();
 
             PrintWindow(hwnd, hdc, 0);
 
-            if(browser == "ie") // HACK: for IE
+            if(processName == "iexplore") // HACK: for IE
                 PrintWindow(hwnd, hdc, 0);
 
             graphicsWindow.ReleaseHdc(hdc);
@@ -267,17 +267,17 @@ namespace Screenshot {
             return windowBitmap;
         }
 
-        static Bitmap Screenshot(IntPtr hwnd, string browser) {
-            //NOTE: We are capturing the screen area directly when taking a screenshot of Microsoft Edge,
-            //so we must ensure that the entire window area fits the screen borders.
-            if(isMSEdgeBrowser(browser))
+        static Bitmap Screenshot(IntPtr hwnd, string processName) {
+            // NOTE: We are capturing the screen area directly when taking a screenshot of Microsoft Edge,
+            // so we must ensure that the entire window area fits the screen borders.
+            if(isMSEdgeBrowser(processName))
                 PlaceWindowOnScreen(hwnd);
 
-            WindowInfo wi = GetWindowInfo(hwnd, browser);
+            WindowInfo wi = GetWindowInfo(hwnd, processName);
 
-            Bitmap windowBitmap = isMSEdgeBrowser(browser) ?
+            Bitmap windowBitmap = isMSEdgeBrowser(processName) ?
                 CaptureFromScreen(hwnd, wi) :
-                PrintWindow(hwnd, wi, browser);
+                PrintWindow(hwnd, wi, processName);
 
             Bitmap clientAreaBitmap = windowBitmap.Clone(new Rectangle(
                 new Point(wi.rcClient.left - wi.rcWindow.left, wi.rcClient.top - wi.rcWindow.top),
@@ -330,11 +330,13 @@ namespace Screenshot {
             }
 
             IntPtr hwnd = (IntPtr)Convert.ToInt32(args[0]);
-            string browser = args[1];   //NOTE: "chrome" || "ie" || "firefox" || "opera"
+
+            // NOTE: The process name can be "chrome" || "iexplore" (IE) || "firefox" || "opera" || "applicationframehost" (Edge)
+            string processName = args[1];   
             string dirPath = args[2];
             string fileName = args[3];
 
-            Bitmap screenshot = Screenshot(hwnd, browser);
+            Bitmap screenshot = Screenshot(hwnd, processName);
             SaveBitmap(screenshot, dirPath, fileName);
 
             if(createThumbnail) {
