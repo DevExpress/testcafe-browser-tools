@@ -22,16 +22,16 @@ $(document).ready(function () {
             var $btn = $(this);
 
             $.ajax({
-                method: 'POST',
-                url:    '/take-screenshot',
-                data:   {
+                method:  'POST',
+                url:     '/take-screenshot',
+                data:    {
                     browserId:      $btn.data('browser-id'),
                     screenshotPath: $browser.find('.screenshot-path').val()
                 },
                 success: function (res) {
                     $browser.find('.browser-screenshots-container').replaceWith(res)
                 },
-                error:  function (xhr) {
+                error:   function (xhr) {
                     alert(xhr.statusText + ': ' + xhr.responseText);
                 }
             });
@@ -44,12 +44,12 @@ $(document).ready(function () {
                 method: 'POST',
                 url:    '/resize',
                 data:   {
-                    browserId:   $btn.data('browser-id'),
-                    paramsType:  $browser.find('.params-type:checked').val(),
-                    width:       $browser.find('.width').val(),
-                    height:      $browser.find('.height').val(),
-                    deviceName:  $browser.find('.device-name').val(),
-                    orientation: $browser.find('.orientation:checked').val()
+                    browserId:      $btn.data('browser-id'),
+                    paramsType:     $browser.find('.params-type:checked').val(),
+                    width:          $browser.find('.width').val(),
+                    height:         $browser.find('.height').val(),
+                    deviceName:     $browser.find('.device-name').val(),
+                    orientation:    $browser.find('.orientation:checked').val()
                 },
                 error:  function (xhr) {
                     alert(xhr.statusText + ': ' + xhr.responseText);

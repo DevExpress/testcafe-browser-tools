@@ -1,4 +1,5 @@
 import OS from 'os-family';
+import { EOL } from 'os';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 
@@ -17,15 +18,11 @@ export default async function (pageUrl) {
         return null;
     }
 
-    if (OS.win) {
-        windowParams = res.split(' ');
+    windowParams = res.split(EOL);
 
+    if (OS.win)
         return { hwnd: windowParams[0], browser: windowParams[1] };
-    }
 
-    if (OS.mac) {
-        windowParams = res.split('\n');
-
+    if (OS.mac)
         return { processName: windowParams[0], windowName: windowParams[1] };
-    }
 }
