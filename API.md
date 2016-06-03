@@ -6,6 +6,9 @@
 <dt><a href="#getBrowserInfo">async getBrowserInfo(browser)</a> ⇒ <code><a href="#BrowserInfo">BrowserInfo</a></code></dt>
 <dd><p>Returns information about the specified browser.</p>
 </dd>
+<dt><a href="#getViewportSize">getViewportSize(deviceName)</a></dt>
+<dd><p>Gets the viewport size for the specified device.</p>
+</dd>
 <dt><a href="#getInstallations">async getInstallations()</a> ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code></dt>
 <dd><p>Returns the list of the <a href="#BrowserInfo">BrowserInfo</a> objects that contain information about the browsers installed on the machine.</p>
 </dd>
@@ -17,9 +20,6 @@
 </dd>
 <dt><a href="#resize">async resize(pageUrl, currentWidth, currentHeight, width, height)</a></dt>
 <dd><p>Changes the browser&#39;s client area size to the new width and height.</p>
-</dd>
-<dt><a href="#resize">async resize(pageUrl, currentWidth, currentHeight, deviceName, [orientation])</a></dt>
-<dd><p>Changes the browser&#39;s client area size according to the screen size of the target device.</p>
 </dd>
 <dt><a href="#screenshot">async screenshot(pageUrl, screenshotPath)</a></dt>
 <dd><p>Takes a screenshot of the browser window where the specified web page is opened.</p>
@@ -51,6 +51,16 @@ Returns information about the specified browser.
 | Param | Type | Description |
 | --- | --- | --- |
 | browser | <code>string</code> | A browser alias ('chrome', 'ff', etc.) or a path to the browser's executable file. |
+
+<a name="getViewportSize"></a>
+## getViewportSize(deviceName)
+Gets the viewport size for the specified device.
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| deviceName | <code>string</code> | Specifies the name of the target device. Use values from the Device Name column of [this table](http://viewportsizes.com/). |
 
 <a name="getInstallations"></a>
 ## *async* getInstallations() ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code>
@@ -96,20 +106,6 @@ Changes the browser's client area size to the new width and height.
 | currentHeight | <code>number</code> | Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it. |
 | width | <code>number</code> | Specifies the new client area width, in pixels. |
 | height | <code>number</code> | Specifies the new client area height, in pixels. |
-
-<a name="resize"></a>
-## *async* resize(pageUrl, currentWidth, currentHeight, deviceName, [orientation])
-Changes the browser's client area size according to the screen size of the target device.
-
-**Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| pageUrl | <code>string</code> |  | Specifies the URL of the web page opened in the browser. |
-| currentWidth | <code>number</code> |  | Specifies the current width of the browser's client area, in pixels. Use the window.innerWidth property to determine it. |
-| currentHeight | <code>number</code> |  | Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it. |
-| deviceName | <code>string</code> |  | Specifies the name of the target device. You can use the values specified in the Device Name column of [this table](http://viewportsizes.com/). |
-| [orientation] | <code>string</code> | <code>&quot;landscape&quot;</code> | Specifies the device orientation: "portrait" or "landscape". |
 
 <a name="screenshot"></a>
 ## *async* screenshot(pageUrl, screenshotPath)

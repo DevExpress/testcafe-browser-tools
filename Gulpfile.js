@@ -155,7 +155,7 @@ gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
         .pipe(gulp.dest('lib'));
 });
 
-gulp.task('build-lib', ['transpile-lib', 'docs', 'update-device-database']);
+gulp.task('build-lib', ['transpile-lib', 'docs']);
 
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
 gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
