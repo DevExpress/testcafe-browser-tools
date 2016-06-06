@@ -139,8 +139,15 @@ exports.resize = function (req, res) {
 
                 if (req.body.paramsType === 'width-height')
                     args = args.concat([Number(req.body.width), Number(req.body.height)]);
-                else
-                    args = args.concat([req.body.deviceName, req.body.orientation]);
+                else {
+                    var deviceSize = browserNatives.getDeviceSize(req.body.deviceName);
+
+                    args = args.concat(
+                        req.body.orientation === 'portrait' ?
+                        [deviceSize.portraitWidth, deviceSize.landscapeWidth] :
+                        [deviceSize.landscapeWidth, deviceSize.portraitWidth]
+                    );
+                }
 
                 return browserNatives.resize.apply(browserNatives, args);
             })

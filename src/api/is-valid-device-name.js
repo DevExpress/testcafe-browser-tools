@@ -1,4 +1,4 @@
-import getDeviceSize from '../utils/get-device-size';
+import getDeviceSize from './get-device-size';
 
 
 /**
