@@ -1,4 +1,4 @@
-import getDeviceSize from './get-device-size';
+import getViewportSize from './get-viewport-size';
 
 
 /**
@@ -6,7 +6,8 @@ import getDeviceSize from './get-device-size';
  * @function
  * @name isValidDeviceName
  * @param {string} inputString - The string to be validated.
+ * @returns {boolean} `true` if the specified string is a valid device name.
  */
 export default function (inputString) {
-    return !!getDeviceSize(inputString);
+    return !!getViewportSize(inputString);
 }
