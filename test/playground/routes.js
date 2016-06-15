@@ -140,7 +140,7 @@ exports.resize = function (req, res) {
                 if (req.body.paramsType === 'width-height')
                     args = args.concat([Number(req.body.width), Number(req.body.height)]);
                 else {
-                    var deviceSize = browserNatives.getDeviceSize(req.body.deviceName);
+                    var deviceSize = browserNatives.getViewportSize(req.body.deviceName);
 
                     args = args.concat(
                         req.body.orientation === 'portrait' ?
