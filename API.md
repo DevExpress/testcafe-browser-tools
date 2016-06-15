@@ -6,13 +6,13 @@
 <dt><a href="#getBrowserInfo">async getBrowserInfo(browser)</a> ⇒ <code><a href="#BrowserInfo">BrowserInfo</a></code></dt>
 <dd><p>Returns information about the specified browser.</p>
 </dd>
-<dt><a href="#getViewportSize">getViewportSize(deviceName)</a></dt>
-<dd><p>Gets the viewport size for the specified device.</p>
-</dd>
 <dt><a href="#getInstallations">async getInstallations()</a> ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code></dt>
 <dd><p>Returns the list of the <a href="#BrowserInfo">BrowserInfo</a> objects that contain information about the browsers installed on the machine.</p>
 </dd>
-<dt><a href="#isValidDeviceName">isValidDeviceName(inputString)</a></dt>
+<dt><a href="#getViewportSize">getViewportSize(deviceName)</a> ⇒ <code><a href="#DeviceViewportSize">DeviceViewportSize</a></code></dt>
+<dd><p>Gets the viewport size for the specified device.</p>
+</dd>
+<dt><a href="#isValidDeviceName">isValidDeviceName(inputString)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Checks if the provided string is a valid device name contained in the screen size database.</p>
 </dd>
 <dt><a href="#open">async open(browserInfo, pageUrl)</a></dt>
@@ -29,6 +29,9 @@
 <dl>
 <dt><a href="#BrowserInfo">BrowserInfo</a> : <code>Object</code></dt>
 <dd><p>Object that contains information about the browser installed on the machine.</p>
+</dd>
+<dt><a href="#DeviceViewportSize">DeviceViewportSize</a> : <code>Object</code></dt>
+<dd><p>Defines the size of a device viewport.</p>
 </dd>
 </dl>
 <a name="close"></a>
@@ -52,16 +55,6 @@ Returns information about the specified browser.
 | --- | --- | --- |
 | browser | <code>string</code> | A browser alias ('chrome', 'ff', etc.) or a path to the browser's executable file. |
 
-<a name="getViewportSize"></a>
-## getViewportSize(deviceName)
-Gets the viewport size for the specified device.
-
-**Kind**: global function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| deviceName | <code>string</code> | Specifies the name of the target device. Use values from the Device Name column of [this table](http://viewportsizes.com/). |
-
 <a name="getInstallations"></a>
 ## *async* getInstallations() ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code>
 Returns the list of the [BrowserInfo](#BrowserInfo) objects that contain information about the browsers installed on the machine.
@@ -72,11 +65,23 @@ Returns the list of the [BrowserInfo](#BrowserInfo) objects that contain informa
 ```js
 {  chrome: {      path: 'C:\\ProgramFiles\\...\\chrome.exe',      cmd: '--new-window',      macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'  },  firefox: {      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'  }}
 ```
+<a name="getViewportSize"></a>
+## getViewportSize(deviceName) ⇒ <code>[DeviceViewportSize](#DeviceViewportSize)</code>
+Gets the viewport size for the specified device.
+
+**Kind**: global function  
+**Returns**: <code>[DeviceViewportSize](#DeviceViewportSize)</code> - The size of the device viewport.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| deviceName | <code>string</code> | Specifies the name of the target device. Use values from the Device Name column of [this table](http://viewportsizes.com/). |
+
 <a name="isValidDeviceName"></a>
-## isValidDeviceName(inputString)
+## isValidDeviceName(inputString) ⇒ <code>boolean</code>
 Checks if the provided string is a valid device name contained in the screen size database.
 
 **Kind**: global function  
+**Returns**: <code>boolean</code> - `true` if the specified string is a valid device name.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -136,3 +141,15 @@ Object that contains information about the browser installed on the machine.
 ```js
 {      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}' }
 ```
+<a name="DeviceViewportSize"></a>
+## DeviceViewportSize : <code>Object</code>
+Defines the size of a device viewport.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| portraitWidth | <code>number</code> | The viewport width in portrait orientation. |
+| landscapeWidth | <code>number</code> | The viewport width in landscape orientation. |
+
