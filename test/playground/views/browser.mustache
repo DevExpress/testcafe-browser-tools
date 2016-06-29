@@ -66,7 +66,7 @@
                             <td>
                                 <select id="{{ id }}-device-name" class="device-name" size="1">
                                     {{# deviceNames }}
-                                        <option value="{{ deviceName }}">{{ deviceName }}</option>
+                                        <option value="{{.}}">{{.}}</option>
                                     {{/deviceNames}}
                                 </select>
                             </td>

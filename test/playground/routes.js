@@ -1,13 +1,10 @@
 var path           = require('path');
-var getViewports   = require('viewport-list');
+var viewports      = require('viewportsizes');
 var Promise        = require('pinkie');
 var OS             = require('os-family');
 var browserNatives = require('../../lib/index');
 var exec           = require('../../lib/utils/exec').exec;
 var toAbsPath      = require('read-file-relative').toAbsPath;
-
-
-const SIZE_RE = /(\d+)x(\d+)/;
 
 
 var installationsList = [];
@@ -38,15 +35,13 @@ function runAsyncForBrowser (browserId, response, fn) {
 }
 
 function getDeviceNames () {
-    return getViewports()
-        .then(function (devices) {
-            return devices.map(function (item) {
-                return SIZE_RE.test(item.size) ?
-                       { deviceName: item.name } :
-                       null;
-            }).filter(function (item) {
-                return item !== null;
-            });
+    return viewports
+        .list()
+        .filter(function (viewport) {
+            return viewport.size.width && viewport.size.height;
+        })
+        .map(function (viewport) {
+            return viewport.name;
         });
 }
 
@@ -66,19 +61,15 @@ function objectToList (object, keyName) {
 
 //API
 exports.init = function (appPort) {
-    port = appPort;
+    port        = appPort;
+    deviceNames = getDeviceNames();
 
-    return Promise.all([
-        browserNatives.getInstallations()
-            .then(function (res) {
-                installations     = res;
-                installationsList = objectToList(res, 'name');
-            }),
-        getDeviceNames()
-            .then(function (res) {
-                deviceNames = res;
-            })
-    ]);
+    return browserNatives
+        .getInstallations()
+        .then(function (res) {
+            installations     = res;
+            installationsList = objectToList(res, 'name');
+        });
 };
 
 exports.index = function (req, res) {

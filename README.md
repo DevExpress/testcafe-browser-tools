@@ -23,12 +23,10 @@ $ npm install testcafe-browser-natives
 ```
 #API Reference
 
-**Important note**: Most of the provided functions use a page URL to identify a browser window. However, depending on a browser, a browser window can be identified by a page URL or a web page title. Therefore, before calling the functions, you need to pass the page URL to the document title. Here is an example:
-```js
-document.title = document.location.toString()
-```
-Also, note that Microsoft Edge truncates the window title to the hostname if document.title contains only a URL
-( e.g. `document.title = http://localhost:1337/page` gives `localhost` in the window title).
+**Important note**: To identify the web browser window, most of the provided functions use its title.
+This title matches the web page's `document.title` in most of the browsers.
+However, Microsoft Edge truncates the window title to the hostname if `document.title` contains only a URL
+( e.g. `document.title = 'http://localhost:1337/page'` gives `localhost` in the window title).
 
 So, you need to add some characters before the URL in order to bring it to the window title:
 ```js

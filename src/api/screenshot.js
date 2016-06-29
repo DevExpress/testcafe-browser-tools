@@ -14,19 +14,17 @@ const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
  * @function
  * @async
  * @name screenshot
- * @param {string} pageUrl - Specifies the URL of the web page opened in the browser.
+ * @param {string} pageTitle - Specifies the title of the web page opened in the browser.
  * @param {string} screenshotPath - Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg.
  */
-// NOTE: in IE, we search for a window by the page URL, while in other browsers, we do this by the window title. So,
-// if you need to find a window in a non-IE browser, put the page URL to the window title before running this.
-export default async function (pageUrl, screenshotPath) {
+export default async function (pageTitle, screenshotPath) {
     var screenshotDirPath = path.dirname(screenshotPath);
     var fileName          = path.basename(screenshotPath);
     var thumbnailDirPath  = path.join(screenshotDirPath, 'thumbnails');
     var windowDescription = void 0;
 
     if (OS.win) {
-        var windowParams = await findWindow(pageUrl);
+        var windowParams = await findWindow(pageTitle);
 
         if (!windowParams)
             return;
@@ -34,7 +32,7 @@ export default async function (pageUrl, screenshotPath) {
         windowDescription = [windowParams.hwnd, windowParams.browser];
     }
     else if (OS.mac)
-        windowDescription = [pageUrl];
+        windowDescription = [pageTitle];
     else
         return;
 
