@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-natives",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-natives",
   "bugs": "https://github.com/DevExpress/testcafe-browser-natives/issues",
@@ -43,7 +43,7 @@
     "gulp-remote-src": "^0.4.1",
     "hogan-express": "^0.5.2",
     "through2": "^2.0.0",
-    "viewport-list": "^4.0.1"
+    "viewportsizes": "^0.1.2"
   },
   "scripts": {
     "test": "gulp test"

@@ -8,10 +8,10 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name close
- * @param {string} pageUrl - Specifies the URL of the web page opened in the browser.
+ * @param {string} pageTitle - Specifies the title of the web page opened in the browser.
  */
-export default async function (pageUrl) {
-    var windowDescription = await findWindow(pageUrl);
+export default async function (pageTitle) {
+    var windowDescription = await findWindow(pageTitle);
 
     if (!windowDescription)
         return;
@@ -21,7 +21,7 @@ export default async function (pageUrl) {
     if (OS.win)
         closeWindowArguments = [windowDescription.hwnd];
     else if (OS.mac)
-        closeWindowArguments = [windowDescription.windowName, windowDescription.processName];
+        closeWindowArguments = [windowDescription.windowId, windowDescription.bundleId];
     else
         return;
 

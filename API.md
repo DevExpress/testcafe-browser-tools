@@ -1,6 +1,7 @@
 ## Functions
+
 <dl>
-<dt><a href="#close">async close(pageUrl)</a></dt>
+<dt><a href="#close">async close(pageTitle)</a></dt>
 <dd><p>Closes the browser window where the specified web page is opened.</p>
 </dd>
 <dt><a href="#getBrowserInfo">async getBrowserInfo(browser)</a> ⇒ <code><a href="#BrowserInfo">BrowserInfo</a></code></dt>
@@ -18,14 +19,16 @@
 <dt><a href="#open">async open(browserInfo, pageUrl)</a></dt>
 <dd><p>Opens the web page in a new instance of the browser.</p>
 </dd>
-<dt><a href="#resize">async resize(pageUrl, currentWidth, currentHeight, width, height)</a></dt>
+<dt><a href="#resize">async resize(pageTitle, currentWidth, currentHeight, width, height)</a></dt>
 <dd><p>Changes the browser&#39;s client area size to the new width and height.</p>
 </dd>
-<dt><a href="#screenshot">async screenshot(pageUrl, screenshotPath)</a></dt>
+<dt><a href="#screenshot">async screenshot(pageTitle, screenshotPath)</a></dt>
 <dd><p>Takes a screenshot of the browser window where the specified web page is opened.</p>
 </dd>
 </dl>
+
 ## Typedefs
+
 <dl>
 <dt><a href="#BrowserInfo">BrowserInfo</a> : <code>Object</code></dt>
 <dd><p>Object that contains information about the browser installed on the machine.</p>
@@ -34,17 +37,20 @@
 <dd><p>Defines the size of a device viewport.</p>
 </dd>
 </dl>
+
 <a name="close"></a>
-## *async* close(pageUrl)
+
+## *async* close(pageTitle)
 Closes the browser window where the specified web page is opened.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pageUrl | <code>string</code> | Specifies the URL of the web page opened in the browser. |
+| pageTitle | <code>string</code> | Specifies the title of the web page opened in the browser. |
 
 <a name="getBrowserInfo"></a>
+
 ## *async* getBrowserInfo(browser) ⇒ <code>[BrowserInfo](#BrowserInfo)</code>
 Returns information about the specified browser.
 
@@ -56,6 +62,7 @@ Returns information about the specified browser.
 | browser | <code>string</code> | A browser alias ('chrome', 'ff', etc.) or a path to the browser's executable file. |
 
 <a name="getInstallations"></a>
+
 ## *async* getInstallations() ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code>
 Returns the list of the [BrowserInfo](#BrowserInfo) objects that contain information about the browsers installed on the machine.
 
@@ -66,6 +73,7 @@ Returns the list of the [BrowserInfo](#BrowserInfo) objects that contain informa
 {  chrome: {      path: 'C:\\ProgramFiles\\...\\chrome.exe',      cmd: '--new-window',      macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'  },  firefox: {      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'  }}
 ```
 <a name="getViewportSize"></a>
+
 ## getViewportSize(deviceName) ⇒ <code>[DeviceViewportSize](#DeviceViewportSize)</code>
 Gets the viewport size for the specified device.
 
@@ -77,6 +85,7 @@ Gets the viewport size for the specified device.
 | deviceName | <code>string</code> | Specifies the name of the target device. Use values from the Device Name column of [this table](http://viewportsizes.com/). |
 
 <a name="isValidDeviceName"></a>
+
 ## isValidDeviceName(inputString) ⇒ <code>boolean</code>
 Checks if the provided string is a valid device name contained in the screen size database.
 
@@ -88,6 +97,7 @@ Checks if the provided string is a valid device name contained in the screen siz
 | inputString | <code>string</code> | The string to be validated. |
 
 <a name="open"></a>
+
 ## *async* open(browserInfo, pageUrl)
 Opens the web page in a new instance of the browser.
 
@@ -99,31 +109,34 @@ Opens the web page in a new instance of the browser.
 | pageUrl | <code>string</code> | Specifies the web page URL. |
 
 <a name="resize"></a>
-## *async* resize(pageUrl, currentWidth, currentHeight, width, height)
+
+## *async* resize(pageTitle, currentWidth, currentHeight, width, height)
 Changes the browser's client area size to the new width and height.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pageUrl | <code>string</code> | Specifies the URL of the web page opened in the browser. |
+| pageTitle | <code>string</code> | Specifies the title of the web page opened in the browser. |
 | currentWidth | <code>number</code> | Specifies the current width of the browser's client area, in pixels. Use the window.innerWidth property to determine it. |
 | currentHeight | <code>number</code> | Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it. |
 | width | <code>number</code> | Specifies the new client area width, in pixels. |
 | height | <code>number</code> | Specifies the new client area height, in pixels. |
 
 <a name="screenshot"></a>
-## *async* screenshot(pageUrl, screenshotPath)
+
+## *async* screenshot(pageTitle, screenshotPath)
 Takes a screenshot of the browser window where the specified web page is opened.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pageUrl | <code>string</code> | Specifies the URL of the web page opened in the browser. |
+| pageTitle | <code>string</code> | Specifies the title of the web page opened in the browser. |
 | screenshotPath | <code>string</code> | Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg. |
 
 <a name="BrowserInfo"></a>
+
 ## BrowserInfo : <code>Object</code>
 Object that contains information about the browser installed on the machine.
 
@@ -142,6 +155,7 @@ Object that contains information about the browser installed on the machine.
 {      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}' }
 ```
 <a name="DeviceViewportSize"></a>
+
 ## DeviceViewportSize : <code>Object</code>
 Defines the size of a device viewport.
 

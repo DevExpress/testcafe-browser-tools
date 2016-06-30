@@ -4,7 +4,7 @@ import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 
 
-export default async function (pageUrl) {
+export default async function (pageTitle) {
     if (OS.linux)
         return null;
 
@@ -12,7 +12,7 @@ export default async function (pageUrl) {
     var windowParams = [];
 
     try {
-        res = await execFile(BINARIES.findWindow, [pageUrl]);
+        res = await execFile(BINARIES.findWindow, [pageTitle]);
     }
     catch (err) {
         return null;
@@ -24,5 +24,5 @@ export default async function (pageUrl) {
         return { hwnd: windowParams[0], browser: windowParams[1] };
 
     if (OS.mac)
-        return { processName: windowParams[0], windowName: windowParams[1] };
+        return { bundleId: windowParams[0], windowId: windowParams[1] };
 }

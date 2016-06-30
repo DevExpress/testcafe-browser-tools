@@ -19,14 +19,14 @@ function getCorrectedSize (currentClientAreaSize, currentWindowSize, requestedSi
  * @function
  * @async
  * @name resize
- * @param {string} pageUrl - Specifies the URL of the web page opened in the browser.
+ * @param {string} pageTitle - Specifies the title of the web page opened in the browser.
  * @param {number} currentWidth - Specifies the current width of the browser's client area, in pixels. Use the window.innerWidth property to determine it.
  * @param {number} currentHeight - Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it.
  * @param {number} width - Specifies the new client area width, in pixels.
  * @param {number} height - Specifies the new client area height, in pixels.
  **/
-export default async function (pageUrl, currentWidth, currentHeight, width, height) {
-    var windowDescription = await findWindow(pageUrl);
+export default async function (pageTitle, currentWidth, currentHeight, width, height) {
+    var windowDescription = await findWindow(pageTitle);
 
     if (!windowDescription)
         return;
@@ -36,7 +36,7 @@ export default async function (pageUrl, currentWidth, currentHeight, width, heig
     if (OS.win)
         resizeArguments = [windowDescription.hwnd];
     else if (OS.mac)
-        resizeArguments = [windowDescription.windowName, windowDescription.processName];
+        resizeArguments = [windowDescription.windowId, windowDescription.bundleId];
     else
         return;
 
