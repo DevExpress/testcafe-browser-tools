@@ -59,7 +59,7 @@ Returns information about the specified browser.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| browser | <code>string</code> | A browser alias ('chrome', 'ff', etc.) or a path to the browser's executable file. |
+| browser | <code>string</code> | A browser alias ('chrome', 'firefox', etc.) or a path to the browser's executable file. |
 
 <a name="getInstallations"></a>
 
