@@ -17,7 +17,7 @@ const DEFAULT_ALIAS = {
  * @function
  * @async
  * @name getBrowserInfo
- * @param {string} browser - A browser alias ('chrome', 'ff', etc.) or a path to the browser's executable file.
+ * @param {string} browser - A browser alias ('chrome', 'firefox', etc.) or a path to the browser's executable file.
  * @returns {BrowserInfo} An object that contains information about the specified browser.
  */
 export default async function (browser) {

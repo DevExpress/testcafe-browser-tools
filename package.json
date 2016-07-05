@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-natives",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-natives",
   "bugs": "https://github.com/DevExpress/testcafe-browser-natives/issues",

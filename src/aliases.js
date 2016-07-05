@@ -7,7 +7,7 @@ const ALIASES = {
         cmd:    ''
     },
 
-    'ff': {
+    'firefox': {
         nameRe:             /firefox|mozilla/i,
         cmd:                '-new-window',
         macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
