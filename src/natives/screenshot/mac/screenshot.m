@@ -72,8 +72,8 @@ int createWindowShot (CGWindowID windowID, NSString* screenshotDir, NSString* sc
     if(screenshotSavingResult == -1)
         return screenshotSavingResult;
 
-    createDirectory([NSString stringWithFormat:@"%@/%@", screenshotDir, thumbnailDir]);
-    NSString *thumbnailFullPath = [NSString stringWithFormat:@"%@/%@/%@", screenshotDir, thumbnailDir, screenshotFileName];
+    createDirectory(thumbnailDir);
+    NSString *thumbnailFullPath = [NSString stringWithFormat:@"%@/%@", thumbnailDir, screenshotFileName];
     int thumbnailSavingResult = saveImage(thumbnailFullPath, thumbnailImage);
 
     return thumbnailSavingResult;
