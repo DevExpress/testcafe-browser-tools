@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-natives",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-natives",
   "bugs": "https://github.com/DevExpress/testcafe-browser-natives/issues",
@@ -46,7 +46,8 @@
     "viewportsizes": "^0.1.2"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "postinstall": "node ./bin/fix-mac-permissions.js"
   },
   "main": "./lib/index",
   "files": [
