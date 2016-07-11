@@ -13,8 +13,14 @@
 <dt><a href="#getViewportSize">getViewportSize(deviceName)</a> ⇒ <code><a href="#DeviceViewportSize">DeviceViewportSize</a></code></dt>
 <dd><p>Gets the viewport size for the specified device.</p>
 </dd>
+<dt><a href="#isMaximized">async isMaximized(pageTitle)</a> ⇒ <code>boolean</code></dt>
+<dd><p>Checks if the specified browser window is maximized.</p>
+</dd>
 <dt><a href="#isValidDeviceName">isValidDeviceName(inputString)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Checks if the provided string is a valid device name contained in the screen size database.</p>
+</dd>
+<dt><a href="#maximize">async maximize(pageTitle)</a></dt>
+<dd><p>Maximizes the specified browser window.</p>
 </dd>
 <dt><a href="#open">async open(browserInfo, pageUrl)</a></dt>
 <dd><p>Opens the web page in a new instance of the browser.</p>
@@ -84,6 +90,18 @@ Gets the viewport size for the specified device.
 | --- | --- | --- |
 | deviceName | <code>string</code> | Specifies the name of the target device. Use values from the Device Name column of [this table](http://viewportsizes.com/). |
 
+<a name="isMaximized"></a>
+
+## *async* isMaximized(pageTitle) ⇒ <code>boolean</code>
+Checks if the specified browser window is maximized.
+
+**Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
+**Returns**: <code>boolean</code> - `true` if the browser window is maximized  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pageTitle | <code>string</code> | The title of the web page opened in the window to check if this window is maximized. |
+
 <a name="isValidDeviceName"></a>
 
 ## isValidDeviceName(inputString) ⇒ <code>boolean</code>
@@ -95,6 +113,17 @@ Checks if the provided string is a valid device name contained in the screen siz
 | Param | Type | Description |
 | --- | --- | --- |
 | inputString | <code>string</code> | The string to be validated. |
+
+<a name="maximize"></a>
+
+## *async* maximize(pageTitle)
+Maximizes the specified browser window.
+
+**Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pageTitle | <code>string</code> | The title of the web page opened in the window that should be maximized. |
 
 <a name="open"></a>
 

@@ -10,7 +10,8 @@ if (OS.win) {
         getWindowSize: toAbsPath('../bin/win/get-window-size.exe'),
         close:         toAbsPath('../bin/win/close.exe'),
         screenshot:    toAbsPath('../bin/win/screenshot.exe'),
-        resize:        toAbsPath('../bin/win/resize.exe')
+        resize:        toAbsPath('../bin/win/resize.exe'),
+        maximize:      toAbsPath('../bin/win/maximize.exe')
     };
 }
 else if (OS.mac) {

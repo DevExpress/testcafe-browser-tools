@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("find-window")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Developer Express Inc.")]
 [assembly: AssemblyProduct("find-window")]
 [assembly: AssemblyCopyright("Copyright © 1998-2016 Developer Express Inc.")]
 [assembly: AssemblyTrademark("")]

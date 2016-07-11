@@ -6,6 +6,7 @@ var browserNatives = require('../../lib/index');
 var exec           = require('../../lib/utils/exec').exec;
 var toAbsPath      = require('read-file-relative').toAbsPath;
 
+const WINDOW_NORMALIZING_DELAY = 1000;
 
 var installationsList = [];
 var installations     = null;
@@ -59,7 +60,24 @@ function objectToList (object, keyName) {
     return list;
 }
 
-//API
+function getRequestedSize (params) {
+    if (params.paramsType === 'width-height')
+        return { width: Number(params.width), height: Number(params.height) };
+
+    var deviceSize = browserNatives.getViewportSize(params.deviceName);
+
+    return params.orientation === 'portrait' ?
+           { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
+           { width: deviceSize.landscapeWidth, height: deviceSize.portraitWidth };
+}
+
+function delay (ms) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+    });
+}
+
+// API
 exports.init = function (appPort) {
     port        = appPort;
     deviceNames = getDeviceNames();
@@ -93,20 +111,26 @@ exports.open = function (req, res) {
         clientAreaSize: null
     };
 
-    return browserNatives.open(browser.browserInfo, browser.pageUrl)
+    // NOTE: We must save the 'browser' structure before we call the 'open' function, because
+    // sometimes the browser sends client size information before the 'open' function resolves.
+    browsers.push(browser);
+
+    return browserNatives
+        .open(browser.browserInfo, browser.pageUrl)
         .then(function () {
-            browsers.push(browser);
             res.locals = { id: browser.id, name: browser.name, deviceNames: deviceNames };
             res.render('browser');
         })
         .catch(function (err) {
+            browsers.splice(browsers.indexOf(browser), 1);
             res.status(500).set('content-type', 'text/plain').end(err.toString());
         });
 };
 
 exports.close = function (req, res) {
     function close (browser) {
-        return browserNatives.close(browser.pageUrl)
+        return browserNatives
+            .close(browser.pageUrl)
             .then(function () {
                 browsers = browsers.filter(function (item) {
                     return item !== browser;
@@ -121,26 +145,39 @@ exports.close = function (req, res) {
 
 exports.resize = function (req, res) {
     function resize (browser) {
-        return Promise.resolve()
+        var requestedSize = getRequestedSize(req.body);
+
+        function resizeWindow () {
+            return browserNatives.resize(
+                browser.pageUrl,
+                browser.clientAreaSize.width,
+                browser.clientAreaSize.height,
+                requestedSize.width,
+                requestedSize.height
+            );
+        }
+
+        // NOTE: We must resize the window twice if it is maximized.
+        // https://github.com/DevExpress/testcafe-browser-natives/issues/71
+        return browserNatives
+            .isMaximized(browser.pageUrl)
+            .then(function (maximized) {
+                if (!maximized)
+                    return null;
+
+                if (!browser.clientAreaSize)
+                    throw new Error('Client area size is not found for the browser id-' + browser.id);
+
+                return resizeWindow()
+                    .then(function () {
+                        return delay(WINDOW_NORMALIZING_DELAY);
+                    });
+            })
             .then(function () {
                 if (!browser.clientAreaSize)
-                    return Promise.resolve();
+                    throw new Error('Client area size is not found for the browser id-' + browser.id);
 
-                var args = [browser.pageUrl, browser.clientAreaSize.width, browser.clientAreaSize.height];
-
-                if (req.body.paramsType === 'width-height')
-                    args = args.concat([Number(req.body.width), Number(req.body.height)]);
-                else {
-                    var deviceSize = browserNatives.getViewportSize(req.body.deviceName);
-
-                    args = args.concat(
-                        req.body.orientation === 'portrait' ?
-                        [deviceSize.portraitWidth, deviceSize.landscapeWidth] :
-                        [deviceSize.landscapeWidth, deviceSize.portraitWidth]
-                    );
-                }
-
-                return browserNatives.resize.apply(browserNatives, args);
+                return resizeWindow();
             })
             .then(function () {
                 res.set('content-type', 'text/plain').end();
@@ -148,6 +185,18 @@ exports.resize = function (req, res) {
     }
 
     runAsyncForBrowser(req.body.browserId, res, resize);
+};
+
+exports.maximize = function (req, res) {
+    function maximize (browser) {
+        return browserNatives
+            .maximize(browser.pageUrl)
+            .then(function () {
+                res.set('content-type', 'text/plain').end();
+            });
+    }
+
+    runAsyncForBrowser(req.body.browserId, res, maximize);
 };
 
 exports.takeScreenshot = function (req, res) {
@@ -162,7 +211,8 @@ exports.takeScreenshot = function (req, res) {
         else
             screenshotPath = toAbsPath('./screenshots/' + browser.id + '.jpg');
 
-        return browserNatives.screenshot(browser.pageUrl, screenshotPath)
+        return browserNatives
+            .screenshot(browser.pageUrl, screenshotPath)
             .then(function () {
                 var screenshots = browser.screenshots.filter(function (item) {
                     return item.path === screenshotPath;

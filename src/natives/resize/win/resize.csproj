@@ -7,7 +7,7 @@
     <ProjectGuid>{A88A5114-CBC7-4730-87FB-D1512043EF7C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ResizeWindow</RootNamespace>
+    <RootNamespace>BrowserNatives</RootNamespace>
     <AssemblyName>resize</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -47,14 +47,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BrowserNatives.Resize</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="utils">
+      <HintPath Condition="Exists('..\..\utils\win\bin\Debug')">..\..\utils\win\bin\Debug\utils.dll</HintPath>
+      <HintPath Condition="Exists('..\..\utils\win\bin\Release')">..\..\utils\win\bin\Release\utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Resize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

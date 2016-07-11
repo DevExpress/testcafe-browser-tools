@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("close")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Developer Express Inc.")]
 [assembly: AssemblyProduct("close")]
 [assembly: AssemblyCopyright("Copyright © 1998-2016 Developer Express Inc.")]
 [assembly: AssemblyTrademark("")]

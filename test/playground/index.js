@@ -30,6 +30,7 @@ app.get('/', routes.index);
 app.post('/open', routes.open);
 app.post('/close', routes.close);
 app.post('/resize', routes.resize);
+app.post('/maximize', routes.maximize);
 app.post('/take-screenshot', routes.takeScreenshot);
 app.get('/get-screenshot/:path', routes.getScreenshot);
 app.get('/test-page/:id', routes.sandboxPage);

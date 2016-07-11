@@ -56,6 +56,21 @@ $(document).ready(function () {
                 }
             });
         });
+
+        $browser.find('.maximize-browser-button').click(function () {
+            var $btn = $(this);
+
+            $.ajax({
+                method:  'POST',
+                url:     '/maximize',
+                data:    {
+                    browserId: $btn.data('browser-id')
+                },
+                error:   function (xhr) {
+                    alert(xhr.statusText + ': ' + xhr.responseText);
+                }
+            });
+        });
     }
 
     $('.browser').each(function () {

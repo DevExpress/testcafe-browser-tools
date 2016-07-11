@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("get-window-size")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Developer Express Inc.")]
 [assembly: AssemblyProduct("get-window-size")]
 [assembly: AssemblyCopyright("Copyright © 1998-2016 Developer Express Inc.")]
 [assembly: AssemblyTrademark("")]
