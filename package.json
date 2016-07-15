@@ -4,7 +4,7 @@
   "description": "A library used by TestCafe for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-natives",
   "bugs": "https://github.com/DevExpress/testcafe-browser-natives/issues",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "author": "Developer Express Inc.",
   "repository": {
     "type": "git",
