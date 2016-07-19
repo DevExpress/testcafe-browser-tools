@@ -6,6 +6,7 @@ import maximize from './api/maximize';
 import isMaximized from './api/is-maximized';
 import isValidDeviceName from './api/is-valid-device-name';
 import screenshot from './api/screenshot';
+import generateThumbnail from './api/generate-thumbnail';
 import getBrowserInfo from './api/get-browser-info';
 import getViewportSize from './api/get-viewport-size';
 
@@ -20,5 +21,6 @@ export default {
     maximize,
     isMaximized,
     screenshot,
+    generateThumbnail,
     isValidDeviceName
 };
