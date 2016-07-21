@@ -102,9 +102,25 @@ button {
     width: 175px;
 }
 
-.browser-screenshot-path {
+.browser-screenshot-link {
     display: block;
     margin: 3px 0;
+}
+
+.browser-screenshot-link *{
+    vertical-align: middle;
+}
+
+.thumbnail-container {
+    width: 240px;
+    height: 130px;
+    line-height: 130px;
+    display: inline-block;
+    text-align: center;
+}
+
+.browser-screenshot-thumbnail {
+    display: inline-block;
 }
 
 .browser-screenshots {

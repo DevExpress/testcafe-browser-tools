@@ -1,12 +1,17 @@
 .idea
 .DS_Store
-lib
-test/playground/screenshots
-node_modules
+/lib
+/test/playground/screenshots
+/node_modules
 
 *.suo
 *.user
 *.sln
+*.sdf
+*.opensdf
 
-src/natives/*/win/bin/**
-src/natives/*/win/obj/**
+/src/natives/*/win/bin/**
+/src/natives/*/win/obj/**
+
+/src/natives/*/any/bin/**
+/src/natives/*/any/obj/**

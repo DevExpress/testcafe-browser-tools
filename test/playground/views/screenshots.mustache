@@ -5,7 +5,12 @@
     </div>
     <div class="browser-screenshots">
         {{# screenshots }}
-            <a class="browser-screenshot-path" href="{{ url }}" target="_blank">{{ path }}</a>
+            <a class="browser-screenshot-link" href="{{ url }}" target="_blank">
+                <div class="thumbnail-container">
+                    <img class="browser-screenshot-thumbnail" src="{{ thumbnailUrl }}"/>
+                </div>
+                {{ path }}
+            </a>
         {{/screenshots}}
     </div>
 {{/screenshots.length}}

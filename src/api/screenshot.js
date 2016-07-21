@@ -1,12 +1,8 @@
-import path from 'path';
 import findWindow from './find-window';
 import OS from 'os-family';
 import { execFile } from '../utils/exec';
+import ensureDirectory from '../utils/ensure-directory';
 import BINARIES from '../binaries';
-
-
-const SCREENSHOT_THUMBNAIL_WIDTH  = 240;
-const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
 
 
 /**
@@ -18,9 +14,9 @@ const SCREENSHOT_THUMBNAIL_HEIGHT = 130;
  * @param {string} screenshotPath - Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg.
  */
 export default async function (pageTitle, screenshotPath) {
-    var screenshotDirPath = path.dirname(screenshotPath);
-    var fileName          = path.basename(screenshotPath);
-    var thumbnailDirPath  = path.join(screenshotDirPath, 'thumbnails');
+    if (!ensureDirectory(screenshotPath))
+        return;
+
     var windowDescription = void 0;
 
     if (OS.win) {
@@ -36,11 +32,5 @@ export default async function (pageTitle, screenshotPath) {
     else
         return;
 
-    await execFile(BINARIES.screenshot, windowDescription.concat([
-        screenshotDirPath,
-        fileName,
-        thumbnailDirPath,
-        SCREENSHOT_THUMBNAIL_WIDTH,
-        SCREENSHOT_THUMBNAIL_HEIGHT
-    ]));
+    await execFile(BINARIES.screenshot, windowDescription.concat(screenshotPath));
 }

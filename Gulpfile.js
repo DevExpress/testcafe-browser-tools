@@ -33,19 +33,19 @@ gulp.task('build-win-utils-dll', ['clean-win-bin'], function () {
 
 gulp.task('build-win-executables', ['build-win-utils-dll'], function () {
     return gulp
-        .src(['!src/natives/**/utils.csproj', 'src/natives/**/*.csproj'])
+        .src(['!src/natives/**/utils.csproj', 'src/natives/**/*.@(cs|vcx)proj'])
         .pipe(msbuild({
-            targets:     ['Clean', 'Build'],
-            errorOnFail: true
+            targets:      ['Clean', 'Build'],
+            toolsVersion: 12.0
         }));
 });
 
 gulp.task('copy-win-executables', ['build-win-executables'], function () {
     return gulp
         .src([
-            'src/natives/**/win/bin/Release/*.dll',
-            'src/natives/**/win/bin/Release/*.exe',
-            'src/natives/**/win/bin/Release/*.config'
+            'src/natives/**/@(win|any)/bin/Release/*.dll',
+            'src/natives/**/@(win|any)/bin/Release/*.exe',
+            'src/natives/**/@(win|any)/bin/Release/*.config'
         ])
         .pipe(flatten())
         .pipe(gulp.dest('bin/win'));
@@ -75,7 +75,7 @@ gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
     }
 
     return gulp
-        .src('src/natives/**/mac/Makefile')
+        .src('src/natives/**/@(mac|any)/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, 'bin/mac')
         }));

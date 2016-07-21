@@ -4,6 +4,9 @@
 <dt><a href="#close">async close(pageTitle)</a></dt>
 <dd><p>Closes the browser window where the specified web page is opened.</p>
 </dd>
+<dt><a href="#generateThumbnail">async generateThumbnail(sourcePath, thumbnailPath, width, height)</a></dt>
+<dd><p>Creates a thumbnail image from the specified PNG image file.</p>
+</dd>
 <dt><a href="#getBrowserInfo">async getBrowserInfo(browser)</a> ⇒ <code><a href="#BrowserInfo">BrowserInfo</a></code></dt>
 <dd><p>Returns information about the specified browser.</p>
 </dd>
@@ -54,6 +57,20 @@ Closes the browser window where the specified web page is opened.
 | Param | Type | Description |
 | --- | --- | --- |
 | pageTitle | <code>string</code> | Specifies the title of the web page opened in the browser. |
+
+<a name="generateThumbnail"></a>
+
+## *async* generateThumbnail(sourcePath, thumbnailPath, width, height)
+Creates a thumbnail image from the specified PNG image file.
+
+**Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sourcePath | <code>string</code> | Specifies the path to the source image in PNG format. |
+| thumbnailPath | <code>string</code> | Specifies the path to the resulting thumbnail image.                                 Defaults to '<sourcePathDirectory>/thumbnails/<sourcePathFileName>' |
+| width | <code>number</code> | Specifies the width of the thumbnail image, in pixels (default is 240). |
+| height | <code>number</code> | Specifies the height of the thumbnail image, in pixels (default is 130). |
 
 <a name="getBrowserInfo"></a>
 

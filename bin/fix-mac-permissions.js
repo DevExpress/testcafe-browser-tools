@@ -5,5 +5,6 @@ if (!isMac)
     return;
 
 execSync('chmod +x ./bin/mac/screenshot');
+execSync('chmod +x ./bin/mac/generate-thumbnail');
 
 process.stdout.write('File permissions fixed\n');

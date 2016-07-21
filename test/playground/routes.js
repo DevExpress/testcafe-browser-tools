@@ -1,9 +1,7 @@
 var path           = require('path');
 var viewports      = require('viewportsizes');
 var Promise        = require('pinkie');
-var OS             = require('os-family');
 var browserNatives = require('../../lib/index');
-var exec           = require('../../lib/utils/exec').exec;
 var toAbsPath      = require('read-file-relative').toAbsPath;
 
 const WINDOW_NORMALIZING_DELAY = 1000;
@@ -202,6 +200,7 @@ exports.maximize = function (req, res) {
 exports.takeScreenshot = function (req, res) {
     function screenshot (browser) {
         var screenshotPath = '';
+        var thumbnailPath  = '';
 
         if (req.body.screenshotPath) {
             screenshotPath = path.isAbsolute(req.body.screenshotPath) ?
@@ -209,44 +208,54 @@ exports.takeScreenshot = function (req, res) {
                              toAbsPath(req.body.screenshotPath);
         }
         else
-            screenshotPath = toAbsPath('./screenshots/' + browser.id + '.jpg');
+            screenshotPath = toAbsPath('./screenshots/' + browser.id + '.png');
+
+        var cachedScreenshots = browser.screenshots.filter(function (item) {
+            return item.path === screenshotPath;
+        });
+
+        if (cachedScreenshots.length)
+            thumbnailPath = cachedScreenshots[0].thumbnailPath;
+        else {
+            var screenshotFilename = path.basename(screenshotPath);
+            var screenshotDirPath  = path.dirname(screenshotPath);
+
+            thumbnailPath      = path.join(screenshotDirPath, 'thumbnails', screenshotFilename);
+        }
 
         return browserNatives
             .screenshot(browser.pageUrl, screenshotPath)
             .then(function () {
-                var screenshots = browser.screenshots.filter(function (item) {
-                    return item.path === screenshotPath;
-                });
-
-                if (screenshots.length === 0) {
+                return browserNatives.generateThumbnail(screenshotPath, thumbnailPath);
+            })
+            .then(function () {
+                if (!cachedScreenshots.length) {
                     browser.screenshots.push({
-                        path: screenshotPath,
-                        url:  '/get-screenshot/' + encodeURIComponent(screenshotPath)
+                        path:          screenshotPath,
+                        thumbnailPath: thumbnailPath,
+                        url:           '/get-image/' + encodeURIComponent(screenshotPath),
+                        thumbnailUrl:  '/get-image/' + encodeURIComponent(thumbnailPath)
                     });
                 }
 
-                exec((OS.mac ? 'open ' : '') + screenshotPath);
-
                 res.locals = { screenshots: browser.screenshots };
                 res.render('screenshots');
-            })
-            .catch(function () {
-                res.set('content-type', 'text/plain').end();
             });
     }
 
     runAsyncForBrowser(req.body.browserId, res, screenshot);
 };
 
-exports.getScreenshot = function (req, res) {
-    var screenshotPath = decodeURIComponent(req.params.path);
+exports.getImage = function (req, res) {
+    var imagePath = decodeURIComponent(req.params.path);
     var i              = 0;
     var j              = 0;
 
     for (i = 0; i < browsers.length; i++) {
         for (j = 0; j < browsers[i].screenshots.length; j++) {
-            if (browsers[i].screenshots[j].path === screenshotPath) {
-                res.sendfile(screenshotPath);
+            if (browsers[i].screenshots[j].path === imagePath ||
+                browsers[i].screenshots[j].thumbnailPath === imagePath) {
+                res.sendfile(imagePath);
                 return;
             }
         }

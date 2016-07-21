@@ -186,17 +186,17 @@ namespace BrowserNatives {
                     Utils.ForceForegroundWindow(hwnd);
 
                 Bitmap windowBitmap = new Bitmap(
-                    wi.rcWindow.right - wi.rcWindow.left, 
-                    wi.rcWindow.bottom - wi.rcWindow.top, 
+                    wi.rcWindow.right - wi.rcWindow.left,
+                    wi.rcWindow.bottom - wi.rcWindow.top,
                     System.Drawing.Imaging.PixelFormat.Format32bppRgb
                 );
 
                 Graphics graphicsWindow = Graphics.FromImage(windowBitmap);
 
                 graphicsWindow.CopyFromScreen(
-                    new Point(wi.rcWindow.left, wi.rcWindow.top), 
-                    Point.Empty, 
-                    windowBitmap.Size, 
+                    new Point(wi.rcWindow.left, wi.rcWindow.top),
+                    Point.Empty,
+                    windowBitmap.Size,
                     CopyPixelOperation.SourceCopy
                 );
 
@@ -206,8 +206,8 @@ namespace BrowserNatives {
 
         static Bitmap PrintWindow (IntPtr hwnd, WindowInfo wi, string processName) {
             Bitmap windowBitmap = new Bitmap(
-                wi.rcWindow.right - wi.rcWindow.left, 
-                wi.rcWindow.bottom - wi.rcWindow.top, 
+                wi.rcWindow.right - wi.rcWindow.left,
+                wi.rcWindow.bottom - wi.rcWindow.top,
                 System.Drawing.Imaging.PixelFormat.Format32bppRgb
             );
 
@@ -235,15 +235,15 @@ namespace BrowserNatives {
 
             WindowInfo wi = GetWindowInfo(hwnd, processName);
 
-            Bitmap windowBitmap = isCurrentDesktop ? 
-                CaptureFromScreen(hwnd, wi) : 
+            Bitmap windowBitmap = isCurrentDesktop ?
+                CaptureFromScreen(hwnd, wi) :
                 PrintWindow(hwnd, wi, processName);
 
             Bitmap clientAreaBitmap = windowBitmap.Clone(
                 new Rectangle(
                     new Point(wi.rcClient.left - wi.rcWindow.left, wi.rcClient.top - wi.rcWindow.top),
                     new Size(wi.rcClient.right - wi.rcClient.left, wi.rcClient.bottom - wi.rcClient.top)
-                ), 
+                ),
                 PixelFormat.Format32bppRgb
             );
 
@@ -255,40 +255,18 @@ namespace BrowserNatives {
             return clientAreaBitmap;
         }
 
-        static void SaveBitmap (Bitmap bmp, string dirPath, string fileName) {
+        static void SaveBitmap (Bitmap bmp, string filePath) {
             try {
-                if(!Directory.Exists(dirPath))
-                    Directory.CreateDirectory(dirPath);
+                bmp.Save(filePath);
             }
             catch (Exception e) {
                 Console.Error.Write(e.Message);
                 Environment.Exit(1);
             }
-
-            try {
-                bmp.Save(dirPath + @"\" + fileName);
-            }
-            catch (Exception e) {
-                Console.Error.Write(e.Message);
-                Environment.Exit(1);
-            }
-        }
-
-        static Bitmap ResizeBitmap (Bitmap bmp, int width, int height) {
-            Bitmap result = new Bitmap(width, height);
-
-            using (var g = Graphics.FromImage(result)) {
-                g.DrawImage((Bitmap)bmp.Clone(), 0, 0, width, height);
-                g.Dispose();
-            }
-
-            return result;
         }
 
         static void Main (string[] args) {
-            bool createThumbnail = args.Length >= 7;
-
-            if (args.Length < 4) {
+            if (args.Length != 3) {
                 Console.Error.Write("Incorrect arguments");
                 Environment.Exit(1);
             }
@@ -296,23 +274,12 @@ namespace BrowserNatives {
             IntPtr hwnd = (IntPtr)Convert.ToInt32(args[0]);
 
             // NOTE: The process name can be "chrome" || "iexplore" (IE) || "firefox" || "opera" || "applicationframehost" (Edge)
-            string processName = args[1];
-            string dirPath     = args[2];
-            string fileName    = args[3];
+            string processName    = args[1];
+            string screenshotPath = args[2];
 
             Bitmap screenshot = CaptureWindow(hwnd, processName);
 
-            SaveBitmap(screenshot, dirPath, fileName);
-
-            if (createThumbnail) {
-                string thumbnailDirPath = args[4];
-                int    thumbnailWidth   = Convert.ToInt32(args[5]);
-                int    thumbnailHeight  = Convert.ToInt32(args[6]);
-
-                Bitmap thumbnail = ResizeBitmap(screenshot, thumbnailWidth, thumbnailHeight);
-
-                SaveBitmap(thumbnail, thumbnailDirPath, fileName);
-            }
+            SaveBitmap(screenshot, screenshotPath);
         }
     }
 }
