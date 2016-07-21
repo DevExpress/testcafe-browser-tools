@@ -7,7 +7,7 @@
     <ProjectGuid>{16615D42-2D28-4B3B-9278-8F02D8EB96B9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>find_window</RootNamespace>
+    <RootNamespace>BrowserNatives</RootNamespace>
     <AssemblyName>find-window</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,13 +32,21 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BrowserNatives.FindWindow</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="utils">
+      <HintPath Condition="Exists('..\..\utils\win\bin\Debug')">..\..\utils\win\bin\Debug\utils.dll</HintPath>
+      <HintPath Condition="Exists('..\..\utils\win\bin\Release')">..\..\utils\win\bin\Release\utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="FindWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

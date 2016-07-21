@@ -22,17 +22,28 @@ gulp.task('clean-win-bin', function (cb) {
     del('bin/win', cb);
 });
 
-gulp.task('build-win-executables', ['clean-win-bin'], function () {
+gulp.task('build-win-utils-dll', ['clean-win-bin'], function () {
     return gulp
-        .src('src/natives/**/*.csproj')
+        .src('src/natives/**/utils.csproj')
         .pipe(msbuild({
-            targets: ['Clean', 'Build']
+            targets:     ['Clean', 'Build'],
+            errorOnFail: true
+        }));
+});
+
+gulp.task('build-win-executables', ['build-win-utils-dll'], function () {
+    return gulp
+        .src(['!src/natives/**/utils.csproj', 'src/natives/**/*.csproj'])
+        .pipe(msbuild({
+            targets:     ['Clean', 'Build'],
+            errorOnFail: true
         }));
 });
 
 gulp.task('copy-win-executables', ['build-win-executables'], function () {
     return gulp
         .src([
+            'src/natives/**/win/bin/Release/*.dll',
             'src/natives/**/win/bin/Release/*.exe',
             'src/natives/**/win/bin/Release/*.config'
         ])
@@ -83,6 +94,10 @@ gulp.task('run-playground-win', ['build-win'], function () {
 });
 
 gulp.task('run-playground-mac', ['build-mac'], function () {
+    require('./test/playground/index');
+});
+
+gulp.task('run-playground-no-build', function () {
     require('./test/playground/index');
 });
 

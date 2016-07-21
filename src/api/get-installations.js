@@ -29,7 +29,7 @@ async function addInstallation (installations, name, instPath) {
 
 async function detectMicrosoftEdge () {
     var regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    var stdout = await execWinShellUtf8(`reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
+    var stdout = await execWinShellUtf8(`@echo off & reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
 
     return /SUCCESS/.test(stdout) ? ALIASES['edge'] : null;
 }

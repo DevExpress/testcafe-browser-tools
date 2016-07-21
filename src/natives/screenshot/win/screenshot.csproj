@@ -7,7 +7,7 @@
     <ProjectGuid>{7C5ABA0D-970C-4E8E-962C-A006AEE1E271}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Screenshot</RootNamespace>
+    <RootNamespace>BrowserNatives</RootNamespace>
     <AssemblyName>screenshot</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -31,7 +31,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BrowserNatives.Screenshot</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="utils">
+      <HintPath Condition="Exists('..\..\utils\win\bin\Debug')">..\..\utils\win\bin\Debug\utils.dll</HintPath>
+      <HintPath Condition="Exists('..\..\utils\win\bin\Release')">..\..\utils\win\bin\Release\utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -39,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Screenshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
