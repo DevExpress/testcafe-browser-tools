@@ -43,7 +43,7 @@ function getMacOpenCommand (browserInfo, pageUrl) {
 }
 
 function getLinuxOpenCommand (browserInfo, pageUrl) {
-    return `"${browserInfo.path}" "${browserInfo.cmd}" "${pageUrl}" 1<&- >/dev/null 2>&1 &`;
+    return `"${browserInfo.path}" "${browserInfo.cmd}" "${pageUrl}" 1<&- 2>&1 &`;
 }
 
 var getOpenCommand = null;

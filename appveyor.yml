@@ -1,0 +1,24 @@
+version: "#{build} on {branch}"
+image: Visual Studio 2013
+clone_depth: 1
+branches:
+  only:
+  - master
+
+environment:
+  matrix:
+    - nodejs_version: "0.10"
+    - nodejs_version: "stable"
+
+install:
+- ps: Install-Product node $env:nodejs_version
+- cmd: >-
+    node --version
+
+    npm --version
+
+    npm install
+
+build: off
+test_script:
+- cmd: npm test
