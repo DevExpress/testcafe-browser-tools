@@ -10,12 +10,33 @@ var concat       = require('gulp-concat');
 var jsdoc        = require('gulp-jsdoc-to-markdown');
 var remoteSrc    = require('gulp-remote-src');
 var changed      = require('gulp-changed');
+var chmod        = require('gulp-chmod');
 var del          = require('del');
 var through      = require('through2');
 var Promise      = require('pinkie');
 var pify         = require('pify');
+var assign       = require('lodash').assign;
 
 var exec = pify(childProcess.exec, Promise);
+
+var bits = process.arch === 'x64' ? '64' : '32';
+
+function make (options) {
+    return through.obj(function (file, enc, callback) {
+        if (file.isNull()) {
+            callback(null, file);
+            return;
+        }
+
+        var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
+
+        exec('make -C ' + dirPath, { env: assign({}, process.env, options) })
+            .then(function () {
+                callback(null, file);
+            })
+            .catch(callback);
+    });
+}
 
 // Windows bin
 gulp.task('clean-win-bin', function (cb) {
@@ -57,23 +78,6 @@ gulp.task('clean-mac-bin', function (callback) {
 });
 
 gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
-    function make (options) {
-        return through.obj(function (file, enc, callback) {
-            if (file.isNull()) {
-                callback(null, file);
-                return;
-            }
-
-            var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
-
-            exec('make -C ' + dirPath, { env: options })
-                .then(function () {
-                    callback(null, file);
-                })
-                .catch(callback);
-        });
-    }
-
     return gulp
         .src('src/natives/**/@(mac|any)/Makefile')
         .pipe(make({
@@ -88,12 +92,37 @@ gulp.task('copy-mac-scripts', ['clean-mac-bin'], function () {
         .pipe(gulp.dest('bin/mac'));
 });
 
+// Linux bin
+gulp.task('clean-linux-bin', function () {
+    return del(['bin/linux/*.sh', 'bin/linux/' + bits]);
+});
+
+gulp.task('build-linux-executables', ['clean-linux-bin'], function () {
+    return gulp
+        .src('src/natives/**/linux/Makefile')
+        .pipe(make({
+            DEST: path.join(__dirname, 'bin/linux', bits)
+        }));
+});
+
+gulp.task('copy-linux-scripts', ['clean-linux-bin'], function () {
+    return gulp
+        .src('src/natives/**/linux/*.sh')
+        .pipe(flatten())
+        .pipe(chmod(755))
+        .pipe(gulp.dest('bin/linux'));
+});
+
 // Test
 gulp.task('run-playground-win', ['build-win'], function () {
     require('./test/playground/index');
 });
 
 gulp.task('run-playground-mac', ['build-mac'], function () {
+    require('./test/playground/index');
+});
+
+gulp.task('run-playground-linux', ['build-linux'], function () {
     require('./test/playground/index');
 });
 
@@ -174,6 +203,7 @@ gulp.task('build-lib', ['transpile-lib', 'docs']);
 
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
 gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
+gulp.task('build-linux', ['build-lib', 'build-linux-executables', 'copy-linux-scripts']);
 
 gulp.task('docs', ['transpile-lib'], function () {
     var destDir = './';

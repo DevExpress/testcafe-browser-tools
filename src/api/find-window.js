@@ -5,9 +5,6 @@ import BINARIES from '../binaries';
 
 
 export default async function (pageTitle) {
-    if (OS.linux)
-        return null;
-
     var res          = null;
     var windowParams = [];
 
@@ -25,4 +22,7 @@ export default async function (pageTitle) {
 
     if (OS.mac)
         return { bundleId: windowParams[0], windowId: windowParams[1] };
+
+    if (OS.linux)
+        return { windowId: windowParams[0] };
 }
