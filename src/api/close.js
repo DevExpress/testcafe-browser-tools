@@ -22,6 +22,8 @@ export default async function (pageTitle) {
         closeWindowArguments = [windowDescription.hwnd];
     else if (OS.mac)
         closeWindowArguments = [windowDescription.windowId, windowDescription.bundleId];
+    else if (OS.linux)
+        closeWindowArguments = [windowDescription.windowId];
     else
         return;
 

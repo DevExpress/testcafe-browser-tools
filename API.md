@@ -90,10 +90,23 @@ Returns information about the specified browser.
 Returns the list of the [BrowserInfo](#BrowserInfo) objects that contain information about the browsers installed on the machine.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
-**Returns**: <code>Object.&lt;string, BrowserInfo&gt;</code> - List of the [BrowserInfo](#BrowserInfo) objects  containing information about the browsers installed on the machine.  
+**Returns**: <code>Object.&lt;string, BrowserInfo&gt;</code> - List of the [BrowserInfo](#BrowserInfo) objects
+  containing information about the browsers installed on the machine.  
 **Example**  
 ```js
-{  chrome: {      path: 'C:\\ProgramFiles\\...\\chrome.exe',      cmd: '--new-window',      macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'  },  firefox: {      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'  }}
+{
+  chrome: {
+      path: 'C:\\ProgramFiles\\...\\chrome.exe',
+      cmd: '--new-window',
+      macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+  },
+
+  firefox: {
+      path: 'C:\\ProgramFiles\\...\\firefox.exe',
+      cmd: '-new-window',
+      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+  }
+}
 ```
 <a name="getViewportSize"></a>
 
@@ -198,7 +211,11 @@ Object that contains information about the browser installed on the machine.
 
 **Example**  
 ```js
-{      path: 'C:\\ProgramFiles\\...\\firefox.exe',      cmd: '-new-window',      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}' }
+{
+      path: 'C:\\ProgramFiles\\...\\firefox.exe',
+      cmd: '-new-window',
+      macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+ }
 ```
 <a name="DeviceViewportSize"></a>
 

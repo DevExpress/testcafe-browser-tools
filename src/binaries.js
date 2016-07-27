@@ -1,5 +1,6 @@
 import OS from 'os-family';
 import { toAbsPath } from 'read-file-relative';
+import arch from './utils/arch';
 
 
 var BINARIES = void 0;
@@ -26,7 +27,13 @@ else if (OS.mac) {
         generateThumbnail: toAbsPath('../bin/mac/generate-thumbnail')
     };
 }
-else if (OS.linux)
+else if (OS.linux) {
+    BINARIES = {
+        findWindow: toAbsPath('../bin/linux/find-window.sh'),
+        close:      toAbsPath(`../bin/linux/${arch.bits}/close`)
+    };
+}
+else
     BINARIES = {};
 
 export default BINARIES;

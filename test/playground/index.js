@@ -41,6 +41,16 @@ app.get('/*', routes.notFound);
 routes.init(PORT)
     .then(function () {
         app.listen(PORT);
-        childProcess.exec((OS.mac ? 'open ' : 'start ') + 'http://localhost:' + PORT);
+
+        var openURLCommand = '';
+
+        if (OS.win)
+            openURLCommand = 'start';
+        else if (OS.mac)
+            openURLCommand = 'open';
+        else
+            openURLCommand = 'xdg-open';
+
+        childProcess.exec(openURLCommand + ' http://localhost:' + PORT);
     });
 

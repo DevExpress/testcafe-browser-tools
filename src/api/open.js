@@ -42,13 +42,18 @@ function getMacOpenCommand (browserInfo, pageUrl) {
     });
 }
 
+function getLinuxOpenCommand (browserInfo, pageUrl) {
+    return `"${browserInfo.path}" "${browserInfo.cmd}" "${pageUrl}" 1<&- >/dev/null 2>&1 &`;
+}
+
 var getOpenCommand = null;
 
 if (OS.win)
     getOpenCommand = getWinOpenCommand;
 else if (OS.mac)
     getOpenCommand = getMacOpenCommand;
-
+else if (OS.linux)
+    getOpenCommand = getLinuxOpenCommand;
 
 /**
  * Opens the web page in a new instance of the browser.
