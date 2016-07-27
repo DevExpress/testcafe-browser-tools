@@ -39,8 +39,8 @@ function make (options) {
 }
 
 // Windows bin
-gulp.task('clean-win-bin', function (cb) {
-    del('bin/win', cb);
+gulp.task('clean-win-bin', function () {
+    return del('bin/win');
 });
 
 gulp.task('build-win-utils-dll', ['clean-win-bin'], function () {
@@ -73,8 +73,8 @@ gulp.task('copy-win-executables', ['build-win-executables'], function () {
 });
 
 // Mac bin
-gulp.task('clean-mac-bin', function (callback) {
-    del('bin/mac', callback);
+gulp.task('clean-mac-bin', function () {
+    return del('bin/mac');
 });
 
 gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
@@ -188,8 +188,8 @@ gulp.task('lint', function () {
         .pipe(eslint.failAfterError());
 });
 
-gulp.task('clean-lib', function (cb) {
-    del('lib', cb);
+gulp.task('clean-lib', function () {
+    return del('lib');
 });
 
 gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
