@@ -16,6 +16,7 @@ var through      = require('through2');
 var Promise      = require('pinkie');
 var pify         = require('pify');
 var assign       = require('lodash').assign;
+var OS           = require('os-family');
 
 var exec = pify(childProcess.exec, Promise);
 
@@ -36,6 +37,17 @@ function make (options) {
             })
             .catch(callback);
     });
+}
+
+function addOSPrefix (task) {
+    if (OS.win)
+        return task + '-win';
+    else if (OS.mac)
+        return task + '-mac';
+    else if (OS.linux)
+        return task + '-linux';
+
+    return task;
 }
 
 // Windows bin
@@ -114,25 +126,17 @@ gulp.task('copy-linux-scripts', ['clean-linux-bin'], function () {
 });
 
 // Test
-gulp.task('run-playground-win', ['build-win'], function () {
-    require('./test/playground/index');
-});
-
-gulp.task('run-playground-mac', ['build-mac'], function () {
-    require('./test/playground/index');
-});
-
-gulp.task('run-playground-linux', ['build-linux'], function () {
-    require('./test/playground/index');
+gulp.task('run-playground', [addOSPrefix('build')], function () {
+    return require('./test/playground').start();
 });
 
 gulp.task('run-playground-no-build', function () {
-    require('./test/playground/index');
+    return require('./test/playground').start();
 });
 
-gulp.task('test', ['build-lib'], function () {
+gulp.task('test', [addOSPrefix('build')], function () {
     return gulp
-        .src('test/tests/*-test.js')
+        .src(['test/functional/setup.js', 'test/functional/tests/*-test.js'])
         .pipe(mocha({
             ui:       'bdd',
             reporter: 'spec',

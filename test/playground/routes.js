@@ -1,25 +1,36 @@
-var path           = require('path');
-var viewports      = require('viewportsizes');
-var Promise        = require('pinkie');
+var path = require('path');
+var viewports = require('viewportsizes');
+var Promise = require('pinkie');
 var browserNatives = require('../../lib/index');
-var toAbsPath      = require('read-file-relative').toAbsPath;
+var toAbsPath = require('read-file-relative').toAbsPath;
 
 const WINDOW_NORMALIZING_DELAY = 1000;
 
 var installationsList = [];
-var installations     = null;
-var browsers          = [];
-var browserCounter    = 0;
-var port              = null;
-var deviceNames       = [];
+var installations = null;
+var browsers = {};
+var pendingOpenings = {};
+var pendingCloses = {};
+var browserCounter = 0;
+var port = null;
+var deviceNames = [];
 
 
 function getBrowserById (id) {
-    return browsers.filter(function (item) {
-        return item.id === id;
-    })[0];
+    return browsers[id];
 }
 
+function getBrowserUrl (id) {
+    return 'http://localhost:' + port + '/test-page/' + id;
+}
+
+function getBrowsersList () {
+    return Object
+        .keys(browsers)
+        .map(function (id) {
+            return browsers[id];
+        });
+}
 function runAsyncForBrowser (browserId, response, fn) {
     var browser = getBrowserById(browserId);
 
@@ -65,8 +76,8 @@ function getRequestedSize (params) {
     var deviceSize = browserNatives.getViewportSize(params.deviceName);
 
     return params.orientation === 'portrait' ?
-           { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
-           { width: deviceSize.landscapeWidth, height: deviceSize.portraitWidth };
+    { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
+    { width: deviceSize.landscapeWidth, height: deviceSize.portraitWidth };
 }
 
 function delay (ms) {
@@ -76,14 +87,16 @@ function delay (ms) {
 }
 
 // API
+exports.browsers = browsers;
+
 exports.init = function (appPort) {
-    port        = appPort;
+    port = appPort;
     deviceNames = getDeviceNames();
 
     return browserNatives
         .getInstallations()
         .then(function (res) {
-            installations     = res;
+            installations = res;
             installationsList = objectToList(res, 'name');
         });
 };
@@ -91,7 +104,7 @@ exports.init = function (appPort) {
 exports.index = function (req, res) {
     res.locals = {
         installationsList: installationsList,
-        browsers:          browsers,
+        browsers:          getBrowsersList(),
         deviceNames:       deviceNames
     };
 
@@ -99,30 +112,95 @@ exports.index = function (req, res) {
 };
 
 exports.open = function (req, res) {
-    var browserId = 'br-' + browserCounter++;
-    var browser   = {
-        pageUrl:        'http://localhost:' + port + '/test-page/' + browserId,
-        browserInfo:    installations[req.body.browser],
-        id:             browserId,
-        name:           req.body.browser,
-        screenshots:    [],
-        clientAreaSize: null
-    };
-
-    // NOTE: We must save the 'browser' structure before we call the 'open' function, because
-    // sometimes the browser sends client size information before the 'open' function resolves.
-    browsers.push(browser);
+    var browserId = req.body.browser + '-' + browserCounter++;
 
     return browserNatives
-        .open(browser.browserInfo, browser.pageUrl)
+        .open(installations[req.body.browser], getBrowserUrl(browserId))
         .then(function () {
+            return exports.waitForBrowserOpen(browserId);
+        })
+        .then(function (browser) {
             res.locals = { id: browser.id, name: browser.name, deviceNames: deviceNames };
             res.render('browser');
         })
         .catch(function (err) {
-            browsers.splice(browsers.indexOf(browser), 1);
             res.status(500).set('content-type', 'text/plain').end(err.toString());
         });
+};
+
+exports.waitForBrowserOpen = function (id) {
+    if (browsers[id])
+        return Promise.resolve(browsers[id]);
+
+    var resolver = null;
+
+    pendingOpenings[id] = new Promise(function (resolve) {
+        resolver = resolve;
+    });
+
+    pendingOpenings[id].resolve = resolver;
+
+    return pendingOpenings[id]
+        .then(function (browser) {
+            delete pendingOpenings[id];
+
+            return browser;
+        });
+};
+
+exports.waitForBrowserClose = function (id) {
+    if (!browsers[id])
+        return Promise.resolve();
+
+    var resolver = null;
+
+    pendingCloses[id] = new Promise(function (resolve) {
+        resolver = resolve;
+    });
+
+    pendingCloses[id].resolve = resolver;
+
+    return pendingCloses[id]
+        .then(function () {
+            delete pendingCloses[id];
+        });
+};
+
+exports.confirmOpen = function (req, res) {
+    var browserId = req.params.id;
+    var browserName = /^([^-]+)/.exec(browserId)[1];
+
+    var browser = {
+        pageUrl:        getBrowserUrl(browserId),
+        browserInfo:    installations[browserName],
+        id:             browserId,
+        name:           browserName,
+        screenshots:    [],
+        clientAreaSize: null
+    };
+
+    browsers[browserId] = browser;
+
+    if (pendingOpenings[browserId])
+        pendingOpenings[browserId].resolve(browser);
+
+    res.set('content-type', 'text/plain').end();
+};
+
+exports.confirmClose = function (req, res) {
+    var browserId = req.params.id;
+
+    setTimeout(function () {
+        delete browsers[browserId];
+
+        /* eslint-disable no-console */
+        console.log(req.body);
+        /* eslint-enable no-console */
+        if (pendingCloses[browserId])
+            pendingCloses[browserId].resolve();
+
+        res.set('content-type', 'text/plain').end();
+    }, 5000);
 };
 
 exports.close = function (req, res) {
@@ -130,10 +208,9 @@ exports.close = function (req, res) {
         return browserNatives
             .close(browser.pageUrl)
             .then(function () {
-                browsers = browsers.filter(function (item) {
-                    return item !== browser;
-                });
-
+                return exports.waitForBrowserClose(browser.id);
+            })
+            .then(function () {
                 res.set('content-type', 'text/plain').end();
             });
     }
@@ -200,12 +277,12 @@ exports.maximize = function (req, res) {
 exports.takeScreenshot = function (req, res) {
     function screenshot (browser) {
         var screenshotPath = '';
-        var thumbnailPath  = '';
+        var thumbnailPath = '';
 
         if (req.body.screenshotPath) {
             screenshotPath = path.isAbsolute(req.body.screenshotPath) ?
-                             req.body.screenshotPath :
-                             toAbsPath(req.body.screenshotPath);
+                req.body.screenshotPath :
+                toAbsPath(req.body.screenshotPath);
         }
         else
             screenshotPath = toAbsPath('./screenshots/' + browser.id + '.png');
@@ -218,9 +295,9 @@ exports.takeScreenshot = function (req, res) {
             thumbnailPath = cachedScreenshots[0].thumbnailPath;
         else {
             var screenshotFilename = path.basename(screenshotPath);
-            var screenshotDirPath  = path.dirname(screenshotPath);
+            var screenshotDirPath = path.dirname(screenshotPath);
 
-            thumbnailPath      = path.join(screenshotDirPath, 'thumbnails', screenshotFilename);
+            thumbnailPath = path.join(screenshotDirPath, 'thumbnails', screenshotFilename);
         }
 
         return browserNatives
@@ -248,20 +325,18 @@ exports.takeScreenshot = function (req, res) {
 
 exports.getImage = function (req, res) {
     var imagePath = decodeURIComponent(req.params.path);
-    var i              = 0;
-    var j              = 0;
 
-    for (i = 0; i < browsers.length; i++) {
-        for (j = 0; j < browsers[i].screenshots.length; j++) {
-            if (browsers[i].screenshots[j].path === imagePath ||
-                browsers[i].screenshots[j].thumbnailPath === imagePath) {
-                res.sendfile(imagePath);
-                return;
-            }
-        }
+    function searchBrowserForImage (id) {
+        return browsers[id].screenshots.some(function (screenshot) {
+            return screenshot.path === imagePath ||
+                screenshot.thumbnailPath === imagePath;
+        });
     }
 
-    res.status(404).set('content-type', 'text/plain').send('Not found');
+    if (!Object.keys(browsers).some(searchBrowserForImage))
+        res.status(404).set('content-type', 'text/plain').send('Not found');
+
+    res.sendfile(imagePath);
 };
 
 exports.updateClientAreaSize = function (req, res) {

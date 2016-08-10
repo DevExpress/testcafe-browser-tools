@@ -4,7 +4,7 @@
     <title>Default playground test page</title>
     <!-- Microsoft Edge truncates the window title to the hostname if document.title contains only a URL. -->
     <!-- So, we need to add some characters before the URL in order to bring it to the window title.      -->
-    <script>document.title = 'browser-id:' + document.location.toString()</script>
+    <script>document.title = 'browser-id:{{{ id }}}:' + document.location.toString()</script>
 </head>
 <body bgcolor="#f5f5dc">
 
@@ -15,28 +15,56 @@
 <script type="text/javascript">
     var clientAreaSizeContainer = document.getElementById('client-area-size');
 
-    function sendClientAreaSize (clientAreaSize) {
+    function sendXhr (options, callback) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open('POST', '/update-client-area-size/{{ id }}');
+        if (callback) {
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4)
+                    callback(xhr.status === 200);
+            };
+        }
+
+        xhr.open('POST', options.url, !options.sync);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        xhr.send(JSON.stringify(clientAreaSize));
+        xhr.send(options.data || '{"xhr": true}');
     }
 
-    function updateClientAreaSize () {
+    function sendOpenConfirmation (callback) {
+        sendXhr({ url: '/confirm-open/{{{ id }}}' }, callback);
+    }
+
+    function sendCloseConfirmation () {
+        //if (navigator.sendBeacon)
+        //    navigator.sendBeacon('/confirm-close/{{{ id }}}');
+        //else
+        sendXhr({ url: '/confirm-close/{{{ id }}}', sync: true });
+    }
+
+    function sendClientAreaSize (clientAreaSize, callback) {
+        sendXhr({
+            url:  '/update-client-area-size/{{ id }}',
+            data: JSON.stringify(clientAreaSize)
+        }, callback);
+    }
+
+    function updateClientAreaSize (callback) {
         var clientAreaSize = {
             width:  window.innerWidth,
             height: window.innerHeight
         };
 
-        clientAreaSizeContainer.textContent =  clientAreaSize.width + 'x' + clientAreaSize.height;
+        clientAreaSizeContainer.textContent = clientAreaSize.width + 'x' + clientAreaSize.height;
 
-        sendClientAreaSize(clientAreaSize);
+        sendClientAreaSize(clientAreaSize, callback);
     }
 
-    updateClientAreaSize();
+    sendOpenConfirmation(function () {
+        updateClientAreaSize();
+    });
 
     window.addEventListener('resize', updateClientAreaSize);
+    window.addEventListener('beforeunload', sendCloseConfirmation);
 </script>
 </body>
 </html>
