@@ -20,29 +20,7 @@
 
         xhr.open('POST', '/update-client-area-size/{{ id }}');
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-<<<<<<< Updated upstream
         xhr.send(JSON.stringify(clientAreaSize));
-=======
-        xhr.send(options.data || '{"xhr": true}');
-    }
-
-    function sendOpenConfirmation (callback) {
-        sendXhr({ url: '/confirm-open/{{{ id }}}' }, callback);
-    }
-
-    function sendCloseConfirmation () {
-        //if (navigator.sendBeacon)
-        //    navigator.sendBeacon('/confirm-close/{{{ id }}}');
-        //else
-        sendXhr({ url: '/confirm-close/{{{ id }}}', sync: false });
-    }
-
-    function sendClientAreaSize (clientAreaSize, callback) {
-        sendXhr({
-            url:  '/update-client-area-size/{{ id }}',
-            data: JSON.stringify(clientAreaSize)
-        }, callback);
->>>>>>> Stashed changes
     }
 
     function updateClientAreaSize () {
@@ -59,15 +37,6 @@
     updateClientAreaSize();
 
     window.addEventListener('resize', updateClientAreaSize);
-<<<<<<< Updated upstream
-=======
-    window.addEventListener('beforeunload', function (e) {
-        sendCloseConfirmation();
-        e.preventDefault();
-        e.returnValue = 'test';
-        return 'test';
-    });
->>>>>>> Stashed changes
 </script>
 </body>
 </html>
