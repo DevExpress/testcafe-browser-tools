@@ -8,7 +8,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Threading;
 
-namespace BrowserNatives {
+namespace BrowserTools {
     class GetWindowSize {
         static void Main (string[] args) {
             if (args.Length != 1) {

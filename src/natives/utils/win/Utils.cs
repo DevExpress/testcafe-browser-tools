@@ -4,8 +4,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace BrowserNatives
-{
+namespace BrowserTools {
     //Win32 Type Definitions
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect {

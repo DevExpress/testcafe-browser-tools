@@ -8,7 +8,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Text;
 
-namespace BrowserNatives {
+namespace BrowserTools {
     class Maximize {
         //Consts
         const int SW_SHOWMAXIMIZED = 3;

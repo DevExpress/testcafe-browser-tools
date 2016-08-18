@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Linq;
 
-namespace BrowserNatives {
+namespace BrowserTools {
     class Screenshot {
         //Consts
         const int GW_CHILD = 5;

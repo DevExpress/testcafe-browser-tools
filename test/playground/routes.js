@@ -1,8 +1,8 @@
-var path           = require('path');
-var viewports      = require('viewportsizes');
-var Promise        = require('pinkie');
-var browserNatives = require('../../lib/index');
-var toAbsPath      = require('read-file-relative').toAbsPath;
+var path         = require('path');
+var viewports    = require('viewportsizes');
+var Promise      = require('pinkie');
+var browserTools = require('../../lib/index');
+var toAbsPath    = require('read-file-relative').toAbsPath;
 
 const WINDOW_NORMALIZING_DELAY = 1000;
 
@@ -62,7 +62,7 @@ function getRequestedSize (params) {
     if (params.paramsType === 'width-height')
         return { width: Number(params.width), height: Number(params.height) };
 
-    var deviceSize = browserNatives.getViewportSize(params.deviceName);
+    var deviceSize = browserTools.getViewportSize(params.deviceName);
 
     return params.orientation === 'portrait' ?
            { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
@@ -80,7 +80,7 @@ exports.init = function (appPort) {
     port        = appPort;
     deviceNames = getDeviceNames();
 
-    return browserNatives
+    return browserTools
         .getInstallations()
         .then(function (res) {
             installations     = res;
@@ -113,7 +113,7 @@ exports.open = function (req, res) {
     // sometimes the browser sends client size information before the 'open' function resolves.
     browsers.push(browser);
 
-    return browserNatives
+    return browserTools
         .open(browser.browserInfo, browser.pageUrl)
         .then(function () {
             res.locals = { id: browser.id, name: browser.name, deviceNames: deviceNames };
@@ -127,7 +127,7 @@ exports.open = function (req, res) {
 
 exports.close = function (req, res) {
     function close (browser) {
-        return browserNatives
+        return browserTools
             .close(browser.pageUrl)
             .then(function () {
                 browsers = browsers.filter(function (item) {
@@ -146,7 +146,7 @@ exports.resize = function (req, res) {
         var requestedSize = getRequestedSize(req.body);
 
         function resizeWindow () {
-            return browserNatives.resize(
+            return browserTools.resize(
                 browser.pageUrl,
                 browser.clientAreaSize.width,
                 browser.clientAreaSize.height,
@@ -156,8 +156,8 @@ exports.resize = function (req, res) {
         }
 
         // NOTE: We must resize the window twice if it is maximized.
-        // https://github.com/DevExpress/testcafe-browser-natives/issues/71
-        return browserNatives
+        // https://github.com/DevExpress/testcafe-browser-tools/issues/71
+        return browserTools
             .isMaximized(browser.pageUrl)
             .then(function (maximized) {
                 if (!maximized)
@@ -187,7 +187,7 @@ exports.resize = function (req, res) {
 
 exports.maximize = function (req, res) {
     function maximize (browser) {
-        return browserNatives
+        return browserTools
             .maximize(browser.pageUrl)
             .then(function () {
                 res.set('content-type', 'text/plain').end();
@@ -223,10 +223,10 @@ exports.takeScreenshot = function (req, res) {
             thumbnailPath      = path.join(screenshotDirPath, 'thumbnails', screenshotFilename);
         }
 
-        return browserNatives
+        return browserTools
             .screenshot(browser.pageUrl, screenshotPath)
             .then(function () {
-                return browserNatives.generateThumbnail(screenshotPath, thumbnailPath);
+                return browserTools.generateThumbnail(screenshotPath, thumbnailPath);
             })
             .then(function () {
                 if (!cachedScreenshots.length) {

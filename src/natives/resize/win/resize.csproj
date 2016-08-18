@@ -7,7 +7,7 @@
     <ProjectGuid>{A88A5114-CBC7-4730-87FB-D1512043EF7C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BrowserNatives</RootNamespace>
+    <RootNamespace>BrowserTools</RootNamespace>
     <AssemblyName>resize</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>BrowserNatives.Resize</StartupObject>
+    <StartupObject>BrowserTools.Resize</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="utils">

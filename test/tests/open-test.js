@@ -1,5 +1,5 @@
-var expect         = require('chai').expect;
-var browserNatives = require('../../lib/index');
+var expect       = require('chai').expect;
+var browserTools = require('../../lib/index');
 
 describe('open', function () {
     it('Should raise an error if browser path is not specified', function (done) {
@@ -7,7 +7,7 @@ describe('open', function () {
             path: ''
         };
 
-        var open = browserNatives
+        var open = browserTools
             .open(browserInfo)
             .then(function () {
                 throw new Error('Promise rejection expected');
@@ -28,7 +28,7 @@ describe('open', function () {
             path: './non-existent-browser.exe'
         };
 
-        var open = browserNatives
+        var open = browserTools
             .open(browserInfo)
             .then(function () {
                 throw new Error('Promise rejection expected');
@@ -51,7 +51,7 @@ describe('open', function () {
             winOpenCmdTemplate: 'echo test'
         };
 
-        var open = browserNatives
+        var open = browserTools
             .open(browserInfo)
             .catch(function () {
                 throw new Error('Promise resolution expected');
