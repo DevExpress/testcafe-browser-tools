@@ -8,7 +8,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Text;
 
-namespace BrowserNatives {
+namespace BrowserTools {
     class Resize {
         //Consts
         const int  SW_RESTORE = 9;
@@ -38,7 +38,7 @@ namespace BrowserNatives {
             WindowInfo wi = Utils.GetWindowInfo(hWnd);
 
             SetWindowPos(
-                hWnd, 
+                hWnd,
                 IntPtr.Zero,
                 wi.rcWindow.left,
                 wi.rcWindow.top,

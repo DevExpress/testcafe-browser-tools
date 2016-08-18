@@ -7,7 +7,7 @@
     <ProjectGuid>{04A6CB59-0DDB-4BE7-B7A2-DCD2B0023DC3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BrowserNatives</RootNamespace>
+    <RootNamespace>BrowserTools</RootNamespace>
     <AssemblyName>close</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>BrowserNatives.Close</StartupObject>
+    <StartupObject>BrowserTools.Close</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

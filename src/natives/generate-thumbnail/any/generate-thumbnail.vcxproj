@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A438BDF5-3173-4045-B6D7-C14AA431BCF0}</ProjectGuid>
-    <RootNamespace>BrowserNatives</RootNamespace>
+    <RootNamespace>BrowserTools</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace BrowserNatives {
+namespace BrowserTools {
     class Close {
         //Const
         const UInt32 WM_CLOSE = 0x10;
@@ -25,7 +25,7 @@ namespace BrowserNatives {
 
             string hWndStr = args[0];
 
-            CloseWindow((IntPtr)int.Parse(hWndStr)); 
+            CloseWindow((IntPtr)int.Parse(hWndStr));
         }
     }
 }

@@ -7,7 +7,7 @@
     <ProjectGuid>{7C5ABA0D-970C-4E8E-962C-A006AEE1E271}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BrowserNatives</RootNamespace>
+    <RootNamespace>BrowserTools</RootNamespace>
     <AssemblyName>screenshot</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>BrowserNatives.Screenshot</StartupObject>
+    <StartupObject>BrowserTools.Screenshot</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="utils">

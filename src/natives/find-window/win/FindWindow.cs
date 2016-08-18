@@ -6,7 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 
-namespace BrowserNatives {
+namespace BrowserTools {
     class FindWindow {
         //Consts
         const string IE_MAIN_WINDOW_CLASS_NAME = "IEFrame";
@@ -28,7 +28,7 @@ namespace BrowserNatives {
         private static bool CheckWindowTitle (IntPtr hWnd, ref string windowMark) {
             string title = Utils.GetWindowTitle(hWnd).ToLower();
 
-            if (!title.Contains(windowMark.ToLower())) 
+            if (!title.Contains(windowMark.ToLower()))
                 return true;
 
             uint processID = 0;
