@@ -1,9 +1,9 @@
-# testcafe-browser-natives
+# testcafe-browser-tools
 
-[![Build Status](https://travis-ci.org/DevExpress/testcafe-browser-natives.svg)](https://travis-ci.org/DevExpress/testcafe-browser-natives)
+[![Build Status](https://travis-ci.org/DevExpress/testcafe-browser-tools.svg)](https://travis-ci.org/DevExpress/testcafe-browser-tools)
 
-TestСafe Browser Natives is a TestCafe library for performing platform-dependent actions on browser windows.
-Working with browsers is specific for each operating system and requires native code to deal with. Since TestCafe supports painless and simple installation, this package encapsulates pre-built binaries for all supported platforms and JS-wrappers around them. This helps end-users avoid running *post-npm-install* build actions.
+TestСafe Browser Tools is an utility library for performing platform-dependent actions on browser windows.
+Working with browsers is specific for each operating system and requires native code to deal with. In order to provide painless and simple installation, this package encapsulates pre-built binaries for all supported platforms and JS-wrappers around them. This helps end-users avoid running *post-npm-install* build actions.
  
 #Build Process
 To build native binaries from source files, execute the gulp task corresponding to your operating system:
@@ -19,7 +19,7 @@ The *bin* directory contains pre-built native binaries. Consider using them if y
 #Install
 
 ```
-$ npm install testcafe-browser-natives
+$ npm install testcafe-browser-tools
 ```
 #API Reference
 
