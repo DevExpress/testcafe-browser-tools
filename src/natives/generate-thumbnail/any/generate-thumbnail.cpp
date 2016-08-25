@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <iostream>
 #include <sstream>
-#include <exception>
+#include <stdexcept>
 #include "lib/lodepng.h"
 
 inline unsigned char doubleToSubpixel (double x) {
