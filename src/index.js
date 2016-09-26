@@ -1,4 +1,5 @@
 import getInstallations from './api/get-installations';
+import findWindow from './api/find-window';
 import open from './api/open';
 import close from './api/close';
 import resize from './api/resize';
@@ -15,6 +16,7 @@ export default {
     getInstallations,
     getBrowserInfo,
     getViewportSize,
+    findWindow,
     open,
     close,
     resize,
