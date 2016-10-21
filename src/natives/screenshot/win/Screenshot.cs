@@ -156,6 +156,9 @@ namespace BrowserTools {
         }
 
         static void PlaceWindowOnScreen (IntPtr hWnd) {
+            if (IsZoomed(hWnd))
+                return;
+
             WindowInfo wi = Utils.GetWindowInfo(hWnd);
 
             int maxVisibleArea = 0;
