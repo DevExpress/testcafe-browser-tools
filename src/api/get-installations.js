@@ -1,5 +1,6 @@
 import Promise from 'pinkie';
 import OS from 'os-family';
+import which from 'which-promise';
 import exists from '../utils/fs-exists-promised';
 import { exec, execWinShellUtf8 } from '../utils/exec';
 import ALIASES from '../aliases';
@@ -88,15 +89,29 @@ async function findMacBrowsers () {
 
 async function findLinuxBrowsers () {
     var installations = {};
-    var stdout        = await exec('update-alternatives --list x-www-browser');
 
-    await Promise.all(stdout
-        .split('\n')
-        .map(path => {
-            var name = path.replace(/.*\/([^\/]+)$/g, '$1');
+    var aliasCheckingPromises = Object
+        .keys(ALIASES)
+        .map(name => {
+            var { linuxBinaries } = ALIASES[name];
 
-            return addInstallation(installations, name, path);
-        }));
+            if (!linuxBinaries)
+                return null;
+
+            var detectionPromises = linuxBinaries
+                .map(binary => {
+                    return which(binary)
+                        .then(path => addInstallation(installations, name, path))
+                        .catch(() => {
+                            // NOTE: binary not found, just do nothing
+                            return;
+                        });
+                });
+
+            return Promise.all(detectionPromises);
+        });
+
+    await Promise.all(aliasCheckingPromises);
 
     return installations;
 }

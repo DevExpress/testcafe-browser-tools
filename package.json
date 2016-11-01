@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-tools",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "An utility library for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-tools",
   "bugs": "https://github.com/DevExpress/testcafe-browser-tools/issues",
@@ -20,7 +20,8 @@
     "os-family": "^1.0.0",
     "pify": "^2.3.0",
     "pinkie": "^2.0.1",
-    "read-file-relative": "^1.2.0"
+    "read-file-relative": "^1.2.0",
+    "which-promise": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^4.0.10",
