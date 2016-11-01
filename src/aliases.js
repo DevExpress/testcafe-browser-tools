@@ -10,25 +10,29 @@ const ALIASES = {
     'firefox': {
         nameRe:             /firefox|mozilla/i,
         cmd:                '-new-window',
-        macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+        macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}',
+        linuxBinaries:      ['firefox']
     },
 
     'chrome': {
         nameRe:             /chrome/i,
         cmd:                '--new-window',
-        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
+        linuxBinaries:      ['google-chrome', 'google-chrome-stable', 'google-chrome-canary']
     },
 
     'chromium': {
         nameRe:             /chromium/i,
         cmd:                '--new-window',
-        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
+        linuxBinaries:      ['chromium-browser', 'chromium']
     },
 
     'opera': {
         nameRe:             /opera/i,
         cmd:                '--new-window',
-        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
+        linuxBinaries:      ['opera']
     },
 
     'safari': {
