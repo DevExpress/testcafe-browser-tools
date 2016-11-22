@@ -1,3 +1,4 @@
+import path from 'path';
 import BINARIES from './binaries';
 
 
@@ -9,21 +10,21 @@ const ALIASES = {
 
     'firefox': {
         nameRe:             /firefox|mozilla/i,
-        cmd:                '-new-window',
+        cmd:                `-new-window -override ${path.join(__dirname, '../res/override.ini')}`,
         macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}',
         linuxBinaries:      ['firefox']
     },
 
     'chrome': {
         nameRe:             /chrome/i,
-        cmd:                '--new-window',
+        cmd:                '--new-window --no-first-run',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['google-chrome', 'google-chrome-stable', 'google-chrome-canary']
     },
 
     'chromium': {
         nameRe:             /chromium/i,
-        cmd:                '--new-window',
+        cmd:                '--new-window --no-first-run',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['chromium-browser', 'chromium']
     },
