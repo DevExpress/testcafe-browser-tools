@@ -10,7 +10,7 @@ const ALIASES = {
 
     'firefox': {
         nameRe:             /firefox|mozilla/i,
-        cmd:                `-new-window -override ${path.join(__dirname, '../data/override.ini')}`,
+        cmd:                `-override ${path.join(__dirname, '../data/override.ini')} -new-window`,
         macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}',
         linuxBinaries:      ['firefox']
     },
