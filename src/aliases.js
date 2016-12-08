@@ -10,21 +10,21 @@ const ALIASES = {
 
     'firefox': {
         nameRe:             /firefox|mozilla/i,
-        cmd:                `-override ${path.join(__dirname, '../data/override.ini')} -new-window`,
+        cmd:                `-override "${path.join(__dirname, '../data/override.ini')}" -new-window`,
         macOpenCmdTemplate: 'open -a "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}',
         linuxBinaries:      ['firefox']
     },
 
     'chrome': {
         nameRe:             /chrome/i,
-        cmd:                '--new-window --no-first-run',
+        cmd:                '--no-first-run --new-window',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['google-chrome', 'google-chrome-stable', 'google-chrome-canary']
     },
 
     'chromium': {
         nameRe:             /chromium/i,
-        cmd:                '--new-window --no-first-run',
+        cmd:                '--no-first-run --new-window',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['chromium-browser', 'chromium']
     },
