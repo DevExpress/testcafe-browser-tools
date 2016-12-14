@@ -21,7 +21,7 @@ export async function execFile (filePath, args) {
 }
 
 export async function exec (command) {
-    return await execPromise(command);
+    return execPromise(command, { env: process.env });
 }
 
 export async function execWinShellUtf8 (command) {
