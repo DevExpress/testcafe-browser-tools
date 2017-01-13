@@ -1,8 +1,6 @@
 #include <cstdlib>
+#include <cstdio>
 #include <cstddef>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include "lib/lodepng.h"
 
 inline unsigned char doubleToSubpixel (double x) {
@@ -44,8 +42,10 @@ struct Image {
 
 		data = (unsigned char *)malloc(width * height * channels);
 
-		if (!data)
-			throw std::runtime_error("Memory allocation failed");
+		if (!data) {
+            fprintf(stderr, "Memory allocation failed\n");
+            exit(1);
+        }
 	}
 
 	Image (const char* filename) {
@@ -62,17 +62,10 @@ struct Image {
 		stride   = width * channels;
 	}
 
-	~Image () {
-		free(data);
-	}
-
 	void _throwLibraryError (unsigned errorCode) {
-		std::stringstream msg;
-
-		msg << "Error " << errorCode << ": " << lodepng_error_text(errorCode);
-
-		throw std::runtime_error(msg.str());
-	}
+        fprintf(stderr, "Error %u: %s\n", errorCode, lodepng_error_text(errorCode));
+        exit(1);
+    }
 
 	void save (const char* filename) {
 		unsigned error = lodepng_encode32_file(filename, data, width, height);
@@ -139,7 +132,7 @@ struct Image {
 
 int main (int argc, char *argv[]) {
 	if (argc != 5) {
-		std::cout << "Incorrect arguments" <<std::endl;
+		printf("Incorrect arguments\n");
 		return 1;
 	}
 
@@ -151,17 +144,11 @@ int main (int argc, char *argv[]) {
 	int thumbnailWidth  = atoi(argv[3]);
 	int thumbnailHeight = atoi(argv[4]);
 
-	try {
-		Image src(sourceName), dst(thumbnailWidth, thumbnailHeight);
+    Image src(sourceName), dst(thumbnailWidth, thumbnailHeight);
 
-		dst.copyFrom(src);
+    dst.copyFrom(src);
 
-		dst.save(thumbnailName);
-	}
-	catch (std::exception& e) {
-		std::cout << e.what() << std::endl;
-		return 1;
-	}
+    dst.save(thumbnailName);
 
 	return 0;
 }

@@ -1,12 +1,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstddef>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include "lib/lodepng.h"
 
 extern "C" {
+    #include <unistd.h>
     #include <X11/Xlib.h>
     #include <X11/Xutil.h>
     #include <X11/Xos.h>
@@ -20,10 +18,34 @@ struct Image {
 	size_t channels;
 	size_t stride;
 
-    Image (Display* display, Drawable drawable) {        
+    Image (Display* display, Drawable drawable) {
         XWindowAttributes attr;
 
 	    XGetWindowAttributes(display, drawable, &attr);
+
+        Window *activeWindow;
+        Atom real;
+        int format;
+        unsigned long n,extra;
+
+        XGetWindowProperty(
+            display,
+            DefaultRootWindow(display),
+            XInternAtom(display, "_NET_ACTIVE_WINDOW", False),
+            0,
+            ~0,
+            False,
+            AnyPropertyType,
+            &real,
+            &format,
+            &n,
+            &extra,
+            (unsigned char**)&activeWindow
+        );
+
+        XRaiseWindow(display, (Window) drawable);
+        XSync(display, False);
+        usleep(500000);
 
         _allocateData(attr.width, attr.height, 4);
 
@@ -43,11 +65,11 @@ struct Image {
                 subpixel(j, i, 3) = 255;
             }
         }
+
+        XRaiseWindow(display, *activeWindow);
+        XFree(activeWindow);
+        XSync(display, False);
     }
-    
-	~Image () {
-		free(data);
-	}
 
     void _allocateData (size_t width, size_t height, size_t channels = 4) {
         this->width    = width;
@@ -58,16 +80,15 @@ struct Image {
 
         data = (unsigned char *)malloc(width * height * channels);
 
-        if (!data)
-            throw std::runtime_error("Memory allocation failed");
+        if (!data) {
+            fprintf(stderr, "Memory allocation failed\n");
+            exit(1);
+        }
     }
-    
+
 	void _throwLibraryError (unsigned errorCode) {
-		std::stringstream msg;
-
-		msg << "Error " << errorCode << ": " << lodepng_error_text(errorCode);
-
-		throw std::runtime_error(msg.str());
+		fprintf(stderr, "Error %u: %s\n", errorCode, lodepng_error_text(errorCode));
+        exit(1);
 	}
 
 	void save (const char* filename) {
@@ -91,14 +112,14 @@ struct Image {
 
 int main (int argc, char *argv[]) {
 	if (argc != 3) {
-		std::cout << "Incorrect arguments" <<std::endl;
+		printf("Incorrect arguments\n");
 		return 1;
 	}
 
     unsigned long windowId = 0;
-    
+
     sscanf(argv[1], "%lx", &windowId);
-    
+
 	const char* fileName = argv[2];
 
     Display* display = XOpenDisplay(NULL);
@@ -108,15 +129,9 @@ int main (int argc, char *argv[]) {
         return 1;
     }
 
-	try {
-		Image screenshot(display, (Drawable) windowId);
+    Image screenshot(display, (Drawable) windowId);
 
-		screenshot.save(fileName);
-	}
-	catch (std::exception& e) {
-		std::cout << e.what() << std::endl;
-		return 1;
-	}
+    screenshot.save(fileName);
 
 	return 0;
 }

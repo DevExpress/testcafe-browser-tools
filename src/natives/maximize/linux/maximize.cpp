@@ -23,6 +23,26 @@ int main (int argc, char** argv) {
         return 1;
     }
 
+    Window *activeWindow;
+    Atom real;
+    int format;
+    unsigned long n,extra;
+
+    XGetWindowProperty(
+        display,
+        DefaultRootWindow(display),
+        XInternAtom(display, "_NET_ACTIVE_WINDOW", False),
+        0,
+        ~0,
+        False,
+        AnyPropertyType,
+        &real,
+        &format,
+        &n,
+        &extra,
+        (unsigned char**)&activeWindow
+    );
+
     XEvent event;
 
     event.xclient.type         = ClientMessage;
@@ -52,6 +72,10 @@ int main (int argc, char** argv) {
         printf("Cannot send event.\n");
         result = 1;
     }
+
+    XRaiseWindow(display, *activeWindow);
+    XFree(activeWindow);
+    XSync(display, False);
 
     XCloseDisplay(display);
 
