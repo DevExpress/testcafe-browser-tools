@@ -37,6 +37,8 @@ export default async function (pageTitle, currentWidth, currentHeight, width, he
         resizeArguments = [windowDescription.hwnd];
     else if (OS.mac)
         resizeArguments = [windowDescription.windowId, windowDescription.bundleId];
+    else if (OS.linux)
+        resizeArguments = [windowDescription.windowId];
     else
         return;
 

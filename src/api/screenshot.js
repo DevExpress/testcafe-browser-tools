@@ -19,13 +19,16 @@ export default async function (pageTitle, screenshotPath) {
 
     var windowDescription = void 0;
 
-    if (OS.win) {
+    if (OS.win || OS.linux) {
         var windowParams = await findWindow(pageTitle);
 
         if (!windowParams)
             return;
 
-        windowDescription = [windowParams.hwnd, windowParams.browser];
+        if (OS.win)
+            windowDescription = [windowParams.hwnd, windowParams.browser];
+        else
+            windowDescription = [windowParams.windowId];
     }
     else if (OS.mac)
         windowDescription = [pageTitle];

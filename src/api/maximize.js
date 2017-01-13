@@ -22,6 +22,8 @@ export default async function (pageTitle) {
     // TODO: implement for macOS
     if (OS.win)
         commandArguments = [windowDescription.hwnd];
+    else if (OS.linux)
+        commandArguments = [windowDescription.windowId];
     else
         return;
 

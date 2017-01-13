@@ -99,7 +99,7 @@ gulp.task('clean-linux-bin', function () {
 
 gulp.task('build-linux-executables', ['clean-linux-bin'], function () {
     return gulp
-        .src('src/natives/**/linux/Makefile')
+        .src('src/natives/**/@(linux|any)/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, 'bin/linux', bits)
         }));

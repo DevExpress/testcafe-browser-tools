@@ -14,6 +14,8 @@ export default async function (windowDescription) {
         getWindowSizeArgs = [windowDescription.hwnd];
     else if (OS.mac)
         getWindowSizeArgs = [windowDescription.windowId, windowDescription.bundleId];
+    else if (OS.linux)
+        getWindowSizeArgs = [windowDescription.windowId];
     else
         return null;
 
