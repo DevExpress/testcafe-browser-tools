@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Developer Express Inc.")]
 [assembly: AssemblyProduct("close")]
-[assembly: AssemblyCopyright("Copyright © 1998-2016 Developer Express Inc.")]
+[assembly: AssemblyCopyright("Copyright © 1998-2017 Developer Express Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
