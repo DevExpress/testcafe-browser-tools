@@ -18,13 +18,16 @@ if (OS.win) {
 }
 else if (OS.mac) {
     BINARIES = {
-        open:              toAbsPath('../bin/mac/open.scpt'),
-        findWindow:        toAbsPath('../bin/mac/find-window.scpt'),
-        getWindowSize:     toAbsPath('../bin/mac/get-window-size.scpt'),
-        close:             toAbsPath('../bin/mac/close.scpt'),
-        screenshot:        toAbsPath('../bin/mac/screenshot'),
-        resize:            toAbsPath('../bin/mac/resize.scpt'),
-        generateThumbnail: toAbsPath('../bin/mac/generate-thumbnail')
+        open:               toAbsPath('../bin/mac/open.scpt'),
+        findWindow:         toAbsPath('../bin/mac/find-window.scpt'),
+        getWindowSize:      toAbsPath('../bin/mac/get-window-size.scpt'),
+        getWindowBounds:    toAbsPath('../bin/mac/get-window-bounds.scpt'),
+        getWindowMaxBounds: toAbsPath('../bin/mac/get-window-max-bounds'),
+        setWindowBounds:    toAbsPath('../bin/mac/set-window-bounds.scpt'),
+        close:              toAbsPath('../bin/mac/close.scpt'),
+        screenshot:         toAbsPath('../bin/mac/screenshot'),
+        resize:             toAbsPath('../bin/mac/resize.scpt'),
+        generateThumbnail:  toAbsPath('../bin/mac/generate-thumbnail')
     };
 }
 else if (OS.linux) {
