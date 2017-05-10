@@ -5,7 +5,7 @@
 TestСafe Browser Tools is an utility library for performing platform-dependent actions on browser windows.
 Working with browsers is specific for each operating system and requires native code to deal with. In order to provide painless and simple installation, this package encapsulates pre-built binaries for all supported platforms and JS-wrappers around them. This helps end-users avoid running *post-npm-install* build actions.
  
-#Build Process
+# Build Process
 To build native binaries from source files, execute the gulp task corresponding to your operating system:
 ```
 'build-win'
@@ -16,12 +16,12 @@ Note that the application for a particular platform must be built on a machine w
 
 The *bin* directory contains pre-built native binaries. Consider using them if your contribution does not affect the native modules.
 
-#Install
+# Install
 
 ```
 $ npm install testcafe-browser-tools
 ```
-#API Reference
+# API Reference
 
 **Important note**: To identify the web browser window, most of the provided functions use its title.
 This title matches the web page's `document.title` in most of the browsers.
@@ -34,7 +34,7 @@ document.title = 'title: ' + document.location.toString()
 ```
 For API reference, see the [API](API.md) document.
 
-#Testing
+# Testing
 
 To run automated tests:
 ```
@@ -49,6 +49,6 @@ $ gulp run-playground-linux
 ```
 This will open the Playground web page at [http://localhost:1334/](http://localhost:1334/), where you can manually check if the functions work correctly.
 
-#Author
+# Author
 
 Developer Express Inc.([http://devexpress.com](http://devexpress.com))
