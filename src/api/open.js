@@ -31,7 +31,7 @@ function getWinOpenCommand (browserInfo, pageUrl) {
     var browserDirPath      = path.dirname(browserInfo.path);
     var browserExecFileName = path.basename(browserInfo.path);
 
-    return `start /D "${browserDirPath}" ${browserExecFileName} ${browserInfo.cmd} ${pageUrl}`;
+    return `start /D "${browserDirPath}" .\\${browserExecFileName} ${browserInfo.cmd} ${pageUrl}`;
 }
 
 function getMacOpenCommand (browserInfo, pageUrl) {
