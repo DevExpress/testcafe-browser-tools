@@ -16,10 +16,10 @@ var through      = require('through2');
 var Promise      = require('pinkie');
 var pify         = require('pify');
 var assign       = require('lodash').assign;
+var platform     = require('linux-platform-info').platform;
 
 var exec = pify(childProcess.exec, Promise);
 
-var platform = require('./src/utils/arch').platform;
 
 function make (options) {
     return through.obj(function (file, enc, callback) {

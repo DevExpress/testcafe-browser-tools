@@ -1,6 +1,6 @@
 import OS from 'os-family';
 import { toAbsPath } from 'read-file-relative';
-import arch from './utils/arch';
+import { platform } from 'linux-platform-info';
 
 
 var BINARIES = void 0;
@@ -33,12 +33,12 @@ else if (OS.mac) {
 else if (OS.linux) {
     BINARIES = {
         findWindow:        toAbsPath('../bin/linux/find-window.sh'),
-        close:             toAbsPath(`../bin/linux/${arch.platform}/close`),
-        getWindowSize:     toAbsPath(`../bin/linux/${arch.platform}/get-window-size`),
-        resize:            toAbsPath(`../bin/linux/${arch.platform}/resize`),
-        maximize:          toAbsPath(`../bin/linux/${arch.platform}/maximize`),
-        screenshot:        toAbsPath(`../bin/linux/${arch.platform}/screenshot`),
-        generateThumbnail: toAbsPath(`../bin/linux/${arch.platform}/generate-thumbnail`)
+        close:             toAbsPath(`../bin/linux/${platform}/close`),
+        getWindowSize:     toAbsPath(`../bin/linux/${platform}/get-window-size`),
+        resize:            toAbsPath(`../bin/linux/${platform}/resize`),
+        maximize:          toAbsPath(`../bin/linux/${platform}/maximize`),
+        screenshot:        toAbsPath(`../bin/linux/${platform}/screenshot`),
+        generateThumbnail: toAbsPath(`../bin/linux/${platform}/generate-thumbnail`)
     };
 }
 else
