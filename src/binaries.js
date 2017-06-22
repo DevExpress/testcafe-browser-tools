@@ -33,12 +33,12 @@ else if (OS.mac) {
 else if (OS.linux) {
     BINARIES = {
         findWindow:        toAbsPath('../bin/linux/find-window.sh'),
-        close:             toAbsPath(`../bin/linux/${arch.bits}/close`),
-        getWindowSize:     toAbsPath(`../bin/linux/${arch.bits}/get-window-size`),
-        resize:            toAbsPath(`../bin/linux/${arch.bits}/resize`),
-        maximize:          toAbsPath(`../bin/linux/${arch.bits}/maximize`),
-        screenshot:        toAbsPath(`../bin/linux/${arch.bits}/screenshot`),
-        generateThumbnail: toAbsPath(`../bin/linux/${arch.bits}/generate-thumbnail`)
+        close:             toAbsPath(`../bin/linux/${arch.platform}/close`),
+        getWindowSize:     toAbsPath(`../bin/linux/${arch.platform}/get-window-size`),
+        resize:            toAbsPath(`../bin/linux/${arch.platform}/resize`),
+        maximize:          toAbsPath(`../bin/linux/${arch.platform}/maximize`),
+        screenshot:        toAbsPath(`../bin/linux/${arch.platform}/screenshot`),
+        generateThumbnail: toAbsPath(`../bin/linux/${arch.platform}/generate-thumbnail`)
     };
 }
 else

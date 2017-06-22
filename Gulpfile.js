@@ -19,7 +19,7 @@ var assign       = require('lodash').assign;
 
 var exec = pify(childProcess.exec, Promise);
 
-var bits = process.arch === 'x64' ? '64' : '32';
+var platform = require('./src/utils/arch').platform;
 
 function make (options) {
     return through.obj(function (file, enc, callback) {
@@ -94,14 +94,14 @@ gulp.task('copy-mac-scripts', ['clean-mac-bin'], function () {
 
 // Linux bin
 gulp.task('clean-linux-bin', function () {
-    return del(['bin/linux/*.sh', 'bin/linux/' + bits]);
+    return del(['bin/linux/*.sh', 'bin/linux/' + platform]);
 });
 
 gulp.task('build-linux-executables', ['clean-linux-bin'], function () {
     return gulp
         .src('src/natives/**/@(linux|any)/Makefile')
         .pipe(make({
-            DEST: path.join(__dirname, 'bin/linux', bits)
+            DEST: path.join(__dirname, 'bin/linux', platform)
         }));
 });
 
