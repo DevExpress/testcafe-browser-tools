@@ -10,6 +10,7 @@ import screenshot from './api/screenshot';
 import generateThumbnail from './api/generate-thumbnail';
 import getBrowserInfo from './api/get-browser-info';
 import getViewportSize from './api/get-viewport-size';
+import watchWindowExistence from './api/watch-window-existence';
 
 
 export default {
@@ -24,5 +25,6 @@ export default {
     isMaximized,
     screenshot,
     generateThumbnail,
-    isValidDeviceName
+    isValidDeviceName,
+    watchWindowExistence
 };

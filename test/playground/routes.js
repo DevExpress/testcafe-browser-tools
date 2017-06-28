@@ -1,8 +1,9 @@
 var path         = require('path');
 var viewports    = require('viewportsizes');
 var Promise      = require('pinkie');
-var browserTools = require('../../lib/index');
 var toAbsPath    = require('read-file-relative').toAbsPath;
+var browserTools = require('../../lib/index');
+var delay        = require('../../lib/utils/delay');
 
 const WINDOW_NORMALIZING_DELAY = 1000;
 
@@ -67,12 +68,6 @@ function getRequestedSize (params) {
     return params.orientation === 'portrait' ?
            { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
            { width: deviceSize.landscapeWidth, height: deviceSize.portraitWidth };
-}
-
-function delay (ms) {
-    return new Promise(function (resolve) {
-        setTimeout(resolve, ms);
-    });
 }
 
 // API
