@@ -34,6 +34,9 @@
 <dt><a href="#screenshot">async screenshot(pageTitle, screenshotPath)</a></dt>
 <dd><p>Takes a screenshot of the browser window where the specified web page is opened.</p>
 </dd>
+<dt><a href="#watchWindow">watchWindow(pageTitle, [watchingInterval])</a> ⇒</dt>
+<dd><p>Pause execution of a Promise chain while the specified browser window is opened.</p>
+</dd>
 </dl>
 
 ## Typedefs
@@ -193,6 +196,19 @@ Takes a screenshot of the browser window where the specified web page is opened.
 | --- | --- | --- |
 | pageTitle | <code>string</code> | Specifies the title of the web page opened in the browser. |
 | screenshotPath | <code>string</code> | Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg. |
+
+<a name="watchWindow"></a>
+
+## watchWindow(pageTitle, [watchingInterval]) ⇒
+Pause execution of a Promise chain while the specified browser window is opened.
+
+**Kind**: global function  
+**Returns**: Promise<undefined> A Promise which resolves when the browser window is closed.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| pageTitle | <code>string</code> |  | The title of the web page opened in the window that should be watched. |
+| [watchingInterval] | <code>number</code> | <code>2000</code> | A time interval in milliseconds between checking the window state |
 
 <a name="BrowserInfo"></a>
 

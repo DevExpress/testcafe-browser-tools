@@ -5,6 +5,14 @@ import delay from '../utils/delay';
 
 const DEFAULT_WATCHING_INTERVAL = 2000;
 
+/**
+ * Pause execution of a Promise chain while the specified browser window is opened.
+ * @function
+ * @name watchWindow
+ * @param {string} pageTitle - The title of the web page opened in the window that should be watched.
+ * @param {number} [watchingInterval=2000] - A time interval in milliseconds between checking the window state
+ * @returns Promise<undefined> A Promise which resolves when the browser window is closed.
+ **/
 export default async function (pageTitle, watchingInterval = DEFAULT_WATCHING_INTERVAL) {
     var windowDescription = await findWindow(pageTitle);
 

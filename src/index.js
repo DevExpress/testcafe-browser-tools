@@ -10,7 +10,7 @@ import screenshot from './api/screenshot';
 import generateThumbnail from './api/generate-thumbnail';
 import getBrowserInfo from './api/get-browser-info';
 import getViewportSize from './api/get-viewport-size';
-import watchWindowExistence from './api/watch-window-existence';
+import watchWindow from './api/watch-window';
 
 
 export default {
@@ -26,5 +26,5 @@ export default {
     screenshot,
     generateThumbnail,
     isValidDeviceName,
-    watchWindowExistence
+    watchWindow
 };
