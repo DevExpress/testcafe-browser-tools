@@ -41,6 +41,11 @@ namespace BrowserTools {
             if (processName == "iexplore" && !IsIEMainWindow(hWnd))
                 return true;
 
+            // NOTE: MS Edge has different process ("applicationframehost" and "microsoftedgecp") with windows with the same title.
+            // "microsoftedgecp" is the wrong one.
+            if (processName == "microsoftedgecp")
+                return true;
+
             Console.Out.WriteLine(hWnd);
             Console.Out.WriteLine(processName);
             Environment.Exit(0);
