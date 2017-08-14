@@ -12,7 +12,7 @@ NSString* getTestCafeWindowID(NSString* windowTitle);
 int main (int argc, const char * argv[]) {
     @autoreleasepool {
         NSString* windowIdString = getTestCafeWindowID([NSString stringWithUTF8String:argv[1]]);
-        int       windowId       = [windowID intValue];
+        int       windowId       = [windowIdString intValue];
 
         if (windowId == 0) {
             fprintf(stderr, "There are no TestCafe windows\n");
@@ -41,7 +41,7 @@ NSString* getTestCafeWindowID (NSString* windowTitle) {
                 continue;
 
             NSString *value    = (NSString *)[dict objectForKey: key];
-            NSRange  textRange = [value rangeOfString: windowTitle];
+            NSRange  textRange = [value rangeOfString: windowTitle options: NSCaseInsensitiveSearch];
 
             if (textRange.location != NSNotFound) {
                 windowId = (NSString *) [dict objectForKey: @"kCGWindowNumber"];
