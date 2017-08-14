@@ -8,8 +8,7 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name close
- * @param {string | object} windowId - The title of the web page opened in the window or a descriptor returned by findWindow
- *                                     of the window that should be closed.
+ * @param {string | object} windowId - The title of the web page opened in the window or a descriptor returned by findWindow.
  */
 export default async function (windowId) {
     var windowDescription = typeof windowId === 'string' ? await findWindow(windowId) : windowId;

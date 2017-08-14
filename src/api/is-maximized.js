@@ -10,8 +10,7 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name isMaximized
- * @param {string | object} windowId - The title of the web page opened in the window or a descriptor returned by findWindow
- *                                     to check if this window is maximized.
+ * @param {string | object} windowId - The title of the web page opened in the window or a descriptor returned by findWindow.
  * @return {boolean} `true` if the browser window is maximized
  **/
 export default async function (windowId) {

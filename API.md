@@ -62,7 +62,7 @@ Closes the browser window where the specified web page is opened.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow                                     of the window that should be closed. |
+| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="findWindow"></a>
 
@@ -70,11 +70,11 @@ Closes the browser window where the specified web page is opened.
 Retrieves a platform-specific window descriptor for the window that contains a web page with the specified title.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
-**Returns**: <code>object</code> - a platform-specific window descriptor that can be used as a window identifier in some other API functions.  
+**Returns**: <code>object</code> - a platform-specific window descriptor that can be used as a window identifier.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pageTitle | <code>string</code> | The title of the web page opened in the window which descriptor should be retrieved. |
+| pageTitle | <code>string</code> | The title of the web page opened in a window whose descriptor should be retrieved. |
 
 <a name="generateThumbnail"></a>
 
@@ -148,7 +148,7 @@ Checks if the specified browser window is maximized.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow                                     to check if this window is maximized. |
+| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="isValidDeviceName"></a>
 
@@ -171,7 +171,7 @@ Maximizes the specified browser window.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow                                     of the window that should be maximized. |
+| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="open"></a>
 
@@ -194,7 +194,7 @@ Changes the browser's client area size to the new width and height.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the browser or a descriptor returned by findWindow. |
+| windowId | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the window or a descriptor returned by findWindow. |
 | currentWidth | <code>number</code> | Specifies the current width of the browser's client area, in pixels. Use the window.innerWidth property to determine it. |
 | currentHeight | <code>number</code> | Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it. |
 | width | <code>number</code> | Specifies the new client area width, in pixels. |
@@ -209,7 +209,7 @@ Takes a screenshot of the browser window where the specified web page is opened.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the browser or a descriptor returned by findWindow. |
+| windowId | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the window or a descriptor returned by findWindow. |
 | screenshotPath | <code>string</code> | Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg. |
 
 <a name="watchWindow"></a>
@@ -222,7 +222,7 @@ Pause execution of a Promise chain while the specified browser window is opened.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> |  | The title of the web page opened in the window or a descriptor returned by findWindow of the window that should be watched. |
+| windowId | <code>string</code> &#124; <code>object</code> |  | The title of the web page opened in the window or a descriptor returned by findWindow |
 | [watchingInterval] | <code>number</code> | <code>2000</code> | A time interval in milliseconds between checking the window state |
 
 <a name="BrowserInfo"></a>

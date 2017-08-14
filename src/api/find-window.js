@@ -9,8 +9,8 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name findWindow
- * @param {string} pageTitle - The title of the web page opened in the window which descriptor should be retrieved.
- * @returns {object} a platform-specific window descriptor that can be used as a window identifier in some other API functions.
+ * @param {string} pageTitle - The title of the web page opened in a window whose descriptor should be retrieved.
+ * @returns {object} a platform-specific window descriptor that can be used as a window identifier.
  **/
 export default async function (pageTitle) {
     var res          = null;

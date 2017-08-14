@@ -31,8 +31,7 @@ async function maximizeWindowMac (windowDescription) {
  * @function
  * @async
  * @name maximize
- * @param {string | object} windowId - The title of the web page opened in the window or a descriptor returned by findWindow
- *                                     of the window that should be maximized.
+ * @param {string | object} windowId - The title of the web page opened in the window or a descriptor returned by findWindow.
  **/
 export default async function (windowId) {
     var windowDescription = typeof windowId === 'string' ? await findWindow(windowId) : windowId;

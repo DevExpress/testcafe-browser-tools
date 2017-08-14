@@ -19,7 +19,7 @@ function getCorrectedSize (currentClientAreaSize, currentWindowSize, requestedSi
  * @function
  * @async
  * @name resize
- * @param {string | object} windowId - Specifies the title of the web page opened in the browser or a descriptor returned by findWindow.
+ * @param {string | object} windowId - Specifies the title of the web page opened in the window or a descriptor returned by findWindow.
  * @param {number} currentWidth - Specifies the current width of the browser's client area, in pixels. Use the window.innerWidth property to determine it.
  * @param {number} currentHeight - Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it.
  * @param {number} width - Specifies the new client area width, in pixels.
