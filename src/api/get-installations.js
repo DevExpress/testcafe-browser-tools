@@ -35,12 +35,12 @@ async function detectMicrosoftEdge () {
     return /SUCCESS/.test(stdout) ? ALIASES['edge'] : null;
 }
 
-async function findWindowsBrowsers () {
+async function searchInRegistry (registryRoot) {
     var installations = {};
-    var regKey        = 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Clients\\StartMenuInternet\\';
+    var regKey        = registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet\\';
     var regKeyEsc     = regKey.replace(/\\/g, '\\\\');
     var browserRe     = new RegExp(regKeyEsc + '([^\\\\]+)\\\\shell\\\\open\\\\command' +
-                                   '\\s+\\([^)]+\\)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
+        '\\s+\\([^)]+\\)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
 
     // NOTE: To get the correct result regardless of the Windows localization,
     // we need to run the command using the UTF-8 codepage.
@@ -57,7 +57,14 @@ async function findWindowsBrowsers () {
         await addInstallation(installations, name, path);
     }
 
-    var edgeAlias = await detectMicrosoftEdge();
+    return installations;
+}
+
+async function findWindowsBrowsers () {
+    var machineRegisteredBrowsers = await searchInRegistry('HKEY_LOCAL_MACHINE');
+    var userRegisteredBrowsers    = await searchInRegistry('HKEY_CURRENT_USER');
+    var installations             = Object.assign(machineRegisteredBrowsers, userRegisteredBrowsers);
+    var edgeAlias                 = await detectMicrosoftEdge();
 
     if (edgeAlias)
         installations['edge'] = edgeAlias;

@@ -3,20 +3,20 @@ on run (argv)
 		error "Incorrect arguments"
 	end if
 	set windowNamePart to item 1 of argv
-	
+
 	repeat 10 times
 		try
 			set {bundleId, windowId} to findAppByWindowTitle(windowNamePart)
-			
+
 			if bundleId is not equal to "" then
 				return bundleId & linefeed & windowId
 			end if
 		end try
-		
+
 		#300ms delay
 		delay 0.3
 	end repeat
-	
+
 	error "Window not found"
 end run
 
@@ -24,9 +24,9 @@ on findAppByWindowTitle(windowNamePart)
 	tell application "System Events"
 		set bundleIds to (get bundle identifier of every process whose background only is false)
 	end tell
-	
+
 	repeat with bundleId in bundleIds
-		
+
 		tell application id bundleId
 			set windowsNamesList to {}
 			try
@@ -39,8 +39,8 @@ on findAppByWindowTitle(windowNamePart)
 				end if
 			end repeat
 		end tell
-		
+
 	end repeat
-	
+
 	return ""
 end findAppByWindowTitle
