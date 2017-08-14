@@ -1,7 +1,7 @@
 ## Functions
 
 <dl>
-<dt><a href="#close">async close(windowId)</a></dt>
+<dt><a href="#close">async close(windowDescriptor)</a></dt>
 <dd><p>Closes the browser window where the specified web page is opened.</p>
 </dd>
 <dt><a href="#findWindow">async findWindow(pageTitle)</a> ⇒ <code>object</code></dt>
@@ -19,25 +19,25 @@
 <dt><a href="#getViewportSize">getViewportSize(deviceName)</a> ⇒ <code><a href="#DeviceViewportSize">DeviceViewportSize</a></code></dt>
 <dd><p>Gets the viewport size for the specified device.</p>
 </dd>
-<dt><a href="#isMaximized">async isMaximized(windowId)</a> ⇒ <code>boolean</code></dt>
+<dt><a href="#isMaximized">async isMaximized(windowDescriptor)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Checks if the specified browser window is maximized.</p>
 </dd>
 <dt><a href="#isValidDeviceName">isValidDeviceName(inputString)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Checks if the provided string is a valid device name contained in the screen size database.</p>
 </dd>
-<dt><a href="#maximize">async maximize(windowId)</a></dt>
+<dt><a href="#maximize">async maximize(windowDescriptor)</a></dt>
 <dd><p>Maximizes the specified browser window.</p>
 </dd>
 <dt><a href="#open">async open(browserInfo, pageUrl)</a></dt>
 <dd><p>Opens the web page in a new instance of the browser.</p>
 </dd>
-<dt><a href="#resize">async resize(windowId, currentWidth, currentHeight, width, height)</a></dt>
+<dt><a href="#resize">async resize(windowDescriptor, currentWidth, currentHeight, width, height)</a></dt>
 <dd><p>Changes the browser&#39;s client area size to the new width and height.</p>
 </dd>
-<dt><a href="#screenshot">async screenshot(windowId, screenshotPath)</a></dt>
+<dt><a href="#screenshot">async screenshot(windowDescriptor, screenshotPath)</a></dt>
 <dd><p>Takes a screenshot of the browser window where the specified web page is opened.</p>
 </dd>
-<dt><a href="#watchWindow">watchWindow(windowId, [watchingInterval])</a> ⇒</dt>
+<dt><a href="#watchWindow">watchWindow(windowDescriptor, [watchingInterval])</a> ⇒</dt>
 <dd><p>Pause execution of a Promise chain while the specified browser window is opened.</p>
 </dd>
 </dl>
@@ -55,14 +55,14 @@
 
 <a name="close"></a>
 
-## *async* close(windowId)
+## *async* close(windowDescriptor)
 Closes the browser window where the specified web page is opened.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="findWindow"></a>
 
@@ -140,7 +140,7 @@ Gets the viewport size for the specified device.
 
 <a name="isMaximized"></a>
 
-## *async* isMaximized(windowId) ⇒ <code>boolean</code>
+## *async* isMaximized(windowDescriptor) ⇒ <code>boolean</code>
 Checks if the specified browser window is maximized.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
@@ -148,7 +148,7 @@ Checks if the specified browser window is maximized.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="isValidDeviceName"></a>
 
@@ -164,14 +164,14 @@ Checks if the provided string is a valid device name contained in the screen siz
 
 <a name="maximize"></a>
 
-## *async* maximize(windowId)
+## *async* maximize(windowDescriptor)
 Maximizes the specified browser window.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="open"></a>
 
@@ -187,14 +187,14 @@ Opens the web page in a new instance of the browser.
 
 <a name="resize"></a>
 
-## *async* resize(windowId, currentWidth, currentHeight, width, height)
+## *async* resize(windowDescriptor, currentWidth, currentHeight, width, height)
 Changes the browser's client area size to the new width and height.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the window or a descriptor returned by findWindow. |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the window or a descriptor returned by findWindow. |
 | currentWidth | <code>number</code> | Specifies the current width of the browser's client area, in pixels. Use the window.innerWidth property to determine it. |
 | currentHeight | <code>number</code> | Specifies the current height of the browser's client area, in pixels. Use the window.innerHeight property to determine it. |
 | width | <code>number</code> | Specifies the new client area width, in pixels. |
@@ -202,19 +202,19 @@ Changes the browser's client area size to the new width and height.
 
 <a name="screenshot"></a>
 
-## *async* screenshot(windowId, screenshotPath)
+## *async* screenshot(windowDescriptor, screenshotPath)
 Takes a screenshot of the browser window where the specified web page is opened.
 
 **Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the window or a descriptor returned by findWindow. |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> | Specifies the title of the web page opened in the window or a descriptor returned by findWindow. |
 | screenshotPath | <code>string</code> | Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg. |
 
 <a name="watchWindow"></a>
 
-## watchWindow(windowId, [watchingInterval]) ⇒
+## watchWindow(windowDescriptor, [watchingInterval]) ⇒
 Pause execution of a Promise chain while the specified browser window is opened.
 
 **Kind**: global function  
@@ -222,7 +222,7 @@ Pause execution of a Promise chain while the specified browser window is opened.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| windowId | <code>string</code> &#124; <code>object</code> |  | The title of the web page opened in the window or a descriptor returned by findWindow |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> |  | The title of the web page opened in the window or a descriptor returned by findWindow |
 | [watchingInterval] | <code>number</code> | <code>2000</code> | A time interval in milliseconds between checking the window state |
 
 <a name="BrowserInfo"></a>

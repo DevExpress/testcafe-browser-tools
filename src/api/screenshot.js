@@ -10,14 +10,14 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name screenshot
- * @param {string | object} windowId - Specifies the title of the web page opened in the window or a descriptor returned by findWindow.
+ * @param {string | object} windowDescriptor - Specifies the title of the web page opened in the window or a descriptor returned by findWindow.
  * @param {string} screenshotPath - Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg.
  */
-export default async function (windowId, screenshotPath) {
+export default async function (windowDescriptor, screenshotPath) {
     if (!ensureDirectory(screenshotPath))
         return;
 
-    var windowDescription = typeof windowId === 'string' ? await findWindow(windowId) : windowId;
+    var windowDescription = typeof windowDescriptor === 'string' ? await findWindow(windowDescriptor) : windowDescriptor;
 
     if (!windowDescription)
         return;
