@@ -74,7 +74,7 @@ Retrieves a platform-specific window descriptor for the window that contains a w
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pageTitle | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window which descriptor should be retrieved. |
+| pageTitle | <code>string</code> | The title of the web page opened in the window which descriptor should be retrieved. |
 
 <a name="generateThumbnail"></a>
 
