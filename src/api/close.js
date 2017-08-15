@@ -8,10 +8,10 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name close
- * @param {string} pageTitle - Specifies the title of the web page opened in the browser.
+ * @param {string | object} windowDescriptor - The title of the web page opened in the window or a descriptor returned by findWindow.
  */
-export default async function (pageTitle) {
-    var windowDescription = await findWindow(pageTitle);
+export default async function (windowDescriptor) {
+    var windowDescription = typeof windowDescriptor === 'string' ? await findWindow(windowDescriptor) : windowDescriptor;
 
     if (!windowDescription)
         return;

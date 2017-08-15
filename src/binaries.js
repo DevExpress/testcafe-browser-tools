@@ -20,6 +20,7 @@ else if (OS.mac) {
     BINARIES = {
         open:               toAbsPath('../bin/mac/open.scpt'),
         findWindow:         toAbsPath('../bin/mac/find-window.scpt'),
+        findWindowCocoa:    toAbsPath('../bin/mac/find-window-cocoa'),
         getWindowSize:      toAbsPath('../bin/mac/get-window-size.scpt'),
         getWindowBounds:    toAbsPath('../bin/mac/get-window-bounds.scpt'),
         getWindowMaxBounds: toAbsPath('../bin/mac/get-window-max-bounds'),

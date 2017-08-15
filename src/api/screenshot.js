@@ -10,30 +10,26 @@ import BINARIES from '../binaries';
  * @function
  * @async
  * @name screenshot
- * @param {string} pageTitle - Specifies the title of the web page opened in the browser.
+ * @param {string | object} windowDescriptor - Specifies the title of the web page opened in the window or a descriptor returned by findWindow.
  * @param {string} screenshotPath - Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg.
  */
-export default async function (pageTitle, screenshotPath) {
+export default async function (windowDescriptor, screenshotPath) {
     if (!ensureDirectory(screenshotPath))
         return;
 
-    var windowDescription = void 0;
+    var windowDescription = typeof windowDescriptor === 'string' ? await findWindow(windowDescriptor) : windowDescriptor;
 
-    if (OS.win || OS.linux) {
-        var windowParams = await findWindow(pageTitle);
-
-        if (!windowParams)
-            return;
-
-        if (OS.win)
-            windowDescription = [windowParams.hwnd, windowParams.browser];
-        else
-            windowDescription = [windowParams.windowId];
-    }
-    else if (OS.mac)
-        windowDescription = [pageTitle];
-    else
+    if (!windowDescription)
         return;
 
-    await execFile(BINARIES.screenshot, windowDescription.concat(screenshotPath));
+    var screenshotArguments = void 0;
+
+    if (OS.win)
+        screenshotArguments = [windowDescription.hwnd, windowDescription.browser];
+    else if (OS.mac)
+        screenshotArguments = [windowDescription.cocoaId];
+    else
+        screenshotArguments = [windowDescription.windowId];
+
+    await execFile(BINARIES.screenshot, screenshotArguments.concat(screenshotPath));
 }
