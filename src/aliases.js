@@ -15,11 +15,18 @@ const ALIASES = {
         linuxBinaries:      ['firefox']
     },
 
+    'chrome-canary': {
+        nameRe:             /chrome\s*canary/i,
+        cmd:                '--no-first-run --new-window',
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
+        linuxBinaries:      ['google-chrome-canary']
+    },
+
     'chrome': {
         nameRe:             /chrome/i,
         cmd:                '--no-first-run --new-window',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
-        linuxBinaries:      ['google-chrome', 'google-chrome-stable', 'google-chrome-canary']
+        linuxBinaries:      ['google-chrome', 'google-chrome-stable', 'google-chrome-unstable']
     },
 
     'chromium': {
