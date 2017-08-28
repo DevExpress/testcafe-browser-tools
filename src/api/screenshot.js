@@ -14,7 +14,7 @@ import BINARIES from '../binaries';
  * @param {string} screenshotPath - Specifies the full path to the screenshot file. For example, D:\Temp\chrome-screenshot.jpg.
  */
 export default async function (windowDescriptor, screenshotPath) {
-    if (!ensureDirectory(screenshotPath))
+    if (!await ensureDirectory(screenshotPath))
         return;
 
     var windowDescription = typeof windowDescriptor === 'string' ? await findWindow(windowDescriptor) : windowDescriptor;

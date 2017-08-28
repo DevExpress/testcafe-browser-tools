@@ -1,9 +1,16 @@
-import fs from 'fs';
+import fs from 'graceful-fs';
 import { dirname } from 'path';
+import mkdirp from 'mkdirp';
 import promisify from './promisify';
+import delay from './delay';
 
-var stat = promisify(fs.stat);
-var mkdir = promisify(fs.mkdir);
+
+const stat  = promisify(fs.stat);
+const readdir = promisify(fs.readdir);
+const mkdir = promisify(mkdirp);
+
+const MAX_RETRY_COUNT = 10;
+const RETRY_DELAY     = 100;
 
 async function createDirectory (directoryPath) {
     try {
@@ -13,6 +20,29 @@ async function createDirectory (directoryPath) {
     catch (e) {
         return false;
     }
+}
+
+async function readDirectory (directoryPath) {
+    try {
+        await readdir(directoryPath);
+
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+async function ensureDirectory (directoryPath) {
+    var fileEnsured   = await createDirectory(directoryPath) && await readDirectory(directoryPath);
+
+    for (var i = 0; i < MAX_RETRY_COUNT && !fileEnsured; i++) {
+        await delay(RETRY_DELAY);
+
+        fileEnsured = await createDirectory(directoryPath) && await readDirectory(directoryPath);
+    }
+
+    return fileEnsured;
 }
 
 export default async function (fileName) {
@@ -25,7 +55,7 @@ export default async function (fileName) {
     }
     catch (e) {
         if (e.code === 'ENOENT')
-            return createDirectory(directoryPath);
+            return await ensureDirectory(directoryPath);
 
         return false;
     }

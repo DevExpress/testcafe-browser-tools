@@ -29,7 +29,7 @@ export default async function (sourcePath,
                                thumbnailPath = getThumbnailPath(sourcePath),
                                width = DEFAULT_THUMBNAIL_WIDTH,
                                height = DEFAULT_THUMBNAIL_HEIGHT) {
-    if (!ensureDirectory(thumbnailPath))
+    if (!await ensureDirectory(thumbnailPath))
         return;
 
     await execFile(BINARIES.generateThumbnail, [sourcePath, thumbnailPath, width, height]);

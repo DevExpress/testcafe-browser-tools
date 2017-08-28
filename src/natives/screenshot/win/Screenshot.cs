@@ -260,7 +260,10 @@ namespace BrowserTools {
 
         static void SaveBitmap (Bitmap bmp, string filePath) {
             try {
-                bmp.Save(filePath);
+                using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    bmp.Save(fs, ImageFormat.Png);
+                }
             }
             catch (Exception e) {
                 Console.Error.Write(e.Message);
