@@ -30,7 +30,10 @@ on findAppByWindowTitle(windowNamePart)
 		tell application id bundleId
 			set windowsNamesList to {}
 			try
-				set windowsNamesList to (get name of every window)
+			    # HACK: Some apps (e.g. Sublime) fail AppleScript queries after the default 2 mins timeout
+				with timeout 1 second
+					set windowsNamesList to (get name of every window)
+				end timeout
 			end try
 			repeat with windowName in windowsNamesList
 				if (windowName as string) contains windowNamePart then
