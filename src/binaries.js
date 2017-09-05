@@ -33,7 +33,7 @@ else if (OS.mac) {
 }
 else if (OS.linux) {
     BINARIES = {
-        findWindow:        toAbsPath('../bin/linux/find-window.sh'),
+        findWindow:        toAbsPath(`../bin/linux/${platform}/find-window`),
         close:             toAbsPath(`../bin/linux/${platform}/close`),
         getWindowSize:     toAbsPath(`../bin/linux/${platform}/get-window-size`),
         resize:            toAbsPath(`../bin/linux/${platform}/resize`),
