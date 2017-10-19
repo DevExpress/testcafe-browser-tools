@@ -34,6 +34,9 @@
   <PropertyGroup>
     <StartupObject>BrowserTools.Screenshot</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="utils">
       <HintPath Condition="Exists('..\..\utils\win\bin\Debug')">..\..\utils\win\bin\Debug\utils.dll</HintPath>
@@ -49,6 +52,9 @@
   <ItemGroup>
     <Compile Include="Screenshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
