@@ -135,17 +135,6 @@ namespace BrowserTools {
                     return false;
                 });
             }
-            else if (processName == "firefox") {
-                // NOTE: Window client area has border
-                wi.rcClient.top += 1;      // NOTE: For client area in FireFox v28 and lower this border is absent.
-
-                // NOTE: FireFox doesn't have left, bottom and right borders on Windows 10
-                if (!isWindows10()) {
-                    wi.rcClient.left += 1;
-                    wi.rcClient.bottom -= 1;
-                    wi.rcClient.right -= 1;
-                }
-            }
 
             if (wi.rcWindow.left < 0 && wi.rcWindow.right < 0 && wi.rcWindow.top < 0 && wi.rcWindow.bottom < 0) {
                 Console.Error.Write("Window is not on the screen");
