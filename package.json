@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-tools",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "An utility library for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-tools",
   "bugs": "https://github.com/DevExpress/testcafe-browser-tools/issues",
