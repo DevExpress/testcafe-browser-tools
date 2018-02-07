@@ -136,6 +136,18 @@ exports.close = function (req, res) {
     runAsyncForBrowser(req.body.browserId, res, close);
 };
 
+exports.bringToFront = function (req, res) {
+    function bringToFront (browser) {
+        return browserTools
+            .bringWindowToFront(browser.pageUrl)
+            .then(function () {
+                res.set('content-type', 'text/plain').end();
+            });
+    }
+
+    runAsyncForBrowser(req.body.browserId, res, bringToFront);
+};
+
 exports.resize = function (req, res) {
     function resize (browser) {
         var requestedSize = getRequestedSize(req.body);

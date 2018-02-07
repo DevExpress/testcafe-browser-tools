@@ -1,6 +1,9 @@
 ## Functions
 
 <dl>
+<dt><a href="#bringWindowToFront">async bringWindowToFront(windowDescriptor)</a></dt>
+<dd><p>Brings the browser window on top of all other windows.</p>
+</dd>
 <dt><a href="#close">async close(windowDescriptor)</a></dt>
 <dd><p>Closes the browser window where the specified web page is opened.</p>
 </dd>
@@ -52,6 +55,17 @@
 <dd><p>Defines the size of a device viewport.</p>
 </dd>
 </dl>
+
+<a name="bringWindowToFront"></a>
+
+## *async* bringWindowToFront(windowDescriptor)
+Brings the browser window on top of all other windows.
+
+**Kind**: global [async](http://tc39.github.io/ecmascript-asyncawait/) function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| windowDescriptor | <code>string</code> &#124; <code>object</code> | The title of the web page opened in the window or a descriptor returned by findWindow. |
 
 <a name="close"></a>
 

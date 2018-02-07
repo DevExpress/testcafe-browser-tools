@@ -35,6 +35,7 @@ app.post('/take-screenshot', routes.takeScreenshot);
 app.get('/get-image/:path', routes.getImage);
 app.get('/test-page/:id', routes.sandboxPage);
 app.post('/update-client-area-size/:id', routes.updateClientAreaSize);
+app.post('/bring-to-front', routes.bringToFront);
 
 app.get('/*', routes.notFound);
 
