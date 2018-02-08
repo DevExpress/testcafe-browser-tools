@@ -13,7 +13,8 @@ if (OS.win) {
         screenshot:        toAbsPath('../bin/win/screenshot.exe'),
         generateThumbnail: toAbsPath('../bin/win/generate-thumbnail.exe'),
         resize:            toAbsPath('../bin/win/resize.exe'),
-        maximize:          toAbsPath('../bin/win/maximize.exe')
+        maximize:          toAbsPath('../bin/win/maximize.exe'),
+        bringToFront:      toAbsPath('../bin/win/bring-to-front.exe')
     };
 }
 else if (OS.mac) {

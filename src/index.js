@@ -11,6 +11,7 @@ import generateThumbnail from './api/generate-thumbnail';
 import getBrowserInfo from './api/get-browser-info';
 import getViewportSize from './api/get-viewport-size';
 import watchWindow from './api/watch-window';
+import bringWindowToFront from './api/bring-to-front';
 
 
 export default {
@@ -26,5 +27,6 @@ export default {
     screenshot,
     generateThumbnail,
     isValidDeviceName,
-    watchWindow
+    watchWindow,
+    bringWindowToFront
 };
