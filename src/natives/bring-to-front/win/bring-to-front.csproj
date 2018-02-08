@@ -33,6 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="utils">
+      <HintPath Condition="Exists('..\..\utils\win\bin\Debug')">..\..\utils\win\bin\Debug\utils.dll</HintPath>
+      <HintPath Condition="Exists('..\..\utils\win\bin\Release')">..\..\utils\win\bin\Release\utils.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
