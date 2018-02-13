@@ -29,7 +29,8 @@ else if (OS.mac) {
         close:              toAbsPath('../bin/mac/close.scpt'),
         screenshot:         toAbsPath('../bin/mac/screenshot'),
         resize:             toAbsPath('../bin/mac/resize.scpt'),
-        generateThumbnail:  toAbsPath('../bin/mac/generate-thumbnail')
+        generateThumbnail:  toAbsPath('../bin/mac/generate-thumbnail'),
+        bringToFront:       toAbsPath('../bin/mac/bring-to-front.scpt')
     };
 }
 else if (OS.linux) {
