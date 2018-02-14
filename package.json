@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-tools",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "An utility library for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-tools",
   "bugs": "https://github.com/DevExpress/testcafe-browser-tools/issues",
@@ -34,6 +34,7 @@
     "dmd-plugin-async": "^0.1.1",
     "eslint": "^1.6.0",
     "eslint-plugin-babel": "^2.1.1",
+    "execa": "^0.9.0",
     "express": "^3.21.1",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
@@ -48,12 +49,13 @@
     "gulp-remote-src": "^0.4.1",
     "hogan-express": "^0.5.2",
     "lodash": "^4.14.0",
+    "tar-stream": "^1.5.5",
     "through2": "^2.0.0",
+    "tmp": "0.0.33",
     "viewportsizes": "^0.1.2"
   },
   "scripts": {
-    "test": "gulp test",
-    "postinstall": "node ./bin/fix-permissions.js"
+    "test": "gulp test"
   },
   "main": "./lib/index",
   "files": [

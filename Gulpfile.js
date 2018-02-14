@@ -1,5 +1,7 @@
 var path         = require('path');
-var childProcess = require('child_process');
+var fs           = require('fs');
+var zlib         = require('zlib');
+var execa        = require('execa');
 var gulp         = require('gulp');
 var babel        = require('gulp-babel');
 var eslint       = require('gulp-eslint');
@@ -14,12 +16,17 @@ var chmod        = require('gulp-chmod');
 var del          = require('del');
 var through      = require('through2');
 var Promise      = require('pinkie');
-var pify         = require('pify');
 var assign       = require('lodash').assign;
 var platform     = require('linux-platform-info').platform;
+var tmp          = require('tmp');
+var tar          = require('tar-stream');
+var packageInfo  = require('./package.json');
 
-var exec = pify(childProcess.exec, Promise);
 
+const EXEC_MASK           = parseInt('111', 8);
+const UNIX_BINARY_PATH_RE = /^package\/bin\/(mac|linux)/;
+
+tmp.setGracefulCleanup();
 
 function make (options) {
     return through.obj(function (file, enc, callback) {
@@ -30,7 +37,7 @@ function make (options) {
 
         var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
 
-        exec('make -C ' + dirPath, { env: assign({}, process.env, options) })
+        execa.shell('make -C ' + dirPath, { env: assign({}, process.env, options) })
             .then(function () {
                 callback(null, file);
             })
@@ -214,4 +221,64 @@ gulp.task('docs', ['transpile-lib'], function () {
         .pipe(jsdoc({ plugin: 'dmd-plugin-async' }))
         .pipe(changed(destDir, { hasChanged: changed.compareSha1Digest }))
         .pipe(gulp.dest(destDir));
+});
+
+function fixPermissionsInTarball (sourceFileName, destinationFileName) {
+    var sourceStream      = fs.createReadStream(sourceFileName);
+    var destinationStream = fs.createWriteStream(destinationFileName);
+    var deflateStream     = zlib.createGunzip();
+    var compressStream    = zlib.createGzip();
+    var extractStream     = tar.extract();
+    var packStream        = tar.pack();
+
+    var resultPromise = new Promise(function (resolve, reject) {
+        sourceStream.on('error', reject);
+        destinationStream.on('error', reject);
+        extractStream.on('error', reject);
+        packStream.on('error', reject);
+        compressStream.on('error', reject);
+        deflateStream.on('error', reject);
+
+        destinationStream.on('finish', resolve);
+    });
+
+    extractStream.on('entry', function (header, stream, callback) {
+        if (header.name.match(UNIX_BINARY_PATH_RE))
+            header.mode |= EXEC_MASK;
+
+        stream.pipe(packStream.entry(header, callback));
+    });
+
+    extractStream.on('finish', function () {
+        packStream.finalize();
+    });
+
+    sourceStream.pipe(deflateStream).pipe(extractStream);
+
+    packStream.pipe(compressStream).pipe(destinationStream);
+
+    return resultPromise;
+}
+
+gulp.task('publish', function () {
+    var publishArguments    = process.argv.slice(3);
+    var packageDir          = __dirname;
+    var packageName         = packageInfo.name.replace(/^@/, '').replace('/', '-');
+    var tarballName         = packageName + '-' + packageInfo.version + '.tgz';
+    var modifiedTarballName = 'modified-' + tarballName;
+    var tmpDir              = tmp.dirSync({ unsafeCleanup: true });
+    var tarballPath         = path.join(tmpDir.name, tarballName);
+    var modifiedTarballPath = path.join(tmpDir.name, modifiedTarballName);
+
+    return execa.shell('npm pack ' + packageDir, { env: process.env, cwd: tmpDir.name })
+        .then(function () {
+            return fixPermissionsInTarball(tarballPath, modifiedTarballPath);
+        })
+        .then(function () {
+            return execa.shell('npm publish ' + modifiedTarballName + ' ' + publishArguments.join(' '), {
+                env:   process.env,
+                cwd:   tmpDir.name,
+                stdio: 'inherit'
+            });
+        });
 });
