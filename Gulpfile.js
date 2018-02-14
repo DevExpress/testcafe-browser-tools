@@ -224,12 +224,12 @@ gulp.task('docs', ['transpile-lib'], function () {
 });
 
 function fixPermissionsInTarball (sourceFileName, destinationFileName) {
-    var sourceStream = fs.createReadStream(sourceFileName);
+    var sourceStream      = fs.createReadStream(sourceFileName);
     var destinationStream = fs.createWriteStream(destinationFileName);
-    var deflateStream = zlib.createGunzip();
-    var compressStream = zlib.createGzip();
-    var extractStream = tar.extract();
-    var packStream = tar.pack();
+    var deflateStream     = zlib.createGunzip();
+    var compressStream    = zlib.createGzip();
+    var extractStream     = tar.extract();
+    var packStream        = tar.pack();
 
     var resultPromise = new Promise(function (resolve, reject) {
         sourceStream.on('error', reject);
