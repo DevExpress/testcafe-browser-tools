@@ -55,8 +55,7 @@
     "viewportsizes": "^0.1.2"
   },
   "scripts": {
-    "test": "gulp test",
-    "postinstall": "node ./bin/fix-permissions.js"
+    "test": "gulp test"
   },
   "main": "./lib/index",
   "files": [
