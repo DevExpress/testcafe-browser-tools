@@ -262,6 +262,7 @@ function fixPermissionsInTarball (sourceFileName, destinationFileName) {
 
 gulp.task('publish', function () {
     var publishArguments    = process.argv.slice(3);
+    var packageDir          = __dirname;
     var packageName         = packageInfo.name.replace(/^@/, '').replace('/', '-');
     var tarballName         = packageName + '-' + packageInfo.version + '.tgz';
     var modifiedTarballName = 'modified-' + tarballName;
@@ -269,7 +270,7 @@ gulp.task('publish', function () {
     var tarballPath         = path.join(tmpDir.name, tarballName);
     var modifiedTarballPath = path.join(tmpDir.name, modifiedTarballName);
 
-    return execa.shell('npm pack ' + __dirname, { env: process.env, cwd: tmpDir.name }) //eslint-disable-line no-path-concat
+    return execa.shell('npm pack ' + packageDir, { env: process.env, cwd: tmpDir.name })
         .then(function () {
             return fixPermissionsInTarball(tarballPath, modifiedTarballPath);
         })
