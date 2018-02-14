@@ -7,6 +7,9 @@ on run (argv)
 	set bundleId to (item 2 of argv as string)
 	
 	tell application id bundleId
-		activate window windowId
+		try
+			activate
+			set index of window id windowId to 1
+		end try
 	end tell
 end run
