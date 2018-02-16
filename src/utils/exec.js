@@ -3,7 +3,8 @@ import OS from 'os-family';
 import promisify from './promisify';
 
 
-const OSASCRIPT_PATH = '/usr/bin/osascript';
+const OSASCRIPT_PATH         = '/usr/bin/osascript';
+const MAX_STDOUT_BUFFER_SIZE = 10 * 1024 * 1024;
 
 
 var execFilePromise = promisify(childProc.execFile);
@@ -21,7 +22,7 @@ export async function execFile (filePath, args) {
 }
 
 export async function exec (command) {
-    return execPromise(command, { env: process.env });
+    return execPromise(command, { env: process.env, maxBuffer: MAX_STDOUT_BUFFER_SIZE });
 }
 
 export async function execWinShellUtf8 (command) {

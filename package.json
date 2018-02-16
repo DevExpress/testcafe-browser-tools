@@ -23,6 +23,7 @@
     "os-family": "^1.0.0",
     "pify": "^2.3.0",
     "pinkie": "^2.0.1",
+    "plist": "^2.1.0",
     "read-file-relative": "^1.2.0",
     "which-promise": "^1.0.0"
   },

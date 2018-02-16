@@ -1,6 +1,7 @@
 import Promise from 'pinkie';
 import OS from 'os-family';
 import which from 'which-promise';
+import plist from 'plist';
 import exists from '../utils/fs-exists-promised';
 import { exec, execWinShellUtf8 } from '../utils/exec';
 import ALIASES from '../aliases';
@@ -75,23 +76,14 @@ async function findWindowsBrowsers () {
 async function findMacBrowsers () {
     var installations = {};
 
-    // NOTE: replace the space symbol with code, because grep splits strings by space.
-    var stdout = await exec('ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium" | sed -E "s/ /032/"');
+    var appsDataXml = await exec('system_profiler -xml SPApplicationsDataType');
+    var appsList    = plist.parse(appsDataXml)[0];
+    var browsers    = appsList._items.filter(app => app._name.match(/Chrome|Firefox|Opera|Safari|Chromium/i));
 
-    await Promise.all(stdout
-        .split('\n')
-        .filter(fileName => !!fileName)
-        .map(fileName => {
-            // NOTE: restore space
-            fileName = fileName.replace(/032/g, ' ');
+    var addInstallationPromises = browsers
+            .map(browser => addInstallation(installations, browser._name, browser.path));
 
-            var name = fileName.replace(/.app$/, '');
-            var path = `/Applications/${fileName}`;
-
-            return addInstallation(installations, name, path);
-        }));
-
-    return installations;
+    return Promise.all(addInstallationPromises);
 }
 
 async function findLinuxBrowsers () {
