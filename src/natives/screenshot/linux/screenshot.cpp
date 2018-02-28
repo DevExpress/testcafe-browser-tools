@@ -43,6 +43,7 @@ struct Image {
             (unsigned char**)&activeWindow
         );
 
+        XMapWindow(display, drawable);
         XRaiseWindow(display, (Window) drawable);
         XSync(display, False);
         usleep(500000);
