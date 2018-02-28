@@ -28,82 +28,13 @@ int main (int argc, char** argv) {
         return 1;
     }
 
-    Window *activeWindow;
-    Atom real;
-    int format;
-    unsigned long n,extra;
+    XWindowChanges wc;
 
-    XGetWindowProperty(
-        display,
-        DefaultRootWindow(display),
-        XInternAtom(display, "_NET_ACTIVE_WINDOW", False),
-        0,
-        ~0,
-        False,
-        AnyPropertyType,
-        &real,
-        &format,
-        &n,
-        &extra,
-        (unsigned char**)&activeWindow
-    );
+    wc.width = width;
+    wc.height = height;
 
-    XEvent event;
-
-    event.xclient.type         = ClientMessage;
-    event.xclient.serial       = 0;
-    event.xclient.send_event   = True;
-    event.xclient.message_type = XInternAtom(display, "_NET_WM_STATE", False);
-    event.xclient.window       = (Window) windowId;
-    event.xclient.format       = 32;
-
-    event.xclient.data.l[0] = 0;
-    event.xclient.data.l[1] = XInternAtom(display, "_NET_WM_STATE_MAXIMIZED_VERT", False);
-    event.xclient.data.l[2] = XInternAtom(display, "_NET_WM_STATE_MAXIMIZED_HORZ", False);
-    event.xclient.data.l[3] = 0;
-    event.xclient.data.l[4] = 0;
-
-    int result = 0;
-
-    Status sendEventStatus = XSendEvent(
-        display,
-        DefaultRootWindow(display),
-        False,
-        SubstructureRedirectMask | SubstructureNotifyMask,
-        &event
-    );
-
-    if (!sendEventStatus) {
-        printf("Cannot send event.\n");
-        result = 1;
-    }
-
-    event.xclient.message_type = XInternAtom(display, "_NET_MOVERESIZE_WINDOW", False);
-
-    // NOTE: 0x2C00 means "assume direct user input, use only width and height, forget gravity"
-    event.xclient.data.l[0] = 0x2C00;
-    event.xclient.data.l[1] = 0; // NOTE: x
-    event.xclient.data.l[2] = 0; // NOTE: y
-    event.xclient.data.l[3] = width;
-    event.xclient.data.l[4] = height;
-
-    sendEventStatus = XSendEvent(
-        display,
-        DefaultRootWindow(display),
-        False,
-        SubstructureRedirectMask | SubstructureNotifyMask,
-        &event
-    );
-
-    if (!sendEventStatus) {
-        printf("Cannot send event.\n");
-        result = 1;
-    }
-
-    XRaiseWindow(display, *activeWindow);
-    XFree(activeWindow);
-    XSync(display, False);
+    int ret = XConfigureWindow(display, windowId, CWWidth | CWHeight, &wc);
     XCloseDisplay(display);
 
-    return result;
+    return ret == 0;
 }
