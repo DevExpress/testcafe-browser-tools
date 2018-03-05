@@ -12,7 +12,7 @@ import getBrowserInfo from './api/get-browser-info';
 import getViewportSize from './api/get-viewport-size';
 import watchWindow from './api/watch-window';
 import bringWindowToFront from './api/bring-to-front';
-import getDeviceDatabase from './api/get-device-database';
+import getDevicesViewportData from './api/get-devices-viewport-data';
 
 
 export default {
@@ -30,5 +30,5 @@ export default {
     isValidDeviceName,
     watchWindow,
     bringWindowToFront,
-    getDeviceDatabase
+    getDevicesViewportData
 };

@@ -1,4 +1,4 @@
-import getDeviceDatabase from './get-device-database';
+import getDevicesViewportData from './get-devices-viewport-data';
 
 
 /** @typedef {Object} DeviceViewportSize
@@ -16,5 +16,5 @@ import getDeviceDatabase from './get-device-database';
 export default function (deviceName) {
     deviceName = deviceName.toLowerCase().replace(/\s+/g, '');
 
-    return getDeviceDatabase()[deviceName];
+    return getDevicesViewportData()[deviceName];
 }
