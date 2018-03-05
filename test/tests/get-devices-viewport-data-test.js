@@ -5,7 +5,7 @@ var viewports    = require('viewportsizes');
 describe('get-devices-viewport-data', function () {
     it('Should return the same device list as from the viewportsizes', function () {
         const viewportData     = browserTools.getDevicesViewportData();
-        const checkedViewports   = {};
+        const checkedViewports = {};
 
         return viewports
             .list()
