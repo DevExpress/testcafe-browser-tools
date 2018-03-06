@@ -1,7 +1,5 @@
-import { readSync } from 'read-file-relative';
+import getDevicesViewportData from './get-devices-viewport-data';
 
-
-const DEVICE_DATABASE = JSON.parse(readSync('../../data/devices.json'));
 
 /** @typedef {Object} DeviceViewportSize
  * @description Defines the size of a device viewport.
@@ -18,5 +16,5 @@ const DEVICE_DATABASE = JSON.parse(readSync('../../data/devices.json'));
 export default function (deviceName) {
     deviceName = deviceName.toLowerCase().replace(/\s+/g, '');
 
-    return DEVICE_DATABASE[deviceName];
+    return getDevicesViewportData()[deviceName];
 }

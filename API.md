@@ -16,6 +16,9 @@
 <dt><a href="#getBrowserInfo">async getBrowserInfo(browser)</a> ⇒ <code><a href="#BrowserInfo">BrowserInfo</a></code></dt>
 <dd><p>Returns information about the specified browser.</p>
 </dd>
+<dt><a href="#getDevicesViewportData">getDevicesViewportData()</a> ⇒ <code>ViewportData</code></dt>
+<dd><p>Gets the name and the viewport size of all devices from <a href="http://viewportsizes.com/">this table</a>.</p>
+</dd>
 <dt><a href="#getInstallations">async getInstallations()</a> ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code></dt>
 <dd><p>Returns the list of the <a href="#BrowserInfo">BrowserInfo</a> objects that contain information about the browsers installed on the machine.</p>
 </dd>
@@ -116,6 +119,13 @@ Returns information about the specified browser.
 | --- | --- | --- |
 | browser | <code>string</code> | A browser alias ('chrome', 'firefox', etc.) or a path to the browser's executable file. |
 
+<a name="getDevicesViewportData"></a>
+
+## getDevicesViewportData() ⇒ <code>ViewportData</code>
+Gets the name and the viewport size of all devices from [this table](http://viewportsizes.com/).
+
+**Kind**: global function  
+**Returns**: <code>ViewportData</code> - A JSON Object that contains device names and viewport sizes.  
 <a name="getInstallations"></a>
 
 ## *async* getInstallations() ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code>
