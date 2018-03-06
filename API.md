@@ -125,7 +125,7 @@ Returns information about the specified browser.
 Gets the name and the viewport size of all devices from [this table](http://viewportsizes.com/).
 
 **Kind**: global function  
-**Returns**: <code>ViewportData</code> - JSON Object which contains devices name and viewport size.  
+**Returns**: <code>ViewportData</code> - A JSON Object that contains device names and viewport sizes.  
 <a name="getInstallations"></a>
 
 ## *async* getInstallations() ⇒ <code>Object.&lt;string, BrowserInfo&gt;</code>
