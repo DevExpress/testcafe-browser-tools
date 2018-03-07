@@ -15,6 +15,7 @@ describe('get-devices-viewport-data', function () {
                     const key = viewport.name.toLowerCase().replace(/\s+/g, '');
 
                     assert.isOk(viewportData[key], viewport.name);
+                    assert.equal(viewportData[key].name, viewport.name, viewport.name);
                     assert.equal(viewportData[key].portraitWidth, viewport.size.width, viewport.name + ' width');
                     assert.equal(viewportData[key].landscapeWidth, viewport.size.height, viewport.name + ' height');
 

@@ -156,14 +156,16 @@ gulp.task('update-device-database', function () {
             JSON
                 .parse(file.contents.toString())
                 .forEach(function (device) {
-                    var deviceId       = device['Device Name'].toLowerCase().split(' ').join('');
+                    var deviceName     = device['Device Name'];
+                    var deviceId       = deviceName.toLowerCase().split(' ').join('');
                     var portraitWidth  = Number(device['Portrait Width']);
                     var landscapeWidth = Number(device['Landscape Width']);
 
                     if (!isNaN(portraitWidth) && !isNaN(landscapeWidth)) {
                         deviceDatabase[deviceId] = {
                             portraitWidth:  portraitWidth,
-                            landscapeWidth: landscapeWidth
+                            landscapeWidth: landscapeWidth,
+                            name:           deviceName
                         };
                     }
                 });
