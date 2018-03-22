@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-tools",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "An utility library for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-tools",
   "bugs": "https://github.com/DevExpress/testcafe-browser-tools/issues",
@@ -49,13 +49,16 @@
     "gulp-remote-src": "^0.4.1",
     "hogan-express": "^0.5.2",
     "lodash": "^4.14.0",
+    "publish-please": "^2.3.1",
     "tar-stream": "^1.5.5",
     "through2": "^2.0.0",
     "tmp": "0.0.33",
     "viewportsizes": "^0.1.2"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "publish-please": "publish-please",
+    "prepublish": "publish-please guard"
   },
   "main": "./lib/index",
   "files": [
