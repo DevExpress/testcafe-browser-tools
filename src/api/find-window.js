@@ -18,9 +18,6 @@ export default async function (pageTitle) {
 
     try {
         res = await execFile(BINARIES.findWindow, [pageTitle]);
-
-        if (OS.mac)
-            res += await execFile(BINARIES.findWindowCocoa, [pageTitle]);
     }
     catch (err) {
         return null;
@@ -31,8 +28,11 @@ export default async function (pageTitle) {
     if (OS.win)
         return { hwnd: windowParams[0], browser: windowParams[1] };
 
-    if (OS.mac)
-        return { bundleId: windowParams[0], windowId: windowParams[1], cocoaId: windowParams[2] };
+    if (OS.mac) {
+        windowParams = windowParams.slice(windowParams.length - 4);
+
+        return { processId: windowParams[0], cocoaId: windowParams[1], windowId: windowParams[2] };
+    }
 
     if (OS.linux)
         return { windowId: windowParams[0] };

@@ -4,27 +4,27 @@ import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 
 function getBoundsFromString (boundsString) {
-    return boundsString.replace(/\n/g, '').split(', ');
+    return boundsString.split('\n');
 }
 
-async function getWindowBounds (windowId, bundleId) {
-    var boundsString = await execFile(BINARIES.getWindowBounds, [windowId, bundleId]);
+async function getWindowBounds (processId, windowId) {
+    var boundsString = await execFile(BINARIES.getWindowBounds, [processId, windowId]);
 
     return getBoundsFromString(boundsString);
 }
 
-async function getWindowMaxBounds (windowId, bundleId) {
-    var windowBounds    = await getWindowBounds(windowId, bundleId);
+async function getWindowMaxBounds (processId, windowId) {
+    var windowBounds    = await getWindowBounds(processId, windowId);
     var maxBoundsString = await execFile(BINARIES.getWindowMaxBounds, windowBounds);
 
     return getBoundsFromString(maxBoundsString);
 }
 
 async function maximizeWindowMac (windowDescription) {
-    var { windowId, bundleId } = windowDescription;
-    var windowBounds           = await getWindowMaxBounds(windowId, bundleId);
+    var { processId, windowId } = windowDescription;
+    var windowBounds           = await getWindowMaxBounds(processId, windowId);
 
-    await execFile(BINARIES.setWindowBounds, [windowId, bundleId].concat(windowBounds));
+    await execFile(BINARIES.setWindowBounds, [processId, windowId].concat(windowBounds));
 }
 /**
  * Maximizes the specified browser window.

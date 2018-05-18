@@ -20,17 +20,16 @@ if (OS.win) {
 else if (OS.mac) {
     BINARIES = {
         open:               toAbsPath('../bin/mac/open.scpt'),
-        findWindow:         toAbsPath('../bin/mac/find-window.scpt'),
-        findWindowCocoa:    toAbsPath('../bin/mac/find-window-cocoa'),
-        getWindowSize:      toAbsPath('../bin/mac/get-window-size.scpt'),
-        getWindowBounds:    toAbsPath('../bin/mac/get-window-bounds.scpt'),
+        findWindow:         toAbsPath('../bin/mac/find-window'),
+        getWindowSize:      toAbsPath('../bin/mac/get-window-size'),
+        getWindowBounds:    toAbsPath('../bin/mac/get-window-bounds'),
         getWindowMaxBounds: toAbsPath('../bin/mac/get-window-max-bounds'),
-        setWindowBounds:    toAbsPath('../bin/mac/set-window-bounds.scpt'),
-        close:              toAbsPath('../bin/mac/close.scpt'),
+        setWindowBounds:    toAbsPath('../bin/mac/set-window-bounds'),
+        close:              toAbsPath('../bin/mac/close'),
         screenshot:         toAbsPath('../bin/mac/screenshot'),
-        resize:             toAbsPath('../bin/mac/resize.scpt'),
+        resize:             toAbsPath('../bin/mac/resize'),
         generateThumbnail:  toAbsPath('../bin/mac/generate-thumbnail'),
-        bringToFront:       toAbsPath('../bin/mac/bring-to-front.scpt')
+        bringToFront:       toAbsPath('../bin/mac/bring-to-front')
     };
 }
 else if (OS.linux) {

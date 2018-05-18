@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/get-window-size.scpt" || true
+	rm "${DEST}/get-window-size" || true
 build:
 	mkdir "${DEST}" || true
-	osacompile -o "${DEST}/get-window-size.scpt" get-window-size.applescript
+	clang -o "${DEST}/get-window-size" -framework Cocoa -framework ScriptingBridge get-window-size.m

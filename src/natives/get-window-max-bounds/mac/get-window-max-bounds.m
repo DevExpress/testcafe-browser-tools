@@ -1,9 +1,11 @@
+//
+//  get-window-max-bounds.m
+//  Compute the maximum available bounds for a window
+//
+
 #import <Cocoa/Cocoa.h>
 #include <stdio.h>
 
-struct WindowRect {
-    int left, top, right, bottom;
-};
 
 double max (double a, double b) {
     return b > a ? b : a;
@@ -28,29 +30,22 @@ NSScreen* getPrimaryScreen () {
     return NULL;
 }
 
-struct WindowRect getScreenRect (NSScreen *screen, NSScreen* primaryScreen, int useVisibleFrame) {
+NSRect getScreenRect (NSScreen *screen, NSScreen* primaryScreen, int useVisibleFrame) {
     NSRect screenRect        = useVisibleFrame ? [screen visibleFrame] : [screen frame];
     NSRect primaryScreenRect = [primaryScreen frame];
 
     // NOTE: We have to convert Y coordinate because NSScreen API uses different (0,0) point located in the bottom-left corner
     // of the primary display, and Y axis is inverted and directed bottom-to-top, unlike the regular top-to-bottom approach.
-    double convertedY = primaryScreenRect.size.height - screenRect.origin.y - screenRect.size.height;
+    screenRect.origin.y = primaryScreenRect.size.height - screenRect.origin.y - screenRect.size.height;
 
-    struct WindowRect screenWinRect = {
-        .left   = (int)screenRect.origin.x,
-        .top    = (int)convertedY,
-        .right  = (int)(screenRect.origin.x + screenRect.size.width),
-        .bottom = (int)(convertedY + screenRect.size.height)
-    };
-
-    return screenWinRect;
+    return screenRect;
 }
 
-double computeIntersectionArea (struct WindowRect rectA, struct WindowRect rectB) {
-    double intersectionLeft   = max(rectA.left, rectB.left);
-    double intersectionTop    = max(rectA.top, rectB.top);
-    double intersectionRight  = min(rectA.right, rectB.right);
-    double intersectionBottom = min(rectA.bottom, rectB.bottom);
+double computeIntersectionArea (NSRect rectA, NSRect rectB) {
+    double intersectionLeft   = max(rectA.origin.x, rectB.origin.x);
+    double intersectionTop    = max(rectA.origin.y, rectB.origin.y);
+    double intersectionRight  = min(rectA.origin.x + rectA.size.width, rectB.origin.x + rectB.size.width);
+    double intersectionBottom = min(rectA.origin.y + rectA.size.height, rectB.origin.y + rectB.size.height);
     double intersectionWidth  = intersectionRight - intersectionLeft;
     double intersectionHeight = intersectionBottom - intersectionTop;
 
@@ -60,7 +55,7 @@ double computeIntersectionArea (struct WindowRect rectA, struct WindowRect rectB
     return intersectionWidth * intersectionHeight;
 }
 
-void getWindowMaxDimensions (struct WindowRect windowRect) {
+void getWindowMaxDimensions (NSRect windowRect) {
     NSScreen *primaryScreen  = getPrimaryScreen();
     NSScreen *windowScreen   = primaryScreen;
 
@@ -84,9 +79,9 @@ void getWindowMaxDimensions (struct WindowRect windowRect) {
 
     }
 
-    struct WindowRect maxWindowRect = getScreenRect(windowScreen, primaryScreen, true);
+    NSRect maxWindowRect = getScreenRect(windowScreen, primaryScreen, true);
 
-    printf("%d, %d, %d, %d", maxWindowRect.left, maxWindowRect.top, maxWindowRect.right, maxWindowRect.bottom);
+    printf("%d\n%d\n%d\n%d", (int)maxWindowRect.origin.x, (int)maxWindowRect.origin.y, (int)maxWindowRect.size.width, (int)maxWindowRect.size.height);
 }
 
 int main (int argc, const char * argv[]) {
@@ -96,12 +91,12 @@ int main (int argc, const char * argv[]) {
     }
 
     @autoreleasepool {
-        struct WindowRect windowRect;
+        NSRect windowRect;
 
-        sscanf(argv[1], "%d", &windowRect.left);
-        sscanf(argv[2], "%d", &windowRect.top);
-        sscanf(argv[3], "%d", &windowRect.right);
-        sscanf(argv[4], "%d", &windowRect.bottom);
+        sscanf(argv[1], "%lf", &windowRect.origin.x);
+        sscanf(argv[2], "%lf", &windowRect.origin.y);
+        sscanf(argv[3], "%lf", &windowRect.size.width);
+        sscanf(argv[4], "%lf", &windowRect.size.height);
 
         getWindowMaxDimensions(windowRect);
     }
