@@ -24,11 +24,7 @@ int main (int argc, const char * argv[]) {
 
             usleep(APP_ACTIVATION_DELAY);
 
-            id app    = getApplication(processId);
-
-            id window = getWindowForApplication(app, windowId);
-
-            [getApplicationWindow(processId, windowId) setIndex: 1];
+            [getWindowOfProcess(processId, windowId) setIndex: 1];
         }
         @catch (NSException *exception) {
             return 0;

@@ -21,7 +21,7 @@ int main (int argc, const char * argv[]) {
         NSString *processId = [NSString stringWithUTF8String:argv[1]];
         NSString *windowId = [NSString stringWithUTF8String:argv[2]];
         
-        id window = getApplicationWindow(processId, windowId);
+        id window = getWindowOfProcess(processId, windowId);
 
         @try {             
             [window closeSaving:CloseOptionsNo savingIn: nil];

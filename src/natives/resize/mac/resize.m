@@ -18,7 +18,7 @@ int main (int argc, const char * argv[]) {
         int width  = [[NSString stringWithUTF8String:argv[3]] intValue];
         int height = [[NSString stringWithUTF8String:argv[4]] intValue];
 
-        id window     = getApplicationWindow(processId, windowId);
+        id window     = getWindowOfProcess(processId, windowId);
         id properties = [window properties];
         NSRect bounds = [properties[@"bounds"] rectValue];
 

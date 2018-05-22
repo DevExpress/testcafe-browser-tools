@@ -14,17 +14,17 @@ int main (int argc, const char * argv[]) {
     @autoreleasepool {
         NSString *processId = [NSString stringWithUTF8String:argv[1]];
         NSString *windowId = [NSString stringWithUTF8String:argv[2]];
-	     
-	    NSRect bounds;
+         
+        NSRect bounds;
 
-	    sscanf(argv[3], "%lf", &bounds.origin.x);
+        sscanf(argv[3], "%lf", &bounds.origin.x);
         sscanf(argv[4], "%lf", &bounds.origin.y);
         sscanf(argv[5], "%lf", &bounds.size.width);
         sscanf(argv[6], "%lf", &bounds.size.height);
 
-	    NSValue *boxedBounds = [NSValue valueWithRect:bounds];
-	    
-	    [getApplicationWindow(processId, windowId) setBounds: boxedBounds];
+        NSValue *boxedBounds = [NSValue valueWithRect:bounds];
+        
+        [getWindowOfProcess(processId, windowId) setBounds: boxedBounds];
     }
 
     return 0;

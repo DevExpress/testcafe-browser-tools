@@ -4,7 +4,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <ScriptingBridge/ScriptingBridge.h>
+#import "../../utils/mac/utils.h"
 
 
 const NSUInteger MAX_SEARCHING_ATTEMPTS_COUNT  = 10;
@@ -12,7 +12,7 @@ const NSUInteger SEARCHING_ATTEMPTS_DELAY      = 300000;
 
 NSNumber * getOSAWindowId (NSNumber *processId, NSString *windowTitle) {
     @try {
-        id app = [SBApplication applicationWithProcessIdentifier: [processId intValue] ];
+        id app = getApplicationForProcess(processId);
 
         id windows = [app windows];
         id identifiedWindows = [windows filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name contains %@", windowTitle]];
@@ -29,7 +29,7 @@ NSNumber * getOSAWindowId (NSNumber *processId, NSString *windowTitle) {
     }
 }
 
-NSMutableDictionary * getTestCafeWindowID (NSString *windowTitle) {
+NSMutableDictionary * getTestCafeWindowId (NSString *windowTitle) {
     NSMutableDictionary *windowDescriptor = nil;
 
     NSArray *windowList  = (NSArray *) CGWindowListCopyWindowInfo(kCGWindowListOptionAll | kCGWindowListOptionAll, kCGNullWindowID);
@@ -67,7 +67,7 @@ int main (int argc, const char * argv[]) {
         BOOL searchFinished              = NO;
 
         while (seachingAttemptsCount < MAX_SEARCHING_ATTEMPTS_COUNT && !searchFinished) {
-            windowDescriptor = getTestCafeWindowID([NSString stringWithUTF8String:argv[1]]);
+            windowDescriptor = getTestCafeWindowId([NSString stringWithUTF8String:argv[1]]);
             
             searchFinished = !!windowDescriptor && [windowDescriptor[@"osaId"] intValue] != 0;
 

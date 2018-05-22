@@ -15,7 +15,7 @@ int main (int argc, const char * argv[]) {
         NSString *processId = [NSString stringWithUTF8String:argv[1]];
         NSString *windowId = [NSString stringWithUTF8String:argv[2]];
 
-        id properties = [getApplicationWindow(processId, windowId) properties];
+        id properties = [getWindowOfProcess(processId, windowId) properties];
         NSRect bounds = [properties[@"bounds"] rectValue];
         
         printf("%d\n%d\n%d\n%d", (int)bounds.origin.x, (int)bounds.origin.y, (int)bounds.size.width, (int)bounds.size.height);

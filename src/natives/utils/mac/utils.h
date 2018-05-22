@@ -5,11 +5,11 @@
 
 #import <ScriptingBridge/ScriptingBridge.h>
 
-id getApplication (NSString *processId) {
+id getApplicationForProcess (NSString *processId) {
     return [SBApplication applicationWithProcessIdentifier: [processId intValue]];
 }
 
-id getWindowForApplication (id app, NSString *windowId) {
+id getWindowOfApplication (id app, NSString *windowId) {
     id windows            = [app windows];
     id windowsProperties  = [windows arrayByApplyingSelector:@selector(properties)];
 
@@ -23,8 +23,8 @@ id getWindowForApplication (id app, NSString *windowId) {
     return windows[index];
 }
 
-id getApplicationWindow (NSString *processId, NSString *windowId) {
-    id app = getApplication(processId);
+id getWindowOfProcess (NSString *processId, NSString *windowId) {
+    id app = getApplicationForProcess(processId);
 
-    return getWindowForApplication(app, windowId);    
+    return getWindowOfApplication(app, windowId);    
 }    
