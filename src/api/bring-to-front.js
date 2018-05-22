@@ -21,7 +21,7 @@ export default async function (windowDescriptor) {
     if (OS.win)
         bringWindowToFrontArguments = [windowDescription.hwnd];
     else if (OS.mac)
-        bringWindowToFrontArguments = [windowDescription.windowId, windowDescription.bundleId];
+        bringWindowToFrontArguments = [windowDescription.processId, windowDescription.windowId];
     else
         return;
 

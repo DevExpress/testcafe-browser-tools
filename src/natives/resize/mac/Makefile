@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/resize.scpt" || true
+	rm "${DEST}/resize" || true
 build:
 	mkdir "${DEST}" || true
-	osacompile -o "${DEST}/resize.scpt" resize.applescript
+	clang -o "${DEST}/resize" -framework Cocoa -framework ScriptingBridge resize.m

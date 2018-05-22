@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/get-window-bounds.scpt" || true
+	rm "${DEST}/get-window-bounds" || true
 build:
 	mkdir "${DEST}" || true
-	osacompile -o "${DEST}/get-window-bounds.scpt" get-window-bounds.applescript
+	clang -o "${DEST}/get-window-bounds" -framework Cocoa -framework ScriptingBridge get-window-bounds.m

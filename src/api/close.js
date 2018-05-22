@@ -21,7 +21,7 @@ export default async function (windowDescriptor) {
     if (OS.win)
         closeWindowArguments = [windowDescription.hwnd];
     else if (OS.mac)
-        closeWindowArguments = [windowDescription.windowId, windowDescription.bundleId];
+        closeWindowArguments = [windowDescription.processId, windowDescription.windowId];
     else if (OS.linux)
         closeWindowArguments = [windowDescription.windowId];
     else

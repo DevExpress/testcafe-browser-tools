@@ -36,7 +36,7 @@ export default async function (windowDescriptor, currentWidth, currentHeight, wi
     if (OS.win)
         resizeArguments = [windowDescription.hwnd];
     else if (OS.mac)
-        resizeArguments = [windowDescription.windowId, windowDescription.bundleId];
+        resizeArguments = [windowDescription.processId, windowDescription.windowId];
     else if (OS.linux)
         resizeArguments = [windowDescription.windowId];
     else
