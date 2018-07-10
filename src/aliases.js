@@ -4,7 +4,7 @@ import BINARIES from './binaries';
 
 const ALIASES = {
     'ie': {
-        nameRe: /ie|internet explorer/i,
+        nameRe: /iexplore|internet explorer/i,
         cmd:    ''
     },
 
