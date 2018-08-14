@@ -37,10 +37,10 @@ async function detectMicrosoftEdge () {
 
 async function searchInRegistry (registryRoot) {
     var installations = {};
-    var regKey        = registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet\\';
+    var regKey        = registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet';
     var regKeyEsc     = regKey.replace(/\\/g, '\\\\');
-    var browserRe     = new RegExp(regKeyEsc + '([^\\\\]+)\\\\shell\\\\open\\\\command' +
-        '\\s+\\([^)]+\\)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
+    var browserRe     = new RegExp(regKeyEsc + '\\\\([^\\\\]+)\\\\shell\\\\open\\\\command' +
+        '\\s+(?:\\([^)]+\\)|<.*?>)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
 
     // NOTE: To get the correct result regardless of the Windows localization,
     // we need to run the command using the UTF-8 codepage.
