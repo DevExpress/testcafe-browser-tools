@@ -40,7 +40,8 @@ else if (OS.linux) {
         resize:            toAbsPath(`../bin/linux/${platform}/resize`),
         maximize:          toAbsPath(`../bin/linux/${platform}/maximize`),
         screenshot:        toAbsPath(`../bin/linux/${platform}/screenshot`),
-        generateThumbnail: toAbsPath(`../bin/linux/${platform}/generate-thumbnail`)
+        generateThumbnail: toAbsPath(`../bin/linux/${platform}/generate-thumbnail`),
+        bringToFront:      toAbsPath(`../bin/linux/${platform}/bring-to-front`)
     };
 }
 else
