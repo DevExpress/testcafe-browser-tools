@@ -1,5 +1,6 @@
 import OS from 'os-family';
 import { EOL } from 'os';
+import delay from '../utils/delay';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 
@@ -12,12 +13,35 @@ import BINARIES from '../binaries';
  * @param {string} pageTitle - The title of the web page opened in a window whose descriptor should be retrieved.
  * @returns {object} a platform-specific window descriptor that can be used as a window identifier.
  **/
+const GRANT_PERMISSIONS_RETRY_COUNT = 10;
+const GRANT_PERMISSIONS_DELAY       = 3000;
+const GRANT_PERMISSIONS_EXIT_CODE   = 2;
+
+async function runFindWindowBinary (pageTitle) {
+    for (let i = 0; i < GRANT_PERMISSIONS_RETRY_COUNT; i++) {
+        try {
+            return await execFile(BINARIES.findWindow, [pageTitle]);
+        }
+        catch (err) {
+            const code = err.status || err.code;
+
+            if (code === GRANT_PERMISSIONS_EXIT_CODE) {
+                await delay(GRANT_PERMISSIONS_DELAY);
+
+                continue;
+            }
+
+            throw err;
+        }
+    }
+}
+
 export default async function (pageTitle) {
     var res          = null;
     var windowParams = [];
 
     try {
-        res = await execFile(BINARIES.findWindow, [pageTitle]);
+        res = await runFindWindowBinary(pageTitle);
     }
     catch (err) {
         return null;
