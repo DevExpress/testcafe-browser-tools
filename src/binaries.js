@@ -19,7 +19,7 @@ if (OS.win) {
 }
 else if (OS.mac) {
     BINARIES = {
-        open:               toAbsPath('../bin/mac/open.scpt'),
+        open:               toAbsPath('../bin/mac/open'),
         findWindow:         toAbsPath('../bin/mac/find-window'),
         getWindowSize:      toAbsPath('../bin/mac/get-window-size'),
         getWindowBounds:    toAbsPath('../bin/mac/get-window-bounds'),

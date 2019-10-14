@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/open.scpt" || true
+	rm "${DEST}/open" || true
 build:
 	mkdir "${DEST}" || true
-	osacompile -o "${DEST}/open.scpt" open.applescript
+	clang -o "${DEST}/open" -framework Cocoa -framework ScriptingBridge open.m
