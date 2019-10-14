@@ -23,6 +23,7 @@ async function runFindWindowBinary (pageTitle) {
             return await execFile(BINARIES.findWindow, [pageTitle]);
         }
         catch (err) {
+            console.log(err);
             const code = err.status || err.code;
 
             if (code === GRANT_PERMISSIONS_EXIT_CODE) {

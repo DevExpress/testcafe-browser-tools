@@ -1,7 +1,11 @@
+import { join } from 'path';
 import OS from 'os-family';
 import { toAbsPath } from 'read-file-relative';
 import { platform } from 'linux-platform-info';
+import { pathToFileURL } from 'url';
 
+const MAC_APP_NAME    = 'TestCafe Browser Tools.app';
+const MAC_BINARY_PATH = binary => join(__dirname, `../bin/mac/${MAC_APP_NAME}/Contents/MacOS/${binary}`);
 
 var BINARIES = void 0;
 
@@ -19,17 +23,18 @@ if (OS.win) {
 }
 else if (OS.mac) {
     BINARIES = {
-        open:               toAbsPath('../bin/mac/open'),
-        findWindow:         toAbsPath('../bin/mac/find-window'),
-        getWindowSize:      toAbsPath('../bin/mac/get-window-size'),
-        getWindowBounds:    toAbsPath('../bin/mac/get-window-bounds'),
-        getWindowMaxBounds: toAbsPath('../bin/mac/get-window-max-bounds'),
-        setWindowBounds:    toAbsPath('../bin/mac/set-window-bounds'),
-        close:              toAbsPath('../bin/mac/close'),
-        screenshot:         toAbsPath('../bin/mac/screenshot'),
-        resize:             toAbsPath('../bin/mac/resize'),
-        generateThumbnail:  toAbsPath('../bin/mac/generate-thumbnail'),
-        bringToFront:       toAbsPath('../bin/mac/bring-to-front')
+        app:                MAC_BINARY_PATH('testcafe-browser-tools'),
+        open:               'open',
+        findWindow:         'find-window',
+        getWindowSize:      'get-window-size',
+        getWindowBounds:    'get-window-bounds',
+        getWindowMaxBounds: 'get-window-max-bounds',
+        setWindowBounds:    'set-window-bounds',
+        close:              'close',
+        screenshot:         'screenshot',
+        resize:             'resize',
+        generateThumbnail:  'generate-thumbnail',
+        bringToFront:       'bring-to-front'
     };
 }
 else if (OS.linux) {
