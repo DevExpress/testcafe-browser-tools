@@ -2,13 +2,16 @@ import childProc from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import del from 'del';
 import OS from 'os-family';
 import nanoid from 'nanoid';
 import promisify from './promisify';
 import BINARIES from '../binaries';
 
 
-const OSASCRIPT_PATH = '/usr/bin/osascript';
+const EXIT_CODE_REGEXP = /Exit code: (-?\d+)/;
+
+const OPEN_PATH      = '/usr/bin/open';
 const TEMP_FIFO_NAME = seed => `testcafe-browser-tools-fifo-${seed}`;
 
 function getTempFIFOName () {
@@ -18,9 +21,6 @@ function getTempFIFOName () {
 var execFilePromise = promisify(childProc.execFile);
 var execPromise     = promisify(childProc.exec);
 
-function endsWith (str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
 
 function readFIFO (fifoPath) {
     return new Promise((resolve, reject) => {
@@ -30,14 +30,12 @@ function readFIFO (fifoPath) {
         stream.on('data', newData => data += newData ? newData.toString() : '');
         stream.on('end', () => resolve(data));
         stream.on('error', reject);
-    })
+    });
 }
 
 function spawnApp (args) {
     return new Promise((resolve, reject) => {
-        console.log(args);
-
-        const child = childProc.spawn('/usr/bin/open', ['-n', '-a', BINARIES.app, '--args', ...args]);
+        const child = childProc.spawn(OPEN_PATH, ['-n', '-a', BINARIES.app, '--args', ...args]);
 
         let outputData = '';
 
@@ -66,24 +64,34 @@ async function runWithMacApp (filePath, args) {
             spawnApp([fifoName, filePath, ...args])
         ]);
 
-        console.log(data);
-        
+        const exitCodeMatch = data.match(EXIT_CODE_REGEXP);
+
+        if (!exitCodeMatch)
+            return data;
+
+        const exitCode = Number(exitCodeMatch[1]);
+
+        if (exitCode) {
+            const error = new Error(`Exit code: ${exitCode}`);
+
+            error.code = exitCode;
+
+            throw error;
+        }
+
         return data;
     }
     finally {
-        await execPromise(`rm -rf ${fifoName}`);
+        await del(fifoName, { force: true });
     }
 }
 
 //API
 export async function execFile (filePath, args) {
-    if (!OS.mac)
-        await execFilePromise(filePath, args);
+    if (OS.mac)
+        return await runWithMacApp(filePath, args);
 
-    if (endsWith(filePath, '.scpt'))
-        return await execFilePromise(OSASCRIPT_PATH, [filePath].concat(args));
-
-    return await runWithMacApp(filePath, args);
+    return await execFilePromise(filePath, args);
 }
 
 export async function exec (command) {

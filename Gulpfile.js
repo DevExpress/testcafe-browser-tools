@@ -16,7 +16,6 @@ var chmod        = require('gulp-chmod');
 var del          = require('del');
 var through      = require('through2');
 var Promise      = require('pinkie');
-var assign       = require('lodash').assign;
 var platform     = require('linux-platform-info').platform;
 var tmp          = require('tmp');
 var tar          = require('tar-stream');
@@ -97,20 +96,13 @@ gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
         }));
 });
 
-gulp.task('build-mac-app', function () {
+gulp.task('build-mac-app', ['build-mac-executables'], function () {
     return gulp
         .src('src/natives/app/mac/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, MAC_BINARY_PATH),
             MACOSX_DEPLOYMENT_TARGET
         }));
-});
-
-gulp.task('copy-mac-scripts', ['clean-mac-bin'], function () {
-    return gulp
-        .src('src/natives/**/mac/*.scpt')
-        .pipe(flatten())
-        .pipe(gulp.dest('bin/mac'));
 });
 
 // Linux bin
@@ -225,7 +217,7 @@ gulp.task('transpile-lib', ['clean-lib'], function () {
 gulp.task('build-lib', ['transpile-lib', 'docs']);
 
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
-gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
+gulp.task('build-mac', ['build-lib', 'build-mac-app']);
 gulp.task('build-linux', ['build-lib', 'build-linux-executables', 'copy-linux-scripts']);
 
 gulp.task('docs', ['transpile-lib'], function () {

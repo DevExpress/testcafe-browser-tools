@@ -2,7 +2,7 @@ import { join } from 'path';
 import OS from 'os-family';
 import { toAbsPath } from 'read-file-relative';
 import { platform } from 'linux-platform-info';
-import { pathToFileURL } from 'url';
+
 
 const MAC_APP_NAME    = 'TestCafe Browser Tools.app';
 const MAC_BINARY_PATH = binary => join(__dirname, `../bin/mac/${MAC_APP_NAME}/Contents/MacOS/${binary}`);

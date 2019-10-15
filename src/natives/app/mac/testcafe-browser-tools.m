@@ -43,9 +43,16 @@ int main (int argc, const char * argv[]) {
 
         id commandName = [NSString stringWithUTF8String:argv[2]];
 
-        command *commandPointer = (command *)[commands[commandName] pointerValue];
+        id item = commands[commandName];
 
-        (*commandPointer)(argc - 2, argv + 2);
+        if (item == nil)
+            return 1;
+
+        command *commandPointer = (command *)[item pointerValue];
+
+        int exitCode = (*commandPointer)(argc - 2, argv + 2);
+
+        printf("\nExit code: %d\n", exitCode);
 
         fsync(fd);
         close(fd);
