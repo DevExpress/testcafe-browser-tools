@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/screenshot" || true
+	rm "${DEST}/screenshot.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/screenshot" -framework Cocoa screenshot.m
+	clang -c -o "${DEST}/screenshot.o" screenshot.m

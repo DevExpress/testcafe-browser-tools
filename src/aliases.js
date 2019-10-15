@@ -46,8 +46,8 @@ const ALIASES = {
     'safari': {
         nameRe:             /safari/i,
         cmd:                '',
-        path:               BINARIES.open,
-        macOpenCmdTemplate: '/usr/bin/osascript "{{{path}}}" {{{pageUrl}}} --args {{{cmd}}}'
+        path:               BINARIES.app,
+        macOpenCmdTemplate: `open -n -a "{{{path}}}" --args /dev/null open {{{pageUrl}}} {{{cmd}}}`
     },
 
     'edge': {

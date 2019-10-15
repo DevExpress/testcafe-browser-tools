@@ -130,7 +130,13 @@ struct Image {
 	}
 };
 
-int main (int argc, char *argv[]) {
+#ifdef __APPLE__
+#define GENERATE_THUMBNAIL_MAIN generateThumbnail
+#else
+#define GENERATE_THUMBNAIL_MAIN main
+#endif
+ 
+extern "C" int GENERATE_THUMBNAIL_MAIN (int argc, char *argv[]) {
 	if (argc != 5) {
 		printf("Incorrect arguments\n");
 		return 1;

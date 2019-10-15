@@ -5,7 +5,7 @@
 
 #include "../../utils/mac/utils.h"
 
-int main (int argc, const char * argv[]) {
+int getWindowSize (int argc, const char * argv[]) {
     if (argc < 3) {
         printf("Incorrect arguments\n");
         return 1;

@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/get-window-max-bounds" || true
+	rm "${DEST}/get-window-max-bounds.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/get-window-max-bounds" -framework Cocoa get-window-max-bounds.m
+	clang -c -o "${DEST}/get-window-max-bounds.o" get-window-max-bounds.m

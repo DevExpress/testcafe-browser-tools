@@ -16,7 +16,6 @@ var chmod        = require('gulp-chmod');
 var del          = require('del');
 var through      = require('through2');
 var Promise      = require('pinkie');
-var assign       = require('lodash').assign;
 var platform     = require('linux-platform-info').platform;
 var tmp          = require('tmp');
 var tar          = require('tar-stream');
@@ -25,6 +24,10 @@ var packageInfo  = require('./package.json');
 
 const EXEC_MASK           = parseInt('111', 8);
 const UNIX_BINARY_PATH_RE = /^package\/bin\/(mac|linux)/;
+
+const MACOSX_DEPLOYMENT_TARGET = '10.14';
+const MAC_APP_NAME             = 'TestCafe Browser Tools.app';
+const MAC_BINARY_PATH          = `bin/mac/${MAC_APP_NAME}/Contents/MacOS`;
 
 tmp.setGracefulCleanup();
 
@@ -37,7 +40,7 @@ function make (options) {
 
         var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
 
-        execa.shell('make -C ' + dirPath, { env: assign({}, process.env, options) })
+        execa.shell('make -C ' + dirPath, { env: { ...process.env, ...options } })
             .then(function () {
                 callback(null, file);
             })
@@ -81,22 +84,25 @@ gulp.task('copy-win-executables', ['build-win-executables'], function () {
 
 // Mac bin
 gulp.task('clean-mac-bin', function () {
-    return del('bin/mac');
+    return del(MAC_BINARY_PATH);
 });
 
 gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
     return gulp
-        .src('src/natives/**/@(mac|any)/Makefile')
+        .src('src/natives/!(app)/@(mac|any)/Makefile')
         .pipe(make({
-            DEST: path.join(__dirname, 'bin/mac')
+            DEST: 'obj',
+            MACOSX_DEPLOYMENT_TARGET
         }));
 });
 
-gulp.task('copy-mac-scripts', ['clean-mac-bin'], function () {
+gulp.task('build-mac-app', ['build-mac-executables'], function () {
     return gulp
-        .src('src/natives/**/mac/*.scpt')
-        .pipe(flatten())
-        .pipe(gulp.dest('bin/mac'));
+        .src('src/natives/app/mac/Makefile')
+        .pipe(make({
+            DEST: path.join(__dirname, MAC_BINARY_PATH),
+            MACOSX_DEPLOYMENT_TARGET
+        }));
 });
 
 // Linux bin
@@ -211,7 +217,7 @@ gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
 gulp.task('build-lib', ['transpile-lib', 'docs']);
 
 gulp.task('build-win', ['build-lib', 'copy-win-executables']);
-gulp.task('build-mac', ['build-lib', 'build-mac-executables', 'copy-mac-scripts']);
+gulp.task('build-mac', ['build-lib', 'build-mac-app']);
 gulp.task('build-linux', ['build-lib', 'build-linux-executables', 'copy-linux-scripts']);
 
 gulp.task('docs', ['transpile-lib'], function () {

@@ -5,7 +5,7 @@
 
 #include "../../utils/mac/utils.h"
 
-int main (int argc, const char * argv[]) {
+int setWindowBounds (int argc, const char * argv[]) {
     if (argc < 7) {
         printf("Incorrect arguments\n");
         return 1;

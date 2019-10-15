@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/set-window-bounds" || true
+	rm "${DEST}/set-window-bounds.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/set-window-bounds" -framework Cocoa -framework ScriptingBridge set-window-bounds.m
+	clang -c -o "${DEST}/set-window-bounds.o" set-window-bounds.m

@@ -15,3 +15,5 @@
 
 /src/natives/*/any/bin/**
 /src/natives/*/any/obj/**
+
+/src/natives/*/mac/obj/**

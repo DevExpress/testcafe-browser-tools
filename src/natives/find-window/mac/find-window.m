@@ -6,6 +6,9 @@
 #import <Cocoa/Cocoa.h>
 #import "../../utils/mac/utils.h"
 
+const SUCCESS_EXIT_CODE                 = 0;
+const ERROR_EXIT_CODE                   = 1;
+const NO_REQUIRED_PERMISSIONS_EXIT_CODE = 2;
 
 const NSUInteger MAX_SEARCHING_ATTEMPTS_COUNT  = 10;
 const NSUInteger SEARCHING_ATTEMPTS_DELAY      = 300000;
@@ -55,17 +58,34 @@ NSMutableDictionary * getTestCafeWindowId (NSString *windowTitle) {
     return windowDescriptor;
 }
 
-int main (int argc, const char * argv[]) {
+BOOL haveScreenRecordingPermission () {
+    CGDisplayStreamRef stream = CGDisplayStreamCreate(CGMainDisplayID(), 1, 1, kCVPixelFormatType_32BGRA, nil, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
+        ;
+    });
+
+    BOOL canRecord = stream != NULL;
+
+    if (stream) {
+        CFRelease(stream);
+    }
+
+    return canRecord;
+}
+
+int findWindow (int argc, const char * argv[]) {
     if (argc < 2) {
         printf("Incorrect arguments\n");
-        return 1;
+        return ERROR_EXIT_CODE;
     }
 
     @autoreleasepool {
+        if (!haveScreenRecordingPermission())
+            return NO_REQUIRED_PERMISSIONS_EXIT_CODE;
+
         NSDictionary *windowDescriptor   = nil;
         NSUInteger seachingAttemptsCount = 0;
         BOOL searchFinished              = NO;
-
+        
         while (seachingAttemptsCount < MAX_SEARCHING_ATTEMPTS_COUNT && !searchFinished) {
             windowDescriptor = getTestCafeWindowId([NSString stringWithUTF8String:argv[1]]);
             
@@ -80,16 +100,16 @@ int main (int argc, const char * argv[]) {
 
         if (!windowDescriptor) {
             fprintf(stderr, "There are no TestCafe windows\n");
-            return 1;
+            return ERROR_EXIT_CODE;
         }
 
         printf("%d\n", [windowDescriptor[@"processId"] intValue]);
         printf("%d\n", [windowDescriptor[@"cocoaId"] intValue]);
         printf("%d\n", [windowDescriptor[@"osaId"] intValue]);
 
-        return 0;
+        return SUCCESS_EXIT_CODE;
     }
 
-    return 0;
+    return SUCCESS_EXIT_CODE;
 }
 

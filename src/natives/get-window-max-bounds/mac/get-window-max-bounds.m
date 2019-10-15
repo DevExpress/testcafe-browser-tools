@@ -84,7 +84,7 @@ void getWindowMaxDimensions (NSRect windowRect) {
     printf("%d\n%d\n%d\n%d", (int)maxWindowRect.origin.x, (int)maxWindowRect.origin.y, (int)maxWindowRect.size.width, (int)maxWindowRect.size.height);
 }
 
-int main (int argc, const char * argv[]) {
+int getWindowMaxBounds (int argc, const char * argv[]) {
     if (argc < 5) {
         printf("Incorrect arguments\n");
         return 1;
