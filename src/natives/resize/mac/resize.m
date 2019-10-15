@@ -5,7 +5,7 @@
 
 #include "../../utils/mac/utils.h"
 
-int main (int argc, const char * argv[]) {
+int resize (int argc, const char * argv[]) {
     if (argc < 5) {
         printf("Incorrect arguments\n");
         return 1;

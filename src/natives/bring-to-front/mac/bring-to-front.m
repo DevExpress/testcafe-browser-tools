@@ -9,7 +9,7 @@
 
 const int APP_ACTIVATION_DELAY = 100000;
 
-int main (int argc, const char * argv[]) {
+int bringToFront (int argc, const char * argv[]) {
     if (argc < 3) {
         printf("Incorrect arguments\n");
         return 1;

@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/close" || true
+	rm "${DEST}/close.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/close" -framework Cocoa -framework ScriptingBridge close.m
+	clang -c -o "${DEST}/close.o" close.m

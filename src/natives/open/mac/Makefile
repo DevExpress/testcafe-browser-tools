@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/open" || true
+	rm "${DEST}/open.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/open" -framework Cocoa -framework ScriptingBridge open.m
+	clang -c -o "${DEST}/open.o" open.m

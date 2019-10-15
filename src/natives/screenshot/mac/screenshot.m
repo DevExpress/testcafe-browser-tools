@@ -9,7 +9,7 @@
 int createWindowShot (CGWindowID windowID, NSString* screenshotPath);
 int saveImage(NSString* fullPath, CGImageRef image);
 
-int main (int argc, const char * argv[]) {
+int screenshot (int argc, const char * argv[]) {
     @autoreleasepool {
         int windowId = [[NSString stringWithUTF8String:argv[1]] intValue];
 

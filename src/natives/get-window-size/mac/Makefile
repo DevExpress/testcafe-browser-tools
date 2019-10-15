@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/get-window-size" || true
+	rm "${DEST}/get-window-size.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/get-window-size" -framework Cocoa -framework ScriptingBridge get-window-size.m
+	clang -c -o "${DEST}/get-window-size.o" get-window-size.m

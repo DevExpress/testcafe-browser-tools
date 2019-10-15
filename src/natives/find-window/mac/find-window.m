@@ -72,7 +72,7 @@ BOOL haveScreenRecordingPermission () {
     return canRecord;
 }
 
-int main (int argc, const char * argv[]) {
+int findWindow (int argc, const char * argv[]) {
     if (argc < 2) {
         printf("Incorrect arguments\n");
         return ERROR_EXIT_CODE;

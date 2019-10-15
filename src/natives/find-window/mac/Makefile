@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/find-window" || true
+	rm "${DEST}/find-window.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/find-window" -framework Cocoa -framework ScriptingBridge find-window.m
+	clang -c -o "${DEST}/find-window.o" find-window.m

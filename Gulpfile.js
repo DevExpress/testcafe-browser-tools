@@ -86,7 +86,15 @@ gulp.task('clean-mac-bin', function () {
 
 gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
     return gulp
-        .src('src/natives/**/@(mac|any)/Makefile')
+        .src('src/natives/!(app)/@(mac|any)/Makefile')
+        .pipe(make({
+            DEST: 'obj'
+        }));
+});
+
+gulp.task('build-mac-app', function () {
+    return gulp
+        .src('src/natives/app/mac/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, 'bin/mac')
         }));

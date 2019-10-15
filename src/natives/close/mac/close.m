@@ -11,7 +11,7 @@ enum CloseOptions {
     CloseOptionsAsk = 'ask ' /* Ask the user whether or not to save the file. */
 };
 
-int main (int argc, const char * argv[]) {
+int closeWindow (int argc, const char * argv[]) {
     if (argc < 3) {
         printf("Incorrect arguments\n");
         return 1;

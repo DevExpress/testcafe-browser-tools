@@ -1,6 +1,6 @@
 all: clean build
 clean:
-	rm "${DEST}/bring-to-front" || true
+	rm "${DEST}/bring-to-front.o" || true
 build:
 	mkdir "${DEST}" || true
-	clang -o "${DEST}/bring-to-front" -framework Cocoa -framework ScriptingBridge -framework AppKit bring-to-front.m
+	clang -c -o "${DEST}/bring-to-front.o" bring-to-front.m
