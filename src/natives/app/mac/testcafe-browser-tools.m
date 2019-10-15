@@ -23,7 +23,8 @@ int setWindowBounds (int argc, const char * argv[]);
 int main (int argc, const char * argv[]) {
     int fd = open(argv[1], O_WRONLY);
 
-    dup2(fd, STDOUT_FILENO);
+    if (fd != -1)
+        dup2(fd, STDOUT_FILENO);
 
     @autoreleasepool {
         id commands = @{
@@ -54,8 +55,10 @@ int main (int argc, const char * argv[]) {
 
         printf("\nExit code: %d\n", exitCode);
 
-        fsync(fd);
-        close(fd);
+        if (fd != -1) {
+            fsync(fd);
+            close(fd);
+        }
     }
 
     return 0;

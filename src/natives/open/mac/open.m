@@ -22,6 +22,7 @@ int openWindow (int argc, const char * argv[]) {
         
 		[[safari documents] addObject: document];
 		[document release];
+		[safari activate];
 	}
 
     return 0;
