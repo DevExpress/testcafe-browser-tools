@@ -207,7 +207,7 @@ gulp.task('clean-lib', function () {
     return del('lib');
 });
 
-gulp.task('transpile-lib', ['clean-lib'], function () {
+gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
     return gulp
         .src('src/**/*.js')
         .pipe(babel())
