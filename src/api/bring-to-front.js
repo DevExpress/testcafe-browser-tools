@@ -12,10 +12,6 @@ import BINARIES from '../binaries';
  */
 export default async function (windowDescriptor) {
     var windowDescription = typeof windowDescriptor === 'string' ? await findWindow(windowDescriptor) : windowDescriptor;
-
-    if (!windowDescription)
-        return;
-
     var bringWindowToFrontArguments = void 0;
 
     if (OS.win)

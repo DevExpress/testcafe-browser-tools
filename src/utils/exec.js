@@ -7,6 +7,7 @@ import OS from 'os-family';
 import nanoid from 'nanoid';
 import promisify from './promisify';
 import BINARIES from '../binaries';
+import { NativeBinaryHasFailedError} from '../errors';
 
 
 const EXIT_CODE_REGEXP = /Exit code: (-?\d+)/;

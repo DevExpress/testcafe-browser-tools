@@ -3,7 +3,7 @@ import Mustache from 'mustache';
 import OS from 'os-family';
 import { exec } from '../utils/exec';
 import exists from '../utils/fs-exists-promised';
-import { MESSAGES, getText } from '../messages';
+import { BrowserPathNotSetError, UnableToRunBrowsersError } from '../errors';
 
 
 async function checkBrowserPath (browserInfo) {
@@ -12,13 +12,13 @@ async function checkBrowserPath (browserInfo) {
         if (browserInfo.winOpenCmdTemplate)
             return;
 
-        throw new Error(getText(MESSAGES.browserPathNotSet));
+        throw new BrowserPathNotSetError();
     }
 
     var fileExists = await exists(browserInfo.path);
 
     if (!fileExists)
-        throw new Error(getText(MESSAGES.unableToRunBrowser, browserInfo.path));
+        throw new UnableToRunBrowsersError({ path: browserInfo.path });
 }
 
 function getWinOpenCommand (browserInfo, pageUrl) {
@@ -75,6 +75,6 @@ export default async function (browserInfo, pageUrl) {
         await exec(command);
     }
     catch (err) {
-        throw new Error(getText(MESSAGES.unableToRunBrowser, browserInfo.path));
+        throw new UnableToRunBrowsersError({ path: browserInfo.path });
     }
 }

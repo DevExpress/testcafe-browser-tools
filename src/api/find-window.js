@@ -37,17 +37,8 @@ async function runFindWindowBinary (pageTitle) {
 }
 
 export default async function (pageTitle) {
-    var res          = null;
-    var windowParams = [];
-
-    try {
-        res = await runFindWindowBinary(pageTitle);
-    }
-    catch (err) {
-        return null;
-    }
-
-    windowParams = res.split(EOL);
+    var res          = await runFindWindowBinary(pageTitle);
+    var windowParams = res.split(EOL);
 
     if (OS.win)
         return { hwnd: windowParams[0], browser: windowParams[1] };
