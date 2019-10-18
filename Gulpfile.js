@@ -25,7 +25,7 @@ var packageInfo  = require('./package.json');
 const EXEC_MASK           = parseInt('111', 8);
 const UNIX_BINARY_PATH_RE = /^package\/bin\/(mac|linux)/;
 
-const MACOSX_DEPLOYMENT_TARGET = '10.14';
+const MACOSX_DEPLOYMENT_TARGET = '10.10';
 const MAC_APP_NAME             = 'TestCafe Browser Tools.app';
 const MAC_BINARY_PATH          = `bin/mac/${MAC_APP_NAME}/Contents/MacOS`;
 
