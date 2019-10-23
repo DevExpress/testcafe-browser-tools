@@ -23,7 +23,7 @@ async function runFindWindowBinary (pageTitle) {
         if (!err instanceof NativeBinaryHasFailedError)
             throw err;
 
-        if (err.data.exitCode === GRANT_PERMISSIONS_EXIT_CODE)
+        if (OS.mac && err.data.exitCode === GRANT_PERMISSIONS_EXIT_CODE)
             throw new UnableToAccessScreenRecordingAPIError(err.data);
 
         throw err;
