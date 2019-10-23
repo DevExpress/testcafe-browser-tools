@@ -14,4 +14,6 @@ export { default as watchWindow } from './api/watch-window';
 export { default as bringWindowToFront } from './api/bring-to-front';
 export { default as getDevicesViewportData } from './api/get-devices-viewport-data';
 
-export * as ERRORS from './errors';
+import * as errors from './errors';
+
+export { errors };
