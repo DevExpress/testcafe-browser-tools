@@ -34,7 +34,7 @@ class BasicError extends Error {
 }
 
 export class BrowserPathNotSetError extends BasicError {
-    
+
 }
 
 export class UnableToRunBrowsersError extends BasicError {
