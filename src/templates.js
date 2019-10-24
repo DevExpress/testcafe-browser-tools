@@ -30,7 +30,7 @@ export const NATIVE_BINARY_HAS_FAILED = ({ binary, exitCode, output }) => dedent
 `;
 
 export const UNABLE_TO_ACCESS_AUTOMATION_API = ({ binary }) => dedent `
-    Process ${binary} can't access the Automation API.
+    The ${binary} process cannot access the Automation API.
 `;
 
 export const UNABLE_TO_ACCESS_SCREEN_RECORDING_API = ({ binary }) => dedent `
