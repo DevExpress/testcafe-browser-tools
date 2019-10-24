@@ -1,25 +1,25 @@
-var path         = require('path');
-var fs           = require('fs');
-var zlib         = require('zlib');
-var execa        = require('execa');
-var gulp         = require('gulp');
-var babel        = require('gulp-babel');
-var eslint       = require('gulp-eslint');
-var flatten      = require('gulp-flatten');
-var mocha        = require('gulp-mocha');
-var msbuild      = require('gulp-msbuild');
-var concat       = require('gulp-concat');
-var jsdoc        = require('gulp-jsdoc-to-markdown');
-var remoteSrc    = require('gulp-remote-src');
-var changed      = require('gulp-changed');
-var chmod        = require('gulp-chmod');
-var del          = require('del');
-var through      = require('through2');
-var Promise      = require('pinkie');
-var platform     = require('linux-platform-info').platform;
-var tmp          = require('tmp');
-var tar          = require('tar-stream');
-var packageInfo  = require('./package.json');
+const childProcess = require('child_process');
+const path         = require('path');
+const fs           = require('fs');
+const util         = require('util');
+const zlib         = require('zlib');
+const execa        = require('execa');
+const gulp         = require('gulp');
+const eslint       = require('gulp-eslint');
+const flatten      = require('gulp-flatten');
+const mocha        = require('gulp-mocha');
+const msbuild      = require('gulp-msbuild');
+const jsdoc        = require('jsdoc-to-markdown');
+const remoteSrc    = require('gulp-remote-src');
+const changed      = require('gulp-changed');
+const chmod        = require('gulp-chmod');
+const del          = require('del');
+const through      = require('through2');
+const Promise      = require('pinkie');
+const { platform } = require('linux-platform-info');
+const tmp          = require('tmp');
+const tar          = require('tar-stream');
+const packageInfo  = require('./package.json');
 
 
 const EXEC_MASK           = parseInt('111', 8);
@@ -28,6 +28,8 @@ const UNIX_BINARY_PATH_RE = /^package\/bin\/(mac|linux)/;
 const MACOSX_DEPLOYMENT_TARGET = '10.10';
 const MAC_APP_NAME             = 'TestCafe Browser Tools.app';
 const MAC_BINARY_PATH          = `bin/mac/${MAC_APP_NAME}/Contents/MacOS`;
+
+const writeFile = util.promisify(fs.writeFile);
 
 tmp.setGracefulCleanup();
 
@@ -49,29 +51,29 @@ function make (options) {
 }
 
 // Windows bin
-gulp.task('clean-win-bin', function () {
+function cleanWindowsNatives () {
     return del('bin/win');
-});
+}
 
-gulp.task('build-win-utils-dll', ['clean-win-bin'], function () {
+function buildWindowsUtilsDLL () {
     return gulp
         .src('src/natives/**/utils.csproj')
         .pipe(msbuild({
             targets:     ['Clean', 'Build'],
             errorOnFail: true
         }));
-});
+}
 
-gulp.task('build-win-executables', ['build-win-utils-dll'], function () {
+function buildWindowsExecutables () {
     return gulp
         .src(['!src/natives/**/utils.csproj', 'src/natives/**/*.@(cs|vcx)proj'])
         .pipe(msbuild({
             targets:      ['Clean', 'Build'],
             toolsVersion: 12.0
         }));
-});
+}
 
-gulp.task('copy-win-executables', ['build-win-executables'], function () {
+function copyWindowsExecutables () {
     return gulp
         .src([
             'src/natives/**/@(win|any)/bin/Release/*.dll',
@@ -80,70 +82,58 @@ gulp.task('copy-win-executables', ['build-win-executables'], function () {
         ])
         .pipe(flatten())
         .pipe(gulp.dest('bin/win'));
-});
+}
 
 // Mac bin
-gulp.task('clean-mac-bin', function () {
+function cleanMacNatives () {
     return del(MAC_BINARY_PATH);
-});
+}
 
-gulp.task('build-mac-executables', ['clean-mac-bin'], function () {
+function buildMacExecutables () {
     return gulp
         .src('src/natives/!(app)/@(mac|any)/Makefile')
         .pipe(make({
             DEST: 'obj',
             MACOSX_DEPLOYMENT_TARGET
         }));
-});
+}
 
-gulp.task('build-mac-app', ['build-mac-executables'], function () {
+function buildMacApp () {
     return gulp
         .src('src/natives/app/mac/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, MAC_BINARY_PATH),
             MACOSX_DEPLOYMENT_TARGET
         }));
-});
+}
 
 // Linux bin
-gulp.task('clean-linux-bin', function () {
+function cleanLinuxNatives () {
     return del(['bin/linux/*.sh', 'bin/linux/' + platform]);
-});
+}
 
-gulp.task('build-linux-executables', ['clean-linux-bin'], function () {
+function buildLinuxExecutables () {
     return gulp
         .src('src/natives/**/@(linux|any)/Makefile')
         .pipe(make({
             DEST: path.join(__dirname, 'bin/linux', platform)
         }));
-});
+}
 
-gulp.task('copy-linux-scripts', ['clean-linux-bin'], function () {
+function copyLinuxScripts () {
     return gulp
         .src('src/natives/**/linux/*.sh')
         .pipe(flatten())
         .pipe(chmod(755))
         .pipe(gulp.dest('bin/linux'));
-});
+}
 
 // Test
-gulp.task('run-playground-win', ['build-win'], function () {
+function runPlayground () {
     require('./test/playground/index');
-});
+}
 
-gulp.task('run-playground-mac', ['build-mac'], function () {
-    require('./test/playground/index');
-});
-
-gulp.task('run-playground-linux', ['build-linux'], function () {
-    require('./test/playground/index');
-});
-
-gulp.task('run-playground-no-build', function () {
-    require('./test/playground/index');
-});
-
-gulp.task('test', ['build-lib'], function () {
+function test () {
     return gulp
         .src('test/tests/*-test.js')
         .pipe(mocha({
@@ -151,10 +141,10 @@ gulp.task('test', ['build-lib'], function () {
             reporter: 'spec',
             timeout:  typeof v8debug === 'undefined' ? 2000 : Infinity // NOTE: disable timeouts in debug
         }));
-});
+}
 
 // General tasks
-gulp.task('update-device-database', function () {
+function updateDeviceDatabase () {
     function transform () {
         return through.obj(function (file, enc, callback) {
             var deviceDatabase = {};
@@ -188,9 +178,9 @@ gulp.task('update-device-database', function () {
         .pipe(transform())
         .pipe(changed(destDir, { hasChanged: changed.compareSha1Digest }))
         .pipe(gulp.dest(destDir));
-});
+}
 
-gulp.task('lint', function () {
+function lint () {
     return gulp
         .src([
             'src/**/*.js',
@@ -201,35 +191,26 @@ gulp.task('lint', function () {
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task('clean-lib', function () {
+function cleanLib () {
     return del('lib');
-});
+}
 
-gulp.task('transpile-lib', ['lint', 'clean-lib'], function () {
-    return gulp
-        .src('src/**/*.js')
-        .pipe(babel())
-        .pipe(gulp.dest('lib'));
-});
+function transpileLib () {
+    return childProcess
+        .spawn('npx tsc -p ./src/tsconfig.json', { shell: true, stdio: 'inherit' });
+}
 
-gulp.task('build-lib', ['transpile-lib', 'docs']);
+// TODO: fix dmd-plugin-async
+async function docs () {
+    const docsContent = await jsdoc.render({
+        files:  'lib/**/*.js',
+        plugin: 'dmd-plugin-async'
+    });
 
-gulp.task('build-win', ['build-lib', 'copy-win-executables']);
-gulp.task('build-mac', ['build-lib', 'build-mac-app']);
-gulp.task('build-linux', ['build-lib', 'build-linux-executables', 'copy-linux-scripts']);
-
-gulp.task('docs', ['transpile-lib'], function () {
-    var destDir = './';
-
-    return gulp
-        .src('lib/**/*.js')
-        .pipe(concat('API.md'))
-        .pipe(jsdoc({ plugin: 'dmd-plugin-async' }))
-        .pipe(changed(destDir, { hasChanged: changed.compareSha1Digest }))
-        .pipe(gulp.dest(destDir));
-});
+    await writeFile('API.md', docsContent);
+}
 
 function fixPermissionsInTarball (sourceFileName, destinationFileName) {
     var sourceStream      = fs.createReadStream(sourceFileName);
@@ -268,7 +249,7 @@ function fixPermissionsInTarball (sourceFileName, destinationFileName) {
     return resultPromise;
 }
 
-gulp.task('publish', function () {
+function publish () {
     var publishArguments    = process.argv.slice(3);
     var packageDir          = __dirname;
     var packageName         = packageInfo.name.replace(/^@/, '').replace('/', '-');
@@ -289,4 +270,30 @@ gulp.task('publish', function () {
                 stdio: 'inherit'
             });
         });
-});
+}
+
+
+exports.updateDeviceDatabase = updateDeviceDatabase;
+
+exports.lint = lint;
+
+exports.buildWindowsNatives = gulp.series(cleanWindowsNatives, buildWindowsUtilsDLL, buildWindowsExecutables, copyWindowsExecutables);
+exports.buildMacNatives     = gulp.series(cleanMacNatives, buildMacExecutables, buildMacApp);
+exports.buildLinuxNatives   = gulp.series(cleanLinuxNatives, gulp.parallel(buildLinuxExecutables, copyLinuxScripts));
+
+exports.docs = docs;
+
+// TODO: add docs autogeneration
+exports.buildLib     = gulp.parallel(lint, gulp.series(cleanLib, transpileLib));
+exports.buildWindows = gulp.parallel(exports.buildLib, exports.buildWindowsNatives);
+exports.buildMac     = gulp.parallel(exports.buildLib, exports.buildMacNatives);
+exports.buildLinux   = gulp.parallel(exports.buildLib, exports.buildLinuxNatives);
+
+exports.runPlayground        = runPlayground;
+exports.runPlaygroundWindows = gulp.series(exports.buildWindows, runPlayground);
+exports.runPlaygroundMac     = gulp.series(exports.buildMac, runPlayground);
+exports.runPlaygroundLinux   = gulp.series(exports.buildLinux, runPlayground);
+
+exports.test = gulp.series(exports.buildLib, test);
+
+exports.publish = publish;

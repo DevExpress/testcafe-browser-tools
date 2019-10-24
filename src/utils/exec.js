@@ -7,25 +7,26 @@ import OS from 'os-family';
 import nanoid from 'nanoid';
 import promisify from './promisify';
 import BINARIES from '../binaries';
+import { NativeBinaryHasFailedError } from '../errors';
 
 
 const EXIT_CODE_REGEXP = /Exit code: (-?\d+)/;
 
 const OPEN_PATH      = '/usr/bin/open';
-const TEMP_FIFO_NAME = seed => `testcafe-browser-tools-fifo-${seed}`;
+const TEMP_PIPE_NAME = seed => `testcafe-browser-tools-fifo-${seed}`;
 
-function getTempFIFOName () {
-    return path.join(os.tmpdir(), TEMP_FIFO_NAME(nanoid()));
+function getTempPipePath () {
+    return path.join(os.tmpdir(), TEMP_PIPE_NAME(nanoid()));
 }
 
 var execFilePromise = promisify(childProc.execFile);
 var execPromise     = promisify(childProc.exec);
 
 
-function readFIFO (fifoPath) {
+function readPipe (pipePath) {
     return new Promise((resolve, reject) => {
         let data     = '';
-        const stream = fs.createReadStream(fifoPath);
+        const stream = fs.createReadStream(pipePath);
 
         stream.on('data', newData => data += newData ? newData.toString() : '');
         stream.on('end', () => resolve(data));
@@ -33,9 +34,9 @@ function readFIFO (fifoPath) {
     });
 }
 
-function spawnApp (args) {
+function spawnApp (pipePath, binaryPath, args) {
     return new Promise((resolve, reject) => {
-        const child = childProc.spawn(OPEN_PATH, ['-n', '-a', BINARIES.app, '--args', ...args]);
+        const child = childProc.spawn(OPEN_PATH, ['-n', '-a', BINARIES.app, '--args', pipePath, binaryPath, ...args]);
 
         let outputData = '';
 
@@ -43,7 +44,7 @@ function spawnApp (args) {
 
         child.on('exit', code => {
             if (code)
-                reject(new Error(`Exit code: ${code}\n${outputData}\n`));
+                reject(new NativeBinaryHasFailedError({ binary: binaryPath, exitCode: code, output: outputData }));
             else
                 resolve();
         });
@@ -53,15 +54,15 @@ function spawnApp (args) {
     });
 }
 
-async function runWithMacApp (filePath, args) {
-    const fifoName = getTempFIFOName();
+async function runWithMacApp (binaryPath, args) {
+    const pipePath = getTempPipePath();
 
-    await execPromise(`mkfifo ${fifoName}`);
+    await execPromise(`mkfifo ${pipePath}`);
 
     try {
         const [data] = await Promise.all([
-            readFIFO(fifoName),
-            spawnApp([fifoName, filePath, ...args])
+            readPipe(pipePath),
+            spawnApp(pipePath, binaryPath, [args])
         ]);
 
         const exitCodeMatch = data.match(EXIT_CODE_REGEXP);
@@ -71,27 +72,35 @@ async function runWithMacApp (filePath, args) {
 
         const exitCode = Number(exitCodeMatch[1]);
 
-        if (exitCode) {
-            const error = new Error(`Exit code: ${exitCode}`);
-
-            error.code = exitCode;
-
-            throw error;
-        }
+        if (exitCode)
+            throw new NativeBinaryHasFailedError({ binary: binaryPath, exitCode });
 
         return data;
     }
     finally {
-        await del(fifoName, { force: true });
+        await del(pipePath, { force: true });
     }
 }
 
 //API
 export async function execFile (filePath, args) {
-    if (OS.mac)
-        return await runWithMacApp(filePath, args);
+    try {
+        if (OS.mac)
+            return await runWithMacApp(filePath, args);
 
-    return await execFilePromise(filePath, args);
+        return await execFilePromise(filePath, args);
+    }
+    catch (err) {
+        if (err instanceof NativeBinaryHasFailedError)
+            throw err;
+
+        const errorCode = err.status || err.code;
+
+        if (errorCode === void 0 || typeof errorCode === 'string')
+            throw err;
+
+        throw new NativeBinaryHasFailedError({ binary: filePath, exitCode: errorCode });
+    }
 }
 
 export async function exec (command) {
