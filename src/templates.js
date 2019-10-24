@@ -34,5 +34,5 @@ export const UNABLE_TO_ACCESS_AUTOMATION_API = ({ binary }) => dedent `
 `;
 
 export const UNABLE_TO_ACCESS_SCREEN_RECORDING_API = ({ binary }) => dedent `
-    Process ${binary} can't access the Screen Recording API.
+    The ${binary} process cannot access the Screen Recording API.
 `;
