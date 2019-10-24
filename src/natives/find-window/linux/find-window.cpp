@@ -147,7 +147,7 @@ bool checkWindow (Display* display, Window currentWindow, char* windowTitlePart,
 int main (int argc, char** argv) {
     if (argc != 2) {
         printf("Incorrect arguments\n");
-        return EXIT_CODES.GENERAL_ERROR;
+        return EXIT_CODE_GENERAL_ERROR;
     }
 
     char* windowTitlePart = argv[1];
@@ -158,7 +158,7 @@ int main (int argc, char** argv) {
 
     if (display == NULL) {
         printf("Cannot open display\n");
-        return EXIT_CODES.GENERAL_ERROR;
+        return EXIT_CODE_GENERAL_ERROR;
     }
 
     bool   windowFound;
@@ -177,5 +177,5 @@ int main (int argc, char** argv) {
 
     XCloseDisplay(display);
 
-    return windowFound ? EXIT_CODES.SUCCESS : EXIT_CODES.WINDOW_NOT_FOUND;
+    return windowFound ? EXIT_CODE_SUCCESS : EXIT_CODE_WINDOW_NOT_FOUND;
 }

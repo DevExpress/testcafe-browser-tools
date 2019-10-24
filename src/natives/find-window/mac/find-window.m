@@ -71,12 +71,12 @@ BOOL haveScreenRecordingPermission () {
 int findWindow (int argc, const char * argv[]) {
     if (argc < 2) {
         printf("Incorrect arguments\n");
-        return EXIT_CODES.GENERAL_ERROR;
+        return EXIT_CODE_GENERAL_ERROR;
     }
 
     @autoreleasepool {
         if (!haveScreenRecordingPermission())
-            return EXIT_CODES.PERMISSION_ERROR;
+            return EXIT_CODE_PERMISSION_ERROR;
 
         NSDictionary *windowDescriptor   = nil;
         NSUInteger seachingAttemptsCount = 0;
@@ -96,14 +96,14 @@ int findWindow (int argc, const char * argv[]) {
 
         if (!windowDescriptor) {
             fprintf(stderr, "There are no TestCafe windows\n");
-            return EXIT_CODES.WINDOW_NOT_FOUND;
+            return EXIT_CODE_WINDOW_NOT_FOUND;
         }
 
         printf("%d\n", [windowDescriptor[@"processId"] intValue]);
         printf("%d\n", [windowDescriptor[@"cocoaId"] intValue]);
         printf("%d\n", [windowDescriptor[@"osaId"] intValue]);
 
-        return EXIT_CODES.SUCCESS;
+        return EXIT_CODE_SUCCESS;
     }
 }
 
