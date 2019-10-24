@@ -37,13 +37,13 @@ const ERROR_MESSAGES = {
 
     [CODES.E002]: 'UnableToRunBrowsersError: Unable to run the browser. The file at /usr/bin/browser does not exist or is not executable.',
 
-    [CODES.E003]: 'NativeBinaryHasFailedError: Process /usr/bin/browser failed with exit code 1.\n' +
+    [CODES.E003]: 'NativeBinaryHasFailedError: The /usr/bin/browser process failed with the 1 exit code.\n' +
                   'Process output:\n' +
                   'Segmentation fault',
 
-    [CODES.E004]: 'UnableToAccessAutomationAPIError: Process /usr/bin/browser can\'t access the Automation API.',
+    [CODES.E004]: 'UnableToAccessAutomationAPIError: The /usr/bin/browser process cannot access the Automation API.',
 
-    [CODES.E005]: 'UnableToAccessScreenRecordingAPIError: Process /usr/bin/browser can\'t access the Screen Recording API.'
+    [CODES.E005]: 'UnableToAccessScreenRecordingAPIError: The /usr/bin/browser process cannot access the Screen Recording API.'
 };
 
 describe('Errors', () => {
