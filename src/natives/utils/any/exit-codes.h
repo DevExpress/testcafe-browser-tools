@@ -1,0 +1,8 @@
+#pragma once
+
+enum EXIT_CODES {
+    SUCCESS = 0,
+    GENERAL_ERROR = 101,
+    PERMISSION_ERROR = 102,
+    WINDOW_NOT_FOUND = 103
+}

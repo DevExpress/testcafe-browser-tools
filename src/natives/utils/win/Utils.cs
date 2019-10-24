@@ -278,4 +278,11 @@ namespace BrowserTools {
             foregroundMutex.ReleaseMutex();
         }
     }
+
+    public enum EXIT_CODES: int {
+        SUCCESS = 0,
+        GENERAL_ERROR = 101,
+        PERMISSION_ERROR = 102,
+        WINDOW_NOT_FOUND = 103
+    }
 }

@@ -73,7 +73,7 @@ async function runWithMacApp (binaryPath, args) {
         const exitCode = Number(exitCodeMatch[1]);
 
         if (exitCode)
-            throw new NativeBinaryHasFailedError({ binary: binaryPath, exitCode });
+            throw new NativeBinaryHasFailedError({ binary: binaryPath, output: data, exitCode });
 
         return data;
     }
