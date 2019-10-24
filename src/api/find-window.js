@@ -20,7 +20,7 @@ async function runFindWindowBinary (pageTitle) {
         return await execFile(BINARIES.findWindow, [pageTitle]);
     }
     catch (err) {
-        if (!err instanceof NativeBinaryHasFailedError)
+        if (!(err instanceof NativeBinaryHasFailedError))
             throw err;
 
         if (OS.mac && err.data.exitCode === GRANT_PERMISSIONS_EXIT_CODE)
