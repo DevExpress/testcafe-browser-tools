@@ -62,7 +62,7 @@ async function runWithMacApp (binaryPath, args) {
     try {
         const [data] = await Promise.all([
             readPipe(pipePath),
-            spawnApp(pipePath, binaryPath, [args])
+            spawnApp(pipePath, binaryPath, args)
         ]);
 
         const exitCodeMatch = data.match(EXIT_CODE_REGEXP);
