@@ -62,7 +62,7 @@ async function runWithMacApp (binaryPath, args) {
     try {
         const [data] = await Promise.all([
             readPipe(pipePath),
-            spawnApp(pipePath, binaryPath, [args])
+            spawnApp(pipePath, binaryPath, args)
         ]);
 
         const exitCodeMatch = data.match(EXIT_CODE_REGEXP);
@@ -73,7 +73,7 @@ async function runWithMacApp (binaryPath, args) {
         const exitCode = Number(exitCodeMatch[1]);
 
         if (exitCode)
-            throw new NativeBinaryHasFailedError({ binary: binaryPath, exitCode });
+            throw new NativeBinaryHasFailedError({ binary: binaryPath, output: data, exitCode });
 
         return data;
     }

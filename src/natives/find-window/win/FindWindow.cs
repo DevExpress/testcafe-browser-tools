@@ -48,7 +48,7 @@ namespace BrowserTools {
 
             Console.Out.WriteLine(hWnd);
             Console.Out.WriteLine(processName);
-            Environment.Exit(0);
+            Environment.Exit((int)EXIT_CODES.SUCCESS);
 
             return false;
         }
@@ -56,7 +56,7 @@ namespace BrowserTools {
         static void Main (string[] args) {
             if (args.Length != 1) {
                 Console.Error.Write("Incorrect arguments");
-                Environment.Exit(1);
+                Environment.Exit((int)EXIT_CODES.GENERAL_ERROR);
             }
 
             string windowMark = args[0];
@@ -68,7 +68,7 @@ namespace BrowserTools {
             }
 
             Console.Error.Write("Window not found");
-            Environment.Exit(1);
+            Environment.Exit((int)EXIT_CODES.WINDOW_NOT_FOUND);
         }
     }
 }

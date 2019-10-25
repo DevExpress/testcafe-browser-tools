@@ -6,10 +6,6 @@
 #import <Cocoa/Cocoa.h>
 #import "../../utils/mac/utils.h"
 
-const SUCCESS_EXIT_CODE                 = 0;
-const ERROR_EXIT_CODE                   = 1;
-const NO_REQUIRED_PERMISSIONS_EXIT_CODE = 2;
-
 const NSUInteger MAX_SEARCHING_ATTEMPTS_COUNT  = 10;
 const NSUInteger SEARCHING_ATTEMPTS_DELAY      = 300000;
 
@@ -22,7 +18,7 @@ NSNumber * getOSAWindowId (NSNumber *processId, NSString *windowTitle) {
 
         if (![identifiedWindows count])
             return [NSNumber numberWithInt: 0];
-                
+
         id targetWindow = identifiedWindows[0];
 
         return [targetWindow properties][@"id"];
@@ -75,20 +71,20 @@ BOOL haveScreenRecordingPermission () {
 int findWindow (int argc, const char * argv[]) {
     if (argc < 2) {
         printf("Incorrect arguments\n");
-        return ERROR_EXIT_CODE;
+        return EXIT_CODE_GENERAL_ERROR;
     }
 
     @autoreleasepool {
         if (!haveScreenRecordingPermission())
-            return NO_REQUIRED_PERMISSIONS_EXIT_CODE;
+            return EXIT_CODE_PERMISSION_ERROR;
 
         NSDictionary *windowDescriptor   = nil;
         NSUInteger seachingAttemptsCount = 0;
         BOOL searchFinished              = NO;
-        
+
         while (seachingAttemptsCount < MAX_SEARCHING_ATTEMPTS_COUNT && !searchFinished) {
             windowDescriptor = getTestCafeWindowId([NSString stringWithUTF8String:argv[1]]);
-            
+
             searchFinished = !!windowDescriptor && [windowDescriptor[@"osaId"] intValue] != 0;
 
             if (!searchFinished) {
@@ -100,16 +96,14 @@ int findWindow (int argc, const char * argv[]) {
 
         if (!windowDescriptor) {
             fprintf(stderr, "There are no TestCafe windows\n");
-            return ERROR_EXIT_CODE;
+            return EXIT_CODE_WINDOW_NOT_FOUND;
         }
 
         printf("%d\n", [windowDescriptor[@"processId"] intValue]);
         printf("%d\n", [windowDescriptor[@"cocoaId"] intValue]);
         printf("%d\n", [windowDescriptor[@"osaId"] intValue]);
 
-        return SUCCESS_EXIT_CODE;
+        return EXIT_CODE_SUCCESS;
     }
-
-    return SUCCESS_EXIT_CODE;
 }
 

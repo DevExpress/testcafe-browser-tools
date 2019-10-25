@@ -2,10 +2,9 @@ import OS from 'os-family';
 import { EOL } from 'os';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
+import * as EXIT_CODES from '../exit-codes';
 import { NativeBinaryHasFailedError, UnableToAccessScreenRecordingAPIError } from '../errors';
 
-
-const GRANT_PERMISSIONS_EXIT_CODE = 2;
 
 /**
  * Retrieves a platform-specific window descriptor for the window that contains a web page with the specified title.
@@ -23,7 +22,10 @@ async function runFindWindowBinary (pageTitle) {
         if (!(err instanceof NativeBinaryHasFailedError))
             throw err;
 
-        if (OS.mac && err.data.exitCode === GRANT_PERMISSIONS_EXIT_CODE)
+        if (err.data.exitCode === EXIT_CODES.WINDOW_NOT_FOUND)
+            return null;
+
+        if (OS.mac && err.data.exitCode === EXIT_CODES.PERMISSION_ERROR)
             throw new UnableToAccessScreenRecordingAPIError(err.data);
 
         throw err;
@@ -31,7 +33,11 @@ async function runFindWindowBinary (pageTitle) {
 }
 
 export default async function (pageTitle) {
-    var res          = await runFindWindowBinary(pageTitle);
+    var res = await runFindWindowBinary(pageTitle);
+
+    if (!res)
+        return res;
+
     var windowParams = res.split(EOL);
 
     if (OS.win)
