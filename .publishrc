@@ -9,6 +9,6 @@
   },
   "confirm": true,
   "publishCommand": "gulp publish",
-  "publishTag": "alpha",
+  "publishTag": "latest",
   "prePublishScript": "npm test"
 }
