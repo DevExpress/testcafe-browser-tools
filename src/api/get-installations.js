@@ -49,15 +49,19 @@ async function searchInRegistry (registryRoot) {
         // we need to run the command using the UTF-8 codepage.
         const stdout = await execWinShellUtf8(`reg query ${regKey} /s`);
 
-        for (let match = browserRe.exec(stdout); match; match = browserRe.exec(stdout)) {
-            const name = match[1].replace(/\.exe$/gi, '');
+        if (stdout.startsWith('ERROR'))
+            installations = null;
+        else {
+            for (let match = browserRe.exec(stdout); match; match = browserRe.exec(stdout)) {
+                const name = match[1].replace(/\.exe$/gi, '');
 
-            const path = match[2]
-                .replace(/"/g, '')
-                .replace(/\\$/, '')
-                .replace(/\s*$/, '');
+                const path = match[2]
+                    .replace(/"/g, '')
+                    .replace(/\\$/, '')
+                    .replace(/\s*$/, '');
 
-            await addInstallation(installations, name, path);
+                await addInstallation(installations, name, path);
+            }
         }
     }
     catch (e) {
