@@ -30,10 +30,20 @@ async function addInstallation (installations, name, instPath) {
 }
 
 async function detectMicrosoftEdge () {
-    var regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    var stdout = await execWinShellUtf8(`@echo off & reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
+    const regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
+    const stderr = (await execWinShellUtf8(`@echo off & reg query ${regKey} /s /f MicrosoftEdge /k`, true))[2];
 
-    return /SUCCESS/.test(stdout) ? ALIASES['edge'] : null;
+    if (stderr) {
+        if (!/Registry editing has been disabled/i.test(stderr))
+            return null;
+
+        const output = spawnSync('powershell.exe', ['-NoLogo', '-NonInteractive', '-Command', `Get-ChildItem -Path Registry::${regKey} -Recurse`]);
+
+        if (!/\bMicrosoftEdge\b/i.test(output.stdout.toString()))
+            return null;
+    }
+
+    return ALIASES['edge'];
 }
 
 async function searchInRegistry (registryRoot) {
