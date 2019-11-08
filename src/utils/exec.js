@@ -103,6 +103,6 @@ export async function execFile (filePath, args) {
     }
 }
 
-export async function exec (command, multiArgs) {
-    return promisify(childProc.exec, multiArgs)(command, { env: process.env });
+export async function exec (command) {
+    return execPromise(command, { env: process.env });
 }
