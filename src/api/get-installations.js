@@ -39,7 +39,7 @@ async function detectMicrosoftEdge () {
 
         const output = spawnSync('powershell.exe', ['-NoLogo', '-NonInteractive', '-Command', `Get-ChildItem -Path Registry::${regKey} -Recurse`]);
 
-        if (!/\bMicrosoftEdge\b/i.test(output.stdout.toString()))
+        if (!/^Microsoft\.MicrosoftEdge/m.test(output.stdout.toString()))
             return null;
     }
 
