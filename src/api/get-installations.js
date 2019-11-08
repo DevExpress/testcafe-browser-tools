@@ -3,7 +3,7 @@ import OS from 'os-family';
 import which from 'which-promise';
 import { spawnSync } from 'child_process';
 import exists from '../utils/fs-exists-promised';
-import { exec, execWinShellUtf8 } from '../utils/exec';
+import { exec } from '../utils/exec';
 import ALIASES from '../aliases';
 
 
@@ -47,67 +47,25 @@ async function addInstallation (installations, name, instPath) {
 
 async function detectMicrosoftEdge () {
     const regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    const stderr = (await execWinShellUtf8(`@echo off & reg query ${regKey} /s /f MicrosoftEdge /k`, true))[2];
+    const edgeRe = /^Microsoft\.MicrosoftEdge/m;
 
-    if (stderr) {
-        if (!/Registry editing has been disabled/i.test(stderr))
-            return null;
-
-        if (!/^Microsoft\.MicrosoftEdge/m.test(getRegistrySubTree(regKey)))
-            return null;
-    }
-
-    return ALIASES['edge'];
+    return edgeRe.test(getRegistrySubTree(regKey)) ? ALIASES['edge'] : null;
 }
 
 async function searchInRegistry (registryRoot) {
-    let installations = {};
+    const installations = {};
+    const text          = getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
+    const re            = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
 
-    try {
-        const regKey        = registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet';
-        const regKeyEsc     = regKey.replace(/\\/g, '\\\\');
-        const browserRe     = new RegExp(regKeyEsc + '\\\\([^\\\\]+)\\\\shell\\\\open\\\\command' +
-            '\\s+(?:\\([^)]+\\)|<.*?>)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
+    let match = re.exec(text);
 
-        // NOTE: To get the correct result regardless of the Windows localization,
-        // we need to run the command using the UTF-8 codepage.
-        const [ error, stdout ] = await execWinShellUtf8(`reg query ${regKey} /s`, true);
+    while (match) {
+        const name = match[1].replace(/\.exe$/i, '');
+        const path = match[2].trim().replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
 
-        if (error)
-            installations = null;
-        else {
-            for (let match = browserRe.exec(stdout); match; match = browserRe.exec(stdout)) {
-                const name = match[1].replace(/\.exe$/gi, '');
+        await addInstallation(installations, name, path);
 
-                const path = match[2]
-                    .replace(/"/g, '')
-                    .replace(/\\$/, '')
-                    .replace(/\s*$/, '');
-
-                await addInstallation(installations, name, path);
-            }
-        }
-    }
-    catch (e) {
-        installations = null;
-    }
-
-    if (!installations) {
-        const text   = getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
-        const re     = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
-
-        installations = {};
-
-        let match = re.exec(text);
-
-        while (match) {
-            const name = match[1].replace(/\.exe$/i, '');
-            const path = match[2].trim().replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
-
-            await addInstallation(installations, name, path);
-
-            match = re.exec(text);
-        }
+        match = re.exec(text);
     }
 
     return installations;
