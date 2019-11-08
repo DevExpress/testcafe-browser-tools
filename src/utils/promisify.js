@@ -2,6 +2,6 @@ import Promise from 'pinkie';
 import pify from 'pify';
 
 
-export default function (fn) {
-    return pify(fn, Promise);
+export default function (fn, multiArgs) {
+    return pify(fn, { promiseModule: Promise, multiArgs });
 }

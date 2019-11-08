@@ -47,9 +47,9 @@ async function searchInRegistry (registryRoot) {
 
         // NOTE: To get the correct result regardless of the Windows localization,
         // we need to run the command using the UTF-8 codepage.
-        const stdout = await execWinShellUtf8(`reg query ${regKey} /s`);
+        const [ error, stdout ] = await execWinShellUtf8(`reg query ${regKey} /s`, true);
 
-        if (stdout.startsWith('ERROR'))
+        if (error)
             installations = null;
         else {
             for (let match = browserRe.exec(stdout); match; match = browserRe.exec(stdout)) {
