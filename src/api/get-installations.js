@@ -10,6 +10,22 @@ import ALIASES from '../aliases';
 // Installation info cache
 var installationsCache = null;
 
+function getRegistrySubTree (regKey) {
+    const output = spawnSync('powershell.exe', [ '-NoLogo', '-NonInteractive', '-Command',
+        '$cp = (chcp | Select-String "\\d+").Matches.Value; ' +
+        'Try ' +
+        '{ ' +
+            'chcp 65001; ' +
+            `Get-ChildItem -Path Registry::${regKey} -Recurse; ` +
+        '} ' +
+        'Finally ' +
+        '{ ' +
+            'chcp $cp; ' +
+        '}'
+    ]);
+
+    return output.stdout.toString();
+}
 
 // Find installations for different platforms
 async function addInstallation (installations, name, instPath) {
@@ -37,9 +53,7 @@ async function detectMicrosoftEdge () {
         if (!/Registry editing has been disabled/i.test(stderr))
             return null;
 
-        const output = spawnSync('powershell.exe', ['-NoLogo', '-NonInteractive', '-Command', `Get-ChildItem -Path Registry::${regKey} -Recurse`]);
-
-        if (!/^Microsoft\.MicrosoftEdge/m.test(output.stdout.toString()))
+        if (!/^Microsoft\.MicrosoftEdge/m.test(getRegistrySubTree(regKey)))
             return null;
     }
 
@@ -79,8 +93,7 @@ async function searchInRegistry (registryRoot) {
     }
 
     if (!installations) {
-        const output = spawnSync('powershell.exe', ['-NoLogo', '-NonInteractive', '-Command', `Get-ChildItem -Path Registry::${registryRoot}\\SOFTWARE\\Clients\\StartMenuInternet -Recurse`]);
-        const text   = output.stdout.toString();
+        const text   = getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
         const re     = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
 
         installations = {};
