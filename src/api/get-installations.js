@@ -1,7 +1,6 @@
 import Promise from 'pinkie';
 import OS from 'os-family';
 import which from 'which-promise';
-import { spawnSync } from 'child_process';
 import exists from '../utils/fs-exists-promised';
 import { exec } from '../utils/exec';
 import ALIASES from '../aliases';
@@ -10,21 +9,24 @@ import ALIASES from '../aliases';
 // Installation info cache
 var installationsCache = null;
 
-function getRegistrySubTree (regKey) {
-    const output = spawnSync('powershell.exe', [ '-NoLogo', '-NonInteractive', '-Command',
-        '$cp = (chcp | Select-String "\\d+").Matches.Value; ' +
-        'Try ' +
-        '{ ' +
-            'chcp 65001; ' +
-            `Get-ChildItem -Path Registry::${regKey} -Recurse; ` +
-        '} ' +
-        'Finally ' +
-        '{ ' +
-            'chcp $cp; ' +
-        '}'
-    ]);
+async function getRegistrySubTree (regKey) {
+    let script =
+        `$cp = (chcp | Select-String '\\d+').Matches.Value;
+        Try
+        {
+            chcp 65001;
+            Get-ChildItem -Path Registry::${regKey} -Recurse;
+        }
+        Finally
+        {
+            chcp $cp;
+        }`;
 
-    return output.stdout.toString();
+    script = script.replace(/\s+/g, ' ');
+
+    const command = `powershell.exe -NoLogo -NonInteractive -Command "${script}"`;
+
+    return exec(command);
 }
 
 // Find installations for different platforms
@@ -46,15 +48,16 @@ async function addInstallation (installations, name, instPath) {
 }
 
 async function detectMicrosoftEdge () {
-    const regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    const edgeRe = /^Microsoft\.MicrosoftEdge/m;
+    const regKey  = 'HKCU\\Software\\Classes\\ActivatableClasses';
+    const edgeRe  = /^Microsoft\.MicrosoftEdge/m;
+    const subTree = await getRegistrySubTree(regKey);
 
-    return edgeRe.test(getRegistrySubTree(regKey)) ? ALIASES['edge'] : null;
+    return edgeRe.test(subTree) ? ALIASES['edge'] : null;
 }
 
 async function searchInRegistry (registryRoot) {
     const installations = {};
-    const text          = getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
+    const text          = await getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
     const re            = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
 
     let match = re.exec(text);
