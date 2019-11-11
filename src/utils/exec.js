@@ -106,11 +106,3 @@ export async function execFile (filePath, args) {
 export async function exec (command) {
     return execPromise(command, { env: process.env });
 }
-
-export async function execWinShellUtf8 (command) {
-    var setCodePageCmd     = `FOR /F  "tokens=2 delims=:,." %i in ('chcp') do (chcp 65001`;
-    var restoreCodePageCmd = 'chcp %i)';
-
-    // NOTE: To avoid terminal errors, we need to restore the original code page after the command is executed.
-    return await exec(`${setCodePageCmd} & ${command} & ${restoreCodePageCmd}`);
-}

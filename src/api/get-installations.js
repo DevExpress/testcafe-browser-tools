@@ -2,13 +2,32 @@ import Promise from 'pinkie';
 import OS from 'os-family';
 import which from 'which-promise';
 import exists from '../utils/fs-exists-promised';
-import { exec, execWinShellUtf8 } from '../utils/exec';
+import { exec } from '../utils/exec';
 import ALIASES from '../aliases';
 
 
 // Installation info cache
 var installationsCache = null;
 
+async function getRegistrySubTree (regKey) {
+    let script =
+        `$cp = (chcp | Select-String '\\d+').Matches.Value;
+        Try
+        {
+            chcp 65001;
+            Get-ChildItem -Path Registry::${regKey} -Recurse;
+        }
+        Finally
+        {
+            chcp $cp;
+        }`;
+
+    script = script.replace(/\s+/g, ' ');
+
+    const command = `powershell.exe -NoLogo -NonInteractive -Command "${script}"`;
+
+    return exec(command);
+}
 
 // Find installations for different platforms
 async function addInstallation (installations, name, instPath) {
@@ -29,32 +48,27 @@ async function addInstallation (installations, name, instPath) {
 }
 
 async function detectMicrosoftEdge () {
-    var regKey = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    var stdout = await execWinShellUtf8(`@echo off & reg query ${regKey} /s /f MicrosoftEdge /k && echo SUCCESS || echo FAIL`);
+    const regKey  = 'HKCU\\Software\\Classes\\ActivatableClasses';
+    const edgeRe  = /^Microsoft\.MicrosoftEdge/m;
+    const subTree = await getRegistrySubTree(regKey);
 
-    return /SUCCESS/.test(stdout) ? ALIASES['edge'] : null;
+    return edgeRe.test(subTree) ? ALIASES['edge'] : null;
 }
 
 async function searchInRegistry (registryRoot) {
-    var installations = {};
-    var regKey        = registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet';
-    var regKeyEsc     = regKey.replace(/\\/g, '\\\\');
-    var browserRe     = new RegExp(regKeyEsc + '\\\\([^\\\\]+)\\\\shell\\\\open\\\\command' +
-        '\\s+(?:\\([^)]+\\)|<.*?>)\\s+reg_sz\\s+([^\n]+)\n', 'gi');
+    const installations = {};
+    const text          = await getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
+    const re            = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
 
-    // NOTE: To get the correct result regardless of the Windows localization,
-    // we need to run the command using the UTF-8 codepage.
-    var stdout = await execWinShellUtf8(`reg query ${regKey} /s`);
+    let match = re.exec(text);
 
-    for (var match = browserRe.exec(stdout); match; match = browserRe.exec(stdout)) {
-        var name = match[1].replace(/\.exe$/gi, '');
-
-        var path = match[2]
-            .replace(/"/g, '')
-            .replace(/\\$/, '')
-            .replace(/\s*$/, '');
+    while (match) {
+        const name = match[1].replace(/\.exe$/i, '');
+        const path = match[2].trim().replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
 
         await addInstallation(installations, name, path);
+
+        match = re.exec(text);
     }
 
     return installations;
