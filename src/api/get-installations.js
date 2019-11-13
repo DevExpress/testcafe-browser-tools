@@ -75,9 +75,10 @@ async function detectMicrosoftEdge () {
 }
 
 async function searchInRegistry (registryRoot) {
-    const installations = {};
-    const text          = await getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
-    const lines         = map(text.split('\r\n'), trimEnd);
+    const installations  = {};
+    const defaultValueRe = /^\(default\)\s*:\s*(.*)$/m;
+    const text           = await getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
+    const lines          = map(text.split('\r\n'), trimEnd);
 
     remove(lines, line => line.match(/^Active code page:/) || line.match(/^\s*Hive:/) || line.match(/^\s*$/));
 
@@ -92,7 +93,7 @@ async function searchInRegistry (registryRoot) {
                 continue;
 
             const regEntry = await getRegistryProperty(`${registryRoot}\\SOFTWARE\\Clients\\StartMenuInternet\\${name}\\shell\\open\\command`);
-            const path = regEntry.match(/^\(default\)\s*:\s*(.*)$/m)[1].replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
+            const path = regEntry.match(defaultValueRe)[1].replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
 
             await addInstallation(installations, name.replace(/\.exe$/i, ''), path);
         }
