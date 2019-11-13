@@ -1,6 +1,8 @@
 import Promise from 'pinkie';
 import OS from 'os-family';
 import which from 'which-promise';
+import { map, remove, trim, trimEnd } from 'lodash';
+import childProc from 'child_process';
 import exists from '../utils/fs-exists-promised';
 import { exec } from '../utils/exec';
 import ALIASES from '../aliases';
@@ -9,24 +11,41 @@ import ALIASES from '../aliases';
 // Installation info cache
 var installationsCache = null;
 
-async function getRegistrySubTree (regKey) {
-    let script =
+async function powerShell (command) {
+    command =
         `$cp = (chcp | Select-String '\\d+').Matches.Value;
         Try
         {
             chcp 65001;
-            Get-ChildItem -Path Registry::${regKey} -Recurse;
+            ${command};
         }
         Finally
         {
             chcp $cp;
         }`;
 
-    script = script.replace(/\s+/g, ' ');
+    command = command.replace(/\s+/g, ' ');
+    command = `powershell.exe -NoLogo -NonInteractive -Command "${command}"`;
 
-    const command = `powershell.exe -NoLogo -NonInteractive -Command "${script}"`;
+    return new Promise((resolve, reject) => {
+        const child = childProc.exec(command, (error, stdout) => {
+            if (error)
+                reject(error);
+            else
+                resolve(stdout);
+        });
 
-    return exec(command);
+        // NOTE: Dirty trick for PowerShell 2.0 (see https://stackoverflow.com/a/9157170/11818061 for details).
+        child.stdin.end();
+    });
+}
+
+async function getRegistrySubTree (regKey, recursive = false) {
+    return powerShell(`Get-ChildItem 'Registry::${regKey}'${recursive ? ' -Recurse' : ''}`);
+}
+
+async function getRegistryProperty (regKey) {
+    return powerShell(`Get-ItemProperty 'Registry::${regKey}'`);
 }
 
 // Find installations for different platforms
@@ -48,7 +67,7 @@ async function addInstallation (installations, name, instPath) {
 }
 
 async function detectMicrosoftEdge () {
-    const regKey  = 'HKCU\\Software\\Classes\\ActivatableClasses';
+    const regKey  = 'HKCU\\Software\\Classes\\ActivatableClasses\\Package';
     const edgeRe  = /^Microsoft\.MicrosoftEdge/m;
     const subTree = await getRegistrySubTree(regKey);
 
@@ -58,17 +77,25 @@ async function detectMicrosoftEdge () {
 async function searchInRegistry (registryRoot) {
     const installations = {};
     const text          = await getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
-    const re            = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
+    const lines         = map(text.split('\r\n'), trimEnd);
 
-    let match = re.exec(text);
+    remove(lines, line => line.match(/^Active code page:/) || line.match(/^\s*Hive:/) || line.match(/^\s*$/));
 
-    while (match) {
-        const name = match[1].replace(/\.exe$/i, '');
-        const path = match[2].trim().replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
+    if (lines.length) {
+        const start = lines[0].indexOf('Name');
+        const end = lines[0].indexOf('Property');
 
-        await addInstallation(installations, name, path);
+        for (let i = 2; i < lines.length; i++) {
+            const name = trim(lines[i].substring(start, end));
 
-        match = re.exec(text);
+            if (!name)
+                continue;
+
+            const regEntry = await getRegistryProperty(`${registryRoot}\\SOFTWARE\\Clients\\StartMenuInternet\\${name}\\shell\\open\\command`);
+            const path = regEntry.match(/^\(default\)\s*:\s*(.*)$/m)[1].replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
+
+            await addInstallation(installations, name.replace(/\.exe$/i, ''), path);
+        }
     }
 
     return installations;
