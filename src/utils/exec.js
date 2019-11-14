@@ -3,10 +3,12 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import del from 'del';
+import execa from 'execa';
 import OS from 'os-family';
 import nanoid from 'nanoid';
 import promisify from './promisify';
 import BINARIES from '../binaries';
+import flattenWhitespace from './flatten-whitespace';
 import { NativeBinaryHasFailedError } from '../errors';
 
 
@@ -14,6 +16,22 @@ const EXIT_CODE_REGEXP = /Exit code: (-?\d+)/;
 
 const OPEN_PATH      = '/usr/bin/open';
 const TEMP_PIPE_NAME = seed => `testcafe-browser-tools-fifo-${seed}`;
+
+const POWERSHELL_BINARY = 'powershell.exe';
+const POWERSHELL_ARGS   = ['-NoLogo', '-NonInteractive', '-Command'];
+
+const POWERSHELL_COMMAND_WRAPPER = command => flattenWhitespace `
+    $cp = (chcp | Select-String '\\d+').Matches.Value;
+    Try
+    {
+        chcp 65001;
+        ${command};
+    }
+    Finally
+    {
+        chcp $cp;
+    }
+`;
 
 function getTempPipePath () {
     return path.join(os.tmpdir(), TEMP_PIPE_NAME(nanoid()));
@@ -105,4 +123,12 @@ export async function execFile (filePath, args) {
 
 export async function exec (command) {
     return execPromise(command, { env: process.env });
+}
+
+export async function execPowershell (command) {
+    const wrappedCommand = POWERSHELL_COMMAND_WRAPPER(command);
+
+    // NOTE: We have to ignore stdin due to a problem with PowerShell 2.0
+    // See https://stackoverflow.com/a/9157170/11818061 for details.
+    return execa(POWERSHELL_BINARY, [...POWERSHELL_ARGS, `"${wrappedCommand}"`], { stdin: 'ignore', shell: true });
 }

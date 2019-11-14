@@ -42,7 +42,7 @@ function make (options) {
 
         var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
 
-        execa.shell('make -C ' + dirPath, { env: { ...process.env, ...options } })
+        execa('make -C ' + dirPath, { shell: true, env: { ...process.env, ...options } })
             .then(function () {
                 callback(null, file);
             })
@@ -259,12 +259,13 @@ function publish () {
     var tarballPath         = path.join(tmpDir.name, tarballName);
     var modifiedTarballPath = path.join(tmpDir.name, modifiedTarballName);
 
-    return execa.shell('npm pack ' + packageDir, { env: process.env, cwd: tmpDir.name })
+    return execa('npm pack ' + packageDir, { shell: true, env: process.env, cwd: tmpDir.name })
         .then(function () {
             return fixPermissionsInTarball(tarballPath, modifiedTarballPath);
         })
         .then(function () {
-            return execa.shell('npm publish ' + modifiedTarballName + ' ' + publishArguments.join(' '), {
+            return execa('npm publish ' + modifiedTarballName + ' ' + publishArguments.join(' '), {
+                shell: true,
                 env:   process.env,
                 cwd:   tmpDir.name,
                 stdio: 'inherit'
@@ -284,7 +285,7 @@ exports.buildLinuxNatives   = gulp.series(cleanLinuxNatives, gulp.parallel(build
 exports.docs = docs;
 
 // TODO: add docs autogeneration
-exports.buildLib     = gulp.parallel(lint, gulp.series(cleanLib, transpileLib));
+exports.buildLib     = gulp.parallel(exports.lint, gulp.series(cleanLib, transpileLib));
 exports.buildWindows = gulp.parallel(exports.buildLib, exports.buildWindowsNatives);
 exports.buildMac     = gulp.parallel(exports.buildLib, exports.buildMacNatives);
 exports.buildLinux   = gulp.parallel(exports.buildLib, exports.buildLinuxNatives);
