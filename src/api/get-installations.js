@@ -1,32 +1,47 @@
-import Promise from 'pinkie';
 import OS from 'os-family';
 import which from 'which-promise';
+import { merge } from 'lodash';
 import exists from '../utils/fs-exists-promised';
-import { exec } from '../utils/exec';
+import { exec, execPowershell } from '../utils/exec';
+import unquote from '../utils/unquote';
 import ALIASES from '../aliases';
 
+const MICROSOFT_EDGE_CLASS      = 'Microsoft.MicrosoftEdge';
+const MICROSOFT_EDGE_KEY_GLOB   = `HKCU\\Software\\Classes\\ActivatableClasses\\Package\\${MICROSOFT_EDGE_CLASS}*`;
+const BROWSER_COMMANDS_KEY_GLOB = root => `${root}\\Software\\Clients\\StartMenuInternet\\*\\shell\\open\\command`;
+
+const LINE_WRAP        = '\r\n';
+const DOUBLE_LINE_WRAP = LINE_WRAP + LINE_WRAP;
+
+const REGISTRY_BROWSER_PATH_PROPERTY = '(default)';
+const REGISTRY_BROWSER_NAME_PROPERTY = 'PSPath';
+const REGISTRY_PROPERTIES_RE         = /^(\(default\)|PSPath)\s*:\s*(.*)$/;
+
+const MAX_OUTPUT_WIDTH = 2 ** 31 - 1;
+
+const POWERSHELL_PIPE_SYMBOL = '|';
+
+const GET_REGISTRY_KEY_COMMAND          = key => `Get-Item 'Registry::${key}'`;
+const GET_BROWSER_PATH_PROPERTY_COMMAND = `Get-ItemProperty -Name '${REGISTRY_BROWSER_PATH_PROPERTY}'`;
+const FORMAT_BROWSER_INFO_COMMAND       = `Format-List -Property '${REGISTRY_BROWSER_PATH_PROPERTY}','${REGISTRY_BROWSER_NAME_PROPERTY}'`;
+const LIMIT_OUTPUT_WIDTH_COMMAND        = `Out-String -Width ${MAX_OUTPUT_WIDTH}`;
+
+const GET_REGISTRY_BROWSER_PROPERTIES_COMMAND = key => [
+    GET_REGISTRY_KEY_COMMAND(key),
+    GET_BROWSER_PATH_PROPERTY_COMMAND,
+    FORMAT_BROWSER_INFO_COMMAND,
+    LIMIT_OUTPUT_WIDTH_COMMAND
+].join(POWERSHELL_PIPE_SYMBOL);
 
 // Installation info cache
 var installationsCache = null;
 
-async function getRegistrySubTree (regKey) {
-    let script =
-        `$cp = (chcp | Select-String '\\d+').Matches.Value;
-        Try
-        {
-            chcp 65001;
-            Get-ChildItem -Path Registry::${regKey} -Recurse;
-        }
-        Finally
-        {
-            chcp $cp;
-        }`;
+async function getRegistryKey (regKeyGlob) {
+    return execPowershell(GET_REGISTRY_KEY_COMMAND(regKeyGlob));
+}
 
-    script = script.replace(/\s+/g, ' ');
-
-    const command = `powershell.exe -NoLogo -NonInteractive -Command "${script}"`;
-
-    return exec(command);
+async function getRegistryBrowserProperties (regKeyGlob) {
+    return execPowershell(GET_REGISTRY_BROWSER_PROPERTIES_COMMAND(regKeyGlob));
 }
 
 // Find installations for different platforms
@@ -48,28 +63,32 @@ async function addInstallation (installations, name, instPath) {
 }
 
 async function detectMicrosoftEdge () {
-    const regKey  = 'HKCU\\Software\\Classes\\ActivatableClasses';
-    const edgeRe  = /^Microsoft\.MicrosoftEdge/m;
-    const subTree = await getRegistrySubTree(regKey);
+    const registryResult = await getRegistryKey(MICROSOFT_EDGE_KEY_GLOB);
 
-    return edgeRe.test(subTree) ? ALIASES['edge'] : null;
+    if (registryResult.stdout.includes(MICROSOFT_EDGE_CLASS))
+        return ALIASES['edge'];
+
+    return null;
 }
 
 async function searchInRegistry (registryRoot) {
-    const installations = {};
-    const text          = await getRegistrySubTree(registryRoot + '\\SOFTWARE\\Clients\\StartMenuInternet');
-    const re            = /\\SOFTWARE\\Clients\\StartMenuInternet\\([^\r\n\\]+)\\shell\\open\s+Name\s+Property[-\s]+command\s+\(default\)\s*:\s*(.+)$/gmi;
+    const installations  = {};
+    const registryResult =  await getRegistryBrowserProperties(BROWSER_COMMANDS_KEY_GLOB(registryRoot));
 
-    let match = re.exec(text);
+    const data = registryResult.stdout
+        .split(DOUBLE_LINE_WRAP)
+        .map(block => block
+            .split(LINE_WRAP)
+            .map(line => line.match(REGISTRY_PROPERTIES_RE))
+            .filter(match => !!match)
+            .map(match => ({
+                [match[1]]: unquote(match[2])
+            }))
+        )
+        .filter(block => block && block.length)
+        .map(block => merge(...block));
 
-    while (match) {
-        const name = match[1].replace(/\.exe$/i, '');
-        const path = match[2].trim().replace(/^"(.*)"$/, '$1').replace(/\\$/, '');
-
-        await addInstallation(installations, name, path);
-
-        match = re.exec(text);
-    }
+    await Promise.all(data.map(record => addInstallation(installations, record[REGISTRY_BROWSER_NAME_PROPERTY], record[REGISTRY_BROWSER_PATH_PROPERTY])));
 
     return installations;
 }
