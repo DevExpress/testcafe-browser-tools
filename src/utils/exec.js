@@ -9,6 +9,7 @@ import nanoid from 'nanoid';
 import promisify from './promisify';
 import BINARIES from '../binaries';
 import flattenWhitespace from './flatten-whitespace';
+import getEnvironmentVariable from './get-environment-variable';
 import { NativeBinaryHasFailedError } from '../errors';
 
 
@@ -17,7 +18,9 @@ const EXIT_CODE_REGEXP = /Exit code: (-?\d+)/;
 const OPEN_PATH      = '/usr/bin/open';
 const TEMP_PIPE_NAME = seed => `testcafe-browser-tools-fifo-${seed}`;
 
-const POWERSHELL_BINARY = 'powershell.exe';
+const WINDOWS_DIR       = getEnvironmentVariable('SystemRoot') || 'C:\\Windows';
+const POWERSHELL_DIR    = path.join(WINDOWS_DIR, 'System32\\WindowsPowerShell\\v1.0');
+const POWERSHELL_BINARY = path.join(POWERSHELL_DIR, 'powershell.exe');
 const POWERSHELL_ARGS   = ['-NoLogo', '-NonInteractive', '-Command'];
 
 const POWERSHELL_COMMAND_WRAPPER = command => flattenWhitespace `
@@ -130,5 +133,5 @@ export async function execPowershell (command) {
 
     // NOTE: We have to ignore stdin due to a problem with PowerShell 2.0
     // See https://stackoverflow.com/a/9157170/11818061 for details.
-    return execa(POWERSHELL_BINARY, [...POWERSHELL_ARGS, `"${wrappedCommand}"`], { stdin: 'ignore', shell: true });
+    return execa(POWERSHELL_BINARY, [...POWERSHELL_ARGS, `${wrappedCommand}`], { stdin: 'ignore' });
 }
