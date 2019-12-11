@@ -1,5 +1,11 @@
-export default function (variableName) {
-    const key = Object.keys(process.env).find(name => name.toLowerCase() === variableName.toLowerCase());
+import { find } from 'lodash';
 
-    return process.env[key];
+function getEnvironmentVariableName (source) {
+    const names = Object.keys(process.env);
+
+    return find(names, name => name === source) || find(names, name => name.toLowerCase() === source.toLowerCase());
+}
+
+export default function (name) {
+    return process.env[getEnvironmentVariableName(name)];
 }
