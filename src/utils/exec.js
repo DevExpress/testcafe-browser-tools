@@ -133,5 +133,5 @@ export async function execPowershell (command) {
 
     // NOTE: We have to ignore stdin due to a problem with PowerShell 2.0
     // See https://stackoverflow.com/a/9157170/11818061 for details.
-    return execa(POWERSHELL_BINARY, [...POWERSHELL_ARGS, `${wrappedCommand}`], { stdin: 'ignore' });
+    return execa(POWERSHELL_BINARY, [...POWERSHELL_ARGS, wrappedCommand], { stdin: 'ignore' });
 }
