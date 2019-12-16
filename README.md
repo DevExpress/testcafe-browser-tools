@@ -8,9 +8,9 @@ Working with browsers is specific for each operating system and requires native 
 # Build Process
 To build native binaries from source files, execute the gulp task corresponding to your operating system:
 ```
-'build-win'
-'build-mac'
-'build-linux'
+'buildWin'
+'buildMac'
+'buildLinux'
 ```
 Note that the application for a particular platform must be built on a machine with the same platform.
 
@@ -43,9 +43,9 @@ $ npm test
 Since the module functionality depends on browsers available on a testing machine and you cannot predict expected returned values for some functions, the automated tests cover only a part of the functionality.
 To test all the functions provided by the module, use the playground. To run it, execute the gulp task corresponding to your operating system:
 ```
-$ gulp run-playground-win
-$ gulp run-playground-mac
-$ gulp run-playground-linux
+$ gulp runPlaygroundWin
+$ gulp runPlaygroundMac
+$ gulp runPlaygroundLinux
 ```
 This will open the Playground web page at [http://localhost:1334/](http://localhost:1334/), where you can manually check if the functions work correctly.
 
