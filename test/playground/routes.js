@@ -1,18 +1,19 @@
-var path         = require('path');
-var viewports    = require('viewportsizes');
-var Promise      = require('pinkie');
-var toAbsPath    = require('read-file-relative').toAbsPath;
-var browserTools = require('../../lib/index');
-var delay        = require('../../lib/utils/delay');
+const path               = require('path');
+const Promise            = require('pinkie');
+const { toAbsPath }      = require('read-file-relative').toAbsPath;
+const browserTools       = require('../../lib/index');
+const { default: delay } = require('../../lib/utils/delay');
+const DEVICES            = require('../../data/devices');
+
 
 const WINDOW_NORMALIZING_DELAY = 1000;
 
-var installationsList = [];
-var installations     = null;
-var browsers          = [];
-var browserCounter    = 0;
-var port              = null;
-var deviceNames       = [];
+let installationsList = [];
+let installations     = null;
+let browsers          = [];
+let browserCounter    = 0;
+let port              = null;
+let deviceNames       = [];
 
 
 function getBrowserById (id) {
@@ -22,7 +23,7 @@ function getBrowserById (id) {
 }
 
 function runAsyncForBrowser (browserId, response, fn) {
-    var browser = getBrowserById(browserId);
+    const browser = getBrowserById(browserId);
 
     if (browser) {
         fn(browser)
@@ -35,21 +36,14 @@ function runAsyncForBrowser (browserId, response, fn) {
 }
 
 function getDeviceNames () {
-    return viewports
-        .list()
-        .filter(function (viewport) {
-            return viewport.size.width && viewport.size.height;
-        })
-        .map(function (viewport) {
-            return viewport.name;
-        });
+    return Object.values(DEVICES).map(({ name }) => name);
 }
 
 function objectToList (object, keyName) {
-    var list = [];
+    const list = [];
 
     Object.keys(object).forEach(function (key) {
-        var value = object[key];
+        const value = object[key];
 
         value[keyName] = key;
 
@@ -63,7 +57,7 @@ function getRequestedSize (params) {
     if (params.paramsType === 'width-height')
         return { width: Number(params.width), height: Number(params.height) };
 
-    var deviceSize = browserTools.getViewportSize(params.deviceName);
+    const deviceSize = browserTools.getViewportSize(params.deviceName);
 
     return params.orientation === 'portrait' ?
            { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
@@ -94,8 +88,8 @@ exports.index = function (req, res) {
 };
 
 exports.open = function (req, res) {
-    var browserId = 'br-' + browserCounter++;
-    var browser   = {
+    const browserId = 'br-' + browserCounter++;
+    const browser   = {
         pageUrl:        'http://localhost:' + port + '/test-page/' + browserId,
         browserInfo:    installations[req.body.browser],
         id:             browserId,
@@ -150,7 +144,7 @@ exports.bringToFront = function (req, res) {
 
 exports.resize = function (req, res) {
     function resize (browser) {
-        var requestedSize = getRequestedSize(req.body);
+        const requestedSize = getRequestedSize(req.body);
 
         function resizeWindow () {
             return browserTools.resize(
@@ -206,8 +200,8 @@ exports.maximize = function (req, res) {
 
 exports.takeScreenshot = function (req, res) {
     function screenshot (browser) {
-        var screenshotPath = '';
-        var thumbnailPath  = '';
+        let screenshotPath = '';
+        let thumbnailPath  = '';
 
         if (req.body.screenshotPath) {
             screenshotPath = path.isAbsolute(req.body.screenshotPath) ?
@@ -217,15 +211,15 @@ exports.takeScreenshot = function (req, res) {
         else
             screenshotPath = toAbsPath('./screenshots/' + browser.id + '.png');
 
-        var cachedScreenshots = browser.screenshots.filter(function (item) {
+        const cachedScreenshots = browser.screenshots.filter(function (item) {
             return item.path === screenshotPath;
         });
 
         if (cachedScreenshots.length)
             thumbnailPath = cachedScreenshots[0].thumbnailPath;
         else {
-            var screenshotFilename = path.basename(screenshotPath);
-            var screenshotDirPath  = path.dirname(screenshotPath);
+            const screenshotFilename = path.basename(screenshotPath);
+            const screenshotDirPath  = path.dirname(screenshotPath);
 
             thumbnailPath      = path.join(screenshotDirPath, 'thumbnails', screenshotFilename);
         }
@@ -254,9 +248,10 @@ exports.takeScreenshot = function (req, res) {
 };
 
 exports.getImage = function (req, res) {
-    var imagePath = decodeURIComponent(req.params.path);
-    var i              = 0;
-    var j              = 0;
+    const imagePath = decodeURIComponent(req.params.path);
+
+    let i = 0;
+    let j = 0;
 
     for (i = 0; i < browsers.length; i++) {
         for (j = 0; j < browsers[i].screenshots.length; j++) {
