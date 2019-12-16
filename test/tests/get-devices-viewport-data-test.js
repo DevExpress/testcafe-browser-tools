@@ -1,26 +1,20 @@
-var assert       = require('chai').assert;
-var browserTools = require('../../lib/index');
-var viewports    = require('viewportsizes');
+const { expect }   = require('chai');
+const browserTools = require('../../lib/index');
+const devices      = require('../../data/devices');
+
 
 describe('get-devices-viewport-data', function () {
-    it('Should return the same device list as from the viewportsizes', function () {
-        const viewportData     = browserTools.getDevicesViewportData();
-        const checkedViewports = {};
+    it('Should return the same device list as from the devices database', function () {
+        const viewportData = browserTools.getDevicesViewportData();
 
-        return viewports
-            .list()
-            .reverse()
-            .forEach(viewport => {
-                if (viewport.size.width && viewport.size.height && !checkedViewports[viewport.name]) {
-                    const key = viewport.name.toLowerCase().replace(/\s+/g, '');
+        return Object.values(devices)
+            .forEach(device => {
+                const key = device.name.toLowerCase().replace(/\s+/g, '');
 
-                    assert.isOk(viewportData[key], viewport.name);
-                    assert.equal(viewportData[key].name, viewport.name, viewport.name);
-                    assert.equal(viewportData[key].portraitWidth, viewport.size.width, viewport.name + ' width');
-                    assert.equal(viewportData[key].landscapeWidth, viewport.size.height, viewport.name + ' height');
-
-                    checkedViewports[viewport.name] = true;
-                }
+                expect(viewportData).have.property(key);
+                expect(viewportData[key].name).equal(device.name);
+                expect(viewportData[key].portraitWidth).equal(device.portraitWidth);
+                expect(viewportData[key].landscapeWidth).equal(device.landscapeWidth);
             });
     });
 });

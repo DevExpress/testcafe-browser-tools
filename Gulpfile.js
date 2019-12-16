@@ -10,8 +10,6 @@ const flatten      = require('gulp-flatten');
 const mocha        = require('gulp-mocha');
 const msbuild      = require('gulp-msbuild');
 const jsdoc        = require('jsdoc-to-markdown');
-const remoteSrc    = require('gulp-remote-src');
-const changed      = require('gulp-changed');
 const chmod        = require('gulp-chmod');
 const del          = require('del');
 const through      = require('through2');
@@ -144,42 +142,6 @@ function test () {
 }
 
 // General tasks
-function updateDeviceDatabase () {
-    function transform () {
-        return through.obj(function (file, enc, callback) {
-            var deviceDatabase = {};
-
-            JSON
-                .parse(file.contents.toString())
-                .forEach(function (device) {
-                    var deviceName     = device['Device Name'];
-                    var deviceId       = deviceName.toLowerCase().split(' ').join('');
-                    var portraitWidth  = Number(device['Portrait Width']);
-                    var landscapeWidth = Number(device['Landscape Width']);
-
-                    if (!isNaN(portraitWidth) && !isNaN(landscapeWidth)) {
-                        deviceDatabase[deviceId] = {
-                            portraitWidth:  portraitWidth,
-                            landscapeWidth: landscapeWidth,
-                            name:           deviceName
-                        };
-                    }
-                });
-
-            file.contents = new Buffer(JSON.stringify(deviceDatabase));
-
-            callback(null, file);
-        });
-    }
-
-    var destDir = 'data/';
-
-    return remoteSrc('devices.json', { base: 'http://viewportsizes.com/' })
-        .pipe(transform())
-        .pipe(changed(destDir, { hasChanged: changed.compareSha1Digest }))
-        .pipe(gulp.dest(destDir));
-}
-
 function lint () {
     return gulp
         .src([
@@ -273,8 +235,6 @@ function publish () {
         });
 }
 
-
-exports.updateDeviceDatabase = updateDeviceDatabase;
 
 exports.lint = lint;
 
