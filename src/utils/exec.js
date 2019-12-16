@@ -19,20 +19,22 @@ const OPEN_PATH      = '/usr/bin/open';
 const TEMP_PIPE_NAME = seed => `testcafe-browser-tools-fifo-${seed}`;
 
 const WINDOWS_DIR       = getEnvironmentVariable('SystemRoot') || 'C:\\Windows';
-const POWERSHELL_DIR    = path.join(WINDOWS_DIR, 'System32\\WindowsPowerShell\\v1.0');
+const SYSTEM32_DIR      = path.join(WINDOWS_DIR, 'System32');
+const CHCP_COM          = path.join(SYSTEM32_DIR, 'chcp.com');
+const POWERSHELL_DIR    = path.join(SYSTEM32_DIR, 'WindowsPowerShell\\v1.0');
 const POWERSHELL_BINARY = path.join(POWERSHELL_DIR, 'powershell.exe');
 const POWERSHELL_ARGS   = ['-NoLogo', '-NonInteractive', '-Command'];
 
 const POWERSHELL_COMMAND_WRAPPER = command => flattenWhitespace `
-    $cp = (chcp | Select-String '\\d+').Matches.Value;
+    $cp = (${CHCP_COM} | Select-String '\\d+').Matches.Value;
     Try
     {
-        chcp 65001;
+        ${CHCP_COM} 65001;
         ${command};
     }
     Finally
     {
-        chcp $cp;
+        ${CHCP_COM} $cp;
     }
 `;
 
