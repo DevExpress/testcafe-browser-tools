@@ -3,7 +3,7 @@ const Promise            = require('pinkie');
 const { toAbsPath }      = require('read-file-relative').toAbsPath;
 const browserTools       = require('../../lib/index');
 const { default: delay } = require('../../lib/utils/delay');
-const devices            = require('../../data/devices');
+const DEVICES            = require('../../data/devices');
 
 
 const WINDOW_NORMALIZING_DELAY = 1000;
@@ -36,7 +36,7 @@ function runAsyncForBrowser (browserId, response, fn) {
 }
 
 function getDeviceNames () {
-    return Object.values(devices).map(({ name }) => name);
+    return Object.values(DEVICES).map(({ name }) => name);
 }
 
 function objectToList (object, keyName) {
