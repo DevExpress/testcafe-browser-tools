@@ -113,7 +113,7 @@ async function findMacBrowsers () {
     var installations = {};
 
     // NOTE: replace the space symbol with code, because grep splits strings by space.
-    var stdout = await exec('ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium" | sed -E "s/ /032/"');
+    var stdout = await exec('ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium|Edge Beta" | sed -E "s/ /032/"');
 
     await Promise.all(stdout
         .split('\n')

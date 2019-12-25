@@ -52,13 +52,13 @@ const ALIASES = {
 
     'edge-chromium': {
         nameRe:             /edge\s*beta/i,
-        cmd:                '',
+        cmd:                '--new-window',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
     },
 
     'edge': {
         nameRe:             /edge/i,
-        cmd:                '--new-window',
+        cmd:                '',
         winOpenCmdTemplate: 'start microsoft-edge:"{{{pageUrl}}}"'
     }
 };
