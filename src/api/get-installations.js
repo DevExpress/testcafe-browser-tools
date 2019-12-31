@@ -10,6 +10,8 @@ const MICROSOFT_EDGE_CLASS      = 'Microsoft.MicrosoftEdge';
 const MICROSOFT_EDGE_KEY_GLOB   = `HKCU\\Software\\Classes\\ActivatableClasses\\Package\\${MICROSOFT_EDGE_CLASS}*`;
 const BROWSER_COMMANDS_KEY_GLOB = root => `${root}\\Software\\Clients\\StartMenuInternet\\*\\shell\\open\\command`;
 
+const MACOS_GET_BROWSER_LIST_COMMAND = 'ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium|Edge Beta" | sed -E "s/ /032/"';
+
 const LINE_WRAP        = '\r\n';
 const DOUBLE_LINE_WRAP = LINE_WRAP + LINE_WRAP;
 
@@ -113,7 +115,7 @@ async function findMacBrowsers () {
     var installations = {};
 
     // NOTE: replace the space symbol with code, because grep splits strings by space.
-    var stdout = await exec('ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium" | sed -E "s/ /032/"');
+    var stdout = await exec(MACOS_GET_BROWSER_LIST_COMMAND);
 
     await Promise.all(stdout
         .split('\n')
