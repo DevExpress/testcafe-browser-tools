@@ -21,21 +21,28 @@ const DEFAULT_ALIAS = {
  * @returns {BrowserInfo} An object that contains information about the specified browser.
  */
 export default async function (browser) {
-    var installations = await getInstallations();
+    const installations = await getInstallations();
 
-    var browserAsAlias = browser.trim().toLowerCase();
+    const browserAsAlias = browser.trim().toLowerCase();
 
     if (installations[browserAsAlias])
         return installations[browserAsAlias];
 
-    var fileExists = await exists(browser);
+    const fileExists = await exists(browser);
 
     if (!fileExists)
         return null;
 
-    var detectedAlias = find(Object.keys(ALIASES), alias => ALIASES[alias].nameRe.test(browser));
+    const detectedAlias = find(Object.keys(ALIASES), key => {
+        const alias = ALIASES[key];
 
-    var { cmd, macOpenCmdTemplate } = detectedAlias ? ALIASES[detectedAlias] : DEFAULT_ALIAS;
+        if (alias.nameRe)
+            return alias.nameRe.test(browser);
+
+        return false;
+    });
+
+    const { cmd, macOpenCmdTemplate } = detectedAlias ? ALIASES[detectedAlias] : DEFAULT_ALIAS;
 
     return { path: browser, cmd, macOpenCmdTemplate };
 }

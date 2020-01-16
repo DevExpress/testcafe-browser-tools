@@ -10,7 +10,7 @@ const MICROSOFT_EDGE_CLASS      = 'Microsoft.MicrosoftEdge';
 const MICROSOFT_EDGE_KEY_GLOB   = `HKCU\\Software\\Classes\\ActivatableClasses\\Package\\${MICROSOFT_EDGE_CLASS}*`;
 const BROWSER_COMMANDS_KEY_GLOB = root => `${root}\\Software\\Clients\\StartMenuInternet\\*\\shell\\open\\command`;
 
-const MACOS_GET_BROWSER_LIST_COMMAND = 'ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium|Edge Beta" | sed -E "s/ /032/"';
+const MACOS_GET_BROWSER_LIST_COMMAND = 'ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium|Edge" | sed -E "s/ /032/"';
 
 const LINE_WRAP        = '\r\n';
 const DOUBLE_LINE_WRAP = LINE_WRAP + LINE_WRAP;
@@ -68,11 +68,11 @@ async function addInstallation (installations, name, instPath) {
     }
 }
 
-async function detectMicrosoftEdge () {
+async function detectMicrosoftEdgeLegacy () {
     const registryResult = await getRegistryKey(MICROSOFT_EDGE_KEY_GLOB);
 
     if (registryResult.stdout.includes(MICROSOFT_EDGE_CLASS))
-        return ALIASES['edge'];
+        return ALIASES['edge-legacy'];
 
     return null;
 }
@@ -100,13 +100,16 @@ async function searchInRegistry (registryRoot) {
 }
 
 async function findWindowsBrowsers () {
-    var machineRegisteredBrowsers = await searchInRegistry('HKEY_LOCAL_MACHINE');
-    var userRegisteredBrowsers    = await searchInRegistry('HKEY_CURRENT_USER');
-    var installations             = Object.assign(machineRegisteredBrowsers, userRegisteredBrowsers);
-    var edgeAlias                 = await detectMicrosoftEdge();
+    const machineRegisteredBrowsers = await searchInRegistry('HKEY_LOCAL_MACHINE');
+    const userRegisteredBrowsers    = await searchInRegistry('HKEY_CURRENT_USER');
+    const installations             = Object.assign(machineRegisteredBrowsers, userRegisteredBrowsers);
+    const edgeLegacy                = await detectMicrosoftEdgeLegacy();
 
-    if (edgeAlias)
-        installations['edge'] = edgeAlias;
+    if (edgeLegacy)
+        installations['edge-legacy'] = edgeLegacy;
+
+    if (edgeLegacy && !installations['edge'])
+        installations['edge'] = edgeLegacy;
 
     return installations;
 }
