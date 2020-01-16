@@ -10,7 +10,7 @@ const MICROSOFT_EDGE_CLASS      = 'Microsoft.MicrosoftEdge';
 const MICROSOFT_EDGE_KEY_GLOB   = `HKCU\\Software\\Classes\\ActivatableClasses\\Package\\${MICROSOFT_EDGE_CLASS}*`;
 const BROWSER_COMMANDS_KEY_GLOB = root => `${root}\\Software\\Clients\\StartMenuInternet\\*\\shell\\open\\command`;
 
-const MACOS_GET_BROWSER_LIST_COMMAND = 'ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium|Edge Beta" | sed -E "s/ /032/"';
+const MACOS_GET_BROWSER_LIST_COMMAND = 'ls "/Applications/" | grep -E "Chrome|Firefox|Opera|Safari|Chromium|Edge" | sed -E "s/ /032/"';
 
 const LINE_WRAP        = '\r\n';
 const DOUBLE_LINE_WRAP = LINE_WRAP + LINE_WRAP;
@@ -72,7 +72,7 @@ async function detectMicrosoftEdge () {
     const registryResult = await getRegistryKey(MICROSOFT_EDGE_KEY_GLOB);
 
     if (registryResult.stdout.includes(MICROSOFT_EDGE_CLASS))
-        return ALIASES['edge'];
+        return ALIASES['mse-legacy'];
 
     return null;
 }
@@ -103,10 +103,13 @@ async function findWindowsBrowsers () {
     var machineRegisteredBrowsers = await searchInRegistry('HKEY_LOCAL_MACHINE');
     var userRegisteredBrowsers    = await searchInRegistry('HKEY_CURRENT_USER');
     var installations             = Object.assign(machineRegisteredBrowsers, userRegisteredBrowsers);
-    var edgeAlias                 = await detectMicrosoftEdge();
 
-    if (edgeAlias)
-        installations['edge'] = edgeAlias;
+    if (!installations['edge']) {
+        var edgeAlias = await detectMicrosoftEdge();
+
+        if (edgeAlias)
+            installations['edge'] = edgeAlias;
+    }
 
     return installations;
 }
