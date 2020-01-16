@@ -57,7 +57,6 @@ const ALIASES = {
     },
 
     'edge-legacy': {
-        nameRe:             /edge/i,
         cmd:                '',
         winOpenCmdTemplate: 'start microsoft-edge:"{{{pageUrl}}}"'
     }
