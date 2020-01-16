@@ -56,7 +56,7 @@ const ALIASES = {
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
     },
 
-    'mse-legacy': {
+    'edge-legacy': {
         nameRe:             /edge/i,
         cmd:                '',
         winOpenCmdTemplate: 'start microsoft-edge:"{{{pageUrl}}}"'

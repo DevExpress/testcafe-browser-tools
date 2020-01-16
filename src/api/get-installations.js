@@ -68,11 +68,11 @@ async function addInstallation (installations, name, instPath) {
     }
 }
 
-async function detectMicrosoftEdge () {
+async function detectMicrosoftEdgeLegacy () {
     const registryResult = await getRegistryKey(MICROSOFT_EDGE_KEY_GLOB);
 
     if (registryResult.stdout.includes(MICROSOFT_EDGE_CLASS))
-        return ALIASES['mse-legacy'];
+        return ALIASES['edge-legacy'];
 
     return null;
 }
@@ -100,16 +100,16 @@ async function searchInRegistry (registryRoot) {
 }
 
 async function findWindowsBrowsers () {
-    var machineRegisteredBrowsers = await searchInRegistry('HKEY_LOCAL_MACHINE');
-    var userRegisteredBrowsers    = await searchInRegistry('HKEY_CURRENT_USER');
-    var installations             = Object.assign(machineRegisteredBrowsers, userRegisteredBrowsers);
+    const machineRegisteredBrowsers = await searchInRegistry('HKEY_LOCAL_MACHINE');
+    const userRegisteredBrowsers    = await searchInRegistry('HKEY_CURRENT_USER');
+    const installations             = Object.assign(machineRegisteredBrowsers, userRegisteredBrowsers);
+    const edgeLegacy                = await detectMicrosoftEdgeLegacy();
 
-    if (!installations['edge']) {
-        var edgeAlias = await detectMicrosoftEdge();
+    if (edgeLegacy)
+        installations['edge-legacy'] = edgeLegacy;
 
-        if (edgeAlias)
-            installations['edge'] = edgeAlias;
-    }
+    if (edgeLegacy && !installations['edge'])
+        installations['edge'] = edgeLegacy;
 
     return installations;
 }
