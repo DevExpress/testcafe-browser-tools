@@ -13,7 +13,7 @@ const ALIASES = {
     }
 };
 
-describe.only('[Utils] Find alias', () => {
+describe('[Utils] Find alias', () => {
     it('Should find a browser by partial matching', () => {
         const { default: findAlias } = proxyquire('../../lib/utils/find-alias', {
             '../aliases': { default: ALIASES }
