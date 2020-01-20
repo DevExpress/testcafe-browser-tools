@@ -174,6 +174,8 @@ async function findBrowsers () {
 
     if (OS.linux)
         return await findLinuxBrowsers();
+
+    return {};
 }
 
 

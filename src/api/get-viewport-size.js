@@ -7,7 +7,7 @@ import getDevicesViewportData from './get-devices-viewport-data';
  * @property {number} landscapeWidth - The viewport width in landscape orientation.
  */
 
- /** Gets the viewport size for the specified device.
+/** Gets the viewport size for the specified device.
  * @function
  * @name getViewportSize
  * @param {string} deviceName - Specifies the name of the target device. Use values from the Device Name column of [this table]{@link http://viewportsizes.com/}.

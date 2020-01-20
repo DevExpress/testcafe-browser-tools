@@ -60,8 +60,8 @@ function getRequestedSize (params) {
     const deviceSize = browserTools.getViewportSize(params.deviceName);
 
     return params.orientation === 'portrait' ?
-           { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
-           { width: deviceSize.landscapeWidth, height: deviceSize.portraitWidth };
+        { width: deviceSize.portraitWidth, height: deviceSize.landscapeWidth } :
+        { width: deviceSize.landscapeWidth, height: deviceSize.portraitWidth };
 }
 
 // API
@@ -205,8 +205,8 @@ exports.takeScreenshot = function (req, res) {
 
         if (req.body.screenshotPath) {
             screenshotPath = path.isAbsolute(req.body.screenshotPath) ?
-                             req.body.screenshotPath :
-                             toAbsPath(req.body.screenshotPath);
+                req.body.screenshotPath :
+                toAbsPath(req.body.screenshotPath);
         }
         else
             screenshotPath = toAbsPath('./screenshots/' + browser.id + '.png');
