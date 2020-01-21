@@ -3,6 +3,7 @@ import which from 'which-promise';
 import { merge } from 'lodash';
 import exists from '../utils/fs-exists-promised';
 import { exec, execPowershell } from '../utils/exec';
+import findAlias from '../utils/find-alias';
 import unquote from '../utils/unquote';
 import ALIASES from '../aliases';
 
@@ -51,21 +52,18 @@ async function getRegistryBrowserProperties (regKeyGlob) {
 }
 
 // Find installations for different platforms
-async function addInstallation (installations, name, instPath) {
-    var fileExists = await exists(instPath);
+async function addInstallation (installations, key, instPath) {
+    if (!await exists(instPath))
+        return;
 
-    if (fileExists) {
-        Object.keys(ALIASES).some(alias => {
-            var { nameRe, cmd, macOpenCmdTemplate, path } = ALIASES[alias];
+    const detectedAlias = findAlias(key);
 
-            if (nameRe.test(name)) {
-                installations[alias] = { path: path || instPath, cmd, macOpenCmdTemplate };
-                return true;
-            }
+    if (!detectedAlias)
+        return;
 
-            return false;
-        });
-    }
+    const { name, alias: { cmd, macOpenCmdTemplate, path } }  = detectedAlias;
+
+    installations[name] = { path: path || instPath, cmd, macOpenCmdTemplate };
 }
 
 async function detectMicrosoftEdgeLegacy () {

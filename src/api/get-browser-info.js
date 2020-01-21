@@ -1,7 +1,6 @@
-import find from 'array-find';
 import getInstallations from './get-installations';
 import exists from '../utils/fs-exists-promised';
-import ALIASES from '../aliases';
+import findAlias from '../utils/find-alias';
 
 
 //Const
@@ -28,21 +27,12 @@ export default async function (browser) {
     if (installations[browserAsAlias])
         return installations[browserAsAlias];
 
-    const fileExists = await exists(browser);
-
-    if (!fileExists)
+    if (!await exists(browser))
         return null;
 
-    const detectedAlias = find(Object.keys(ALIASES), key => {
-        const alias = ALIASES[key];
+    const detectedAlias = findAlias(browser);
 
-        if (alias.nameRe)
-            return alias.nameRe.test(browser);
-
-        return false;
-    });
-
-    const { cmd, macOpenCmdTemplate } = detectedAlias ? ALIASES[detectedAlias] : DEFAULT_ALIAS;
+    const { cmd, macOpenCmdTemplate } = detectedAlias ? detectedAlias.alias : DEFAULT_ALIAS;
 
     return { path: browser, cmd, macOpenCmdTemplate };
 }
