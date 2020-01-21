@@ -23,10 +23,7 @@ export const UNABLE_TO_RUN_BROWSERS = ({ path }) => dedent `
 
 export const NATIVE_BINARY_HAS_FAILED = ({ binary, exitCode, output }) => dedent `
     The ${binary} process failed with the ${exitCode} exit code.
-    ${ output
-        ? PROCESS_OUTPUT({ output })
-        : ''
-    }
+    ${ output ? PROCESS_OUTPUT({ output }) : '' }
 `;
 
 export const UNABLE_TO_ACCESS_AUTOMATION_API = ({ binary }) => dedent `

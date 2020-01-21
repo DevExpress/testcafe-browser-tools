@@ -48,4 +48,6 @@ export default async function (pageTitle) {
 
     if (OS.linux)
         return { windowId: windowParams[0] };
+
+    return null;
 }

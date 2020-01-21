@@ -14,7 +14,7 @@ function getErrorInfo (errorClass) {
     const code = getErrorCode(errorClass);
 
     return {
-        constructor: CLASSES[code],  // eslint-disable-line no-use-before-define
+        constructor: CLASSES[code], // eslint-disable-line no-use-before-define
         message:     MESSAGES[code], // eslint-disable-line no-use-before-define
 
         code

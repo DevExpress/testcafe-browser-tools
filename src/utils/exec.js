@@ -51,7 +51,10 @@ function readPipe (pipePath) {
         let data     = '';
         const stream = fs.createReadStream(pipePath);
 
-        stream.on('data', newData => data += newData ? newData.toString() : '');
+        stream.on('data', newData => {
+            data += newData ? newData.toString() : '';
+        });
+
         stream.on('end', () => resolve(data));
         stream.on('error', reject);
     });
@@ -72,8 +75,12 @@ function spawnApp (pipePath, binaryPath, args) {
                 resolve();
         });
 
-        child.stdout.on('data', data => outputData += String(data));
-        child.stderr.on('data', data => outputData += String(data));
+        function dataHandler (data) {
+            outputData += String(data);
+        }
+
+        child.stdout.on('data', dataHandler);
+        child.stderr.on('data', dataHandler);
     });
 }
 

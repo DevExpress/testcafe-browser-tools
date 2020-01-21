@@ -25,10 +25,12 @@ function getThumbnailPath (imagePath) {
  * @param {number} width - Specifies the width of the thumbnail image, in pixels (default is 240).
  * @param {number} height - Specifies the height of the thumbnail image, in pixels (default is 130).
  */
-export default async function (sourcePath,
-                               thumbnailPath = getThumbnailPath(sourcePath),
-                               width = DEFAULT_THUMBNAIL_WIDTH,
-                               height = DEFAULT_THUMBNAIL_HEIGHT) {
+export default async function (
+    sourcePath,
+    thumbnailPath = getThumbnailPath(sourcePath),
+    width = DEFAULT_THUMBNAIL_WIDTH,
+    height = DEFAULT_THUMBNAIL_HEIGHT
+) {
     if (!await ensureDirectory(thumbnailPath))
         return;
 
