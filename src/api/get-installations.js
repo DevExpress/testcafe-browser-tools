@@ -18,7 +18,7 @@ const DOUBLE_LINE_WRAP = LINE_WRAP + LINE_WRAP;
 
 const REGISTRY_BROWSER_PATH_PROPERTY = '(default)';
 const REGISTRY_BROWSER_NAME_PROPERTY = 'PSPath';
-const REGISTRY_PROPERTIES_RE         = /^(\(default\)|PSPath)\s*:\s*(.*)$/;
+const REGISTRY_PROPERTIES_RE         = /^(\(default\)|PSPath)\s*:\s*(.+)$/;
 
 const MAX_OUTPUT_WIDTH = 2 ** 31 - 1;
 
