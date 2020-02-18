@@ -1,6 +1,14 @@
 import path from 'path';
 import BINARIES from './binaries';
 
+const chromiumCmdArgs = [
+    '--disable-infobars',
+    '--disable-session-crashed-bubble',
+    '--no-first-run',
+    '--new-window',
+    '--disable-background-networking',
+    '--disable-ipc-flooding-protection',
+].join(' ');
 
 const ALIASES = {
     'ie': {
@@ -17,21 +25,21 @@ const ALIASES = {
 
     'chrome-canary': {
         nameRe:             /chrome\s*canary/i,
-        cmd:                '--disable-infobars --disable-session-crashed-bubble --no-first-run --new-window',
+        cmd:                chromiumCmdArgs,
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['google-chrome-canary']
     },
 
     'chrome': {
         nameRe:             /chrome/i,
-        cmd:                '--disable-infobars --disable-session-crashed-bubble --no-first-run --new-window',
+        cmd:                chromiumCmdArgs,
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['google-chrome', 'google-chrome-stable', 'google-chrome-unstable']
     },
 
     'chromium': {
         nameRe:             /chromium/i,
-        cmd:                '--disable-infobars --disable-session-crashed-bubble --no-first-run --new-window',
+        cmd:                chromiumCmdArgs,
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['chromium-browser', 'chromium']
     },
