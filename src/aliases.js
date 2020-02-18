@@ -8,6 +8,7 @@ const chromiumCmdArgs = [
     '--new-window',
     '--disable-background-networking',
     '--disable-ipc-flooding-protection',
+    '--disable-background-timer-throttling'
 ].join(' ');
 
 const ALIASES = {
@@ -60,7 +61,7 @@ const ALIASES = {
 
     'edge': {
         nameRe:             /edge/i,
-        cmd:                '--new-window',
+        cmd:                '--new-window --disable-background-timer-throttling',
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
     },
 
