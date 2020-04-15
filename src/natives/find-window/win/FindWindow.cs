@@ -11,11 +11,14 @@ namespace BrowserTools {
         //Consts
         const string IE_MAIN_WINDOW_CLASS_NAME = "IEFrame";
 
+        //Variables
+        private static string windowMark;
+
         //Imports
-        private delegate bool EnumWindowsProc (IntPtr hWnd, ref string windowMark);
+        private delegate bool EnumWindowsProc (IntPtr hWnd);
 
         [DllImport("user32")]
-        private static extern bool EnumWindows (EnumWindowsProc lpEnumFunc, ref string windowMark);
+        private static extern bool EnumWindows (EnumWindowsProc lpEnumFunc);
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern uint GetWindowThreadProcessId (IntPtr hWnd, out uint lpdwProcessId);
@@ -25,7 +28,7 @@ namespace BrowserTools {
             return Utils.GetClassName(hWnd) == IE_MAIN_WINDOW_CLASS_NAME;
         }
 
-        private static bool CheckWindowTitle (IntPtr hWnd, ref string windowMark) {
+        private static bool CheckWindowTitle (IntPtr hWnd) {
             string title = Utils.GetWindowTitle(hWnd).ToLower();
 
             if (!title.Contains(windowMark.ToLower()))
@@ -59,11 +62,11 @@ namespace BrowserTools {
                 Environment.Exit((int)EXIT_CODES.GENERAL_ERROR);
             }
 
-            string windowMark = args[0];
+            windowMark = args[0];
 
             // NOTE: Repeat the attempt to find the window ten times with 300ms delay
             for (int i = 0; i < 10; i++) {
-                EnumWindows(CheckWindowTitle, ref windowMark);
+                EnumWindows(CheckWindowTitle);
                 Thread.Sleep(300);
             }
 
