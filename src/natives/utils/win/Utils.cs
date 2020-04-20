@@ -154,6 +154,9 @@ namespace BrowserTools {
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool IsWindowVisible (IntPtr hWnd);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+
         //Methods
         static bool HasZeroWindowRect (IntPtr hWnd) {
             Rect windowRect = GetWindowRect(hWnd);
@@ -241,6 +244,8 @@ namespace BrowserTools {
             SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
             SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
             SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+            SetForegroundWindow(hWnd);
 
             System.Threading.Thread.Sleep(FOREGROUNDING_WINDOW_DELAY);
         }
