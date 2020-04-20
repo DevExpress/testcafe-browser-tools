@@ -1,6 +1,6 @@
 const path               = require('path');
 const Promise            = require('pinkie');
-const { toAbsPath }      = require('read-file-relative').toAbsPath;
+const { toAbsPath }      = require('read-file-relative');
 const browserTools       = require('../../lib/index');
 const { default: delay } = require('../../lib/utils/delay');
 const DEVICES            = require('../../data/devices');
