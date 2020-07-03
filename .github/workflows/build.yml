@@ -1,0 +1,78 @@
+name: Build multiplatform binaries
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [10.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ matrix.os }}-build-${{ env.cache-name }}-
+            ${{ matrix.os }}-build-
+            ${{ matrix.os }}-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add msbuild to PATH
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build on Linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: npx gulp buildLinux
+
+      - name: Build on MacOS
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: npx gulp buildMac
+
+      - name: Build on Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: npx gulp buildWindows
+
+      - name: Archive binaries on Linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux
+          path: bin/linux/**/*
+
+      - name: Archive binaries on MacOS
+        if: ${{ matrix.os == 'macos-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: mac
+          path: bin/mac/**/*
+
+      - name: Archive binaries on Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: win
+          path: bin/win/**/*

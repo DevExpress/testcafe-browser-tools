@@ -58,7 +58,8 @@ function buildWindowsUtilsDLL () {
         .src('src/natives/**/utils.csproj')
         .pipe(msbuild({
             targets:     ['Clean', 'Build'],
-            errorOnFail: true
+            errorOnFail: true,
+            stdout:      true
         }));
 }
 
@@ -67,7 +68,9 @@ function buildWindowsExecutables () {
         .src(['!src/natives/**/utils.csproj', 'src/natives/**/*.@(cs|vcx)proj'])
         .pipe(msbuild({
             targets:      ['Clean', 'Build'],
-            toolsVersion: 12.0
+            errorOnFail:  true,
+            toolsVersion: 'auto',
+            stdout:       true
         }));
 }
 
