@@ -61,13 +61,18 @@ export class UnableToAccessScreenRecordingAPIError extends PermissionError {
 
 }
 
+export class UnableToOpenDisplayError extends NativeBinaryHasFailedError {
+
+}
+
 export const MESSAGES = {
     [CODES.E000]: TEMPLATES.BASIC_ERROR_MESSAGE,
     [CODES.E001]: TEMPLATES.BROWSER_PATH_NOT_SET,
     [CODES.E002]: TEMPLATES.UNABLE_TO_RUN_BROWSERS,
     [CODES.E003]: TEMPLATES.NATIVE_BINARY_HAS_FAILED,
     [CODES.E004]: TEMPLATES.UNABLE_TO_ACCESS_AUTOMATION_API,
-    [CODES.E005]: TEMPLATES.UNABLE_TO_ACCESS_SCREEN_RECORDING_API
+    [CODES.E005]: TEMPLATES.UNABLE_TO_ACCESS_SCREEN_RECORDING_API,
+    [CODES.E006]: TEMPLATES.UNABLE_TO_OPEN_DISPLAY
 };
 
 export const CLASSES = {
@@ -76,7 +81,8 @@ export const CLASSES = {
     [CODES.E002]: UnableToRunBrowsersError,
     [CODES.E003]: NativeBinaryHasFailedError,
     [CODES.E004]: UnableToAccessAutomationAPIError,
-    [CODES.E005]: UnableToAccessScreenRecordingAPIError
+    [CODES.E005]: UnableToAccessScreenRecordingAPIError,
+    [CODES.E006]: UnableToOpenDisplayError
 };
 
 

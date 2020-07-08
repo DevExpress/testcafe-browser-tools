@@ -3,7 +3,11 @@ import { EOL } from 'os';
 import { execFile } from '../utils/exec';
 import BINARIES from '../binaries';
 import * as EXIT_CODES from '../exit-codes';
-import { NativeBinaryHasFailedError, UnableToAccessScreenRecordingAPIError } from '../errors';
+import {
+    NativeBinaryHasFailedError,
+    UnableToAccessScreenRecordingAPIError,
+    UnableToOpenDisplayError
+} from '../errors';
 
 
 /**
@@ -24,6 +28,9 @@ async function runFindWindowBinary (pageTitle) {
 
         if (err.data.exitCode === EXIT_CODES.WINDOW_NOT_FOUND)
             return null;
+
+        if (err.data.exitCode === EXIT_CODES.DISPLAY_NOT_FOUND)
+            throw new UnableToOpenDisplayError(err.data);
 
         if (OS.mac && err.data.exitCode === EXIT_CODES.PERMISSION_ERROR)
             throw new UnableToAccessScreenRecordingAPIError(err.data);
