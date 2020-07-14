@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstddef>
 #include "lib/lodepng.h"
+#include "../../utils/any/exit-codes.h"
 
 extern "C" {
     #include <unistd.h>
@@ -127,7 +128,7 @@ int main (int argc, char *argv[]) {
 
     if (display == NULL) {
         printf("Cannot open display\n");
-        return 1;
+        return EXIT_CODE_DISPLAY_NOT_FOUND;
     }
 
     Image screenshot(display, (Drawable) windowId);

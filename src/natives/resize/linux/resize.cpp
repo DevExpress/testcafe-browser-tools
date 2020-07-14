@@ -1,4 +1,5 @@
 #include <cstdio>
+#include "../../utils/any/exit-codes.h"
 
 extern "C" {
     #include <X11/Xlib.h>
@@ -25,7 +26,7 @@ int main (int argc, char** argv) {
 
     if (display == NULL) {
         printf("Cannot open display\n");
-        return 1;
+        return EXIT_CODE_DISPLAY_NOT_FOUND;
     }
 
     Window *activeWindow;

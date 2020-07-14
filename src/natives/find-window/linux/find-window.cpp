@@ -158,7 +158,7 @@ int main (int argc, char** argv) {
 
     if (display == NULL) {
         printf("Cannot open display\n");
-        return EXIT_CODE_GENERAL_ERROR;
+        return EXIT_CODE_DISPLAY_NOT_FOUND;
     }
 
     bool   windowFound;

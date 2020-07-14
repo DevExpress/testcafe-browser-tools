@@ -25,6 +25,10 @@ const ERROR_DATA = {
 
     [CODES.E005]: {
         binary: '/usr/bin/browser'
+    },
+
+    [CODES.E006]: {
+        binary: '/usr/bin/browser'
     }
 };
 
@@ -43,7 +47,9 @@ const ERROR_MESSAGES = {
 
     [CODES.E004]: 'UnableToAccessAutomationAPIError: The /usr/bin/browser process cannot access the Automation API.',
 
-    [CODES.E005]: 'UnableToAccessScreenRecordingAPIError: The /usr/bin/browser process cannot access the Screen Recording API.'
+    [CODES.E005]: 'UnableToAccessScreenRecordingAPIError: The /usr/bin/browser process cannot access the Screen Recording API.',
+
+    [CODES.E006]: 'UnableToOpenDisplayError: The /usr/bin/browser process cannot open the display.'
 };
 
 describe('Errors', () => {
