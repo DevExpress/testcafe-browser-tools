@@ -62,7 +62,8 @@ const ALIASES = {
     'edge': {
         nameRe:             /edge/i,
         cmd:                '--new-window --disable-background-timer-throttling',
-        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}'
+        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
+        linuxBinaries:      ['microsoft-edge']
     },
 
     'edge-legacy': {
