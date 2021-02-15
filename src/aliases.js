@@ -8,7 +8,14 @@ const chromiumCmdArgs = [
     '--new-window',
     '--disable-background-networking',
     '--disable-ipc-flooding-protection',
-    '--disable-background-timer-throttling'
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows'
+].join(' ');
+
+const edgeCmdArgs = [
+    '--new-window',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows'
 ].join(' ');
 
 const ALIASES = {
@@ -61,7 +68,7 @@ const ALIASES = {
 
     'edge': {
         nameRe:             /edge/i,
-        cmd:                '--new-window --disable-background-timer-throttling',
+        cmd:                edgeCmdArgs,
         macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args {{{pageUrl}}} {{{cmd}}}',
         linuxBinaries:      ['microsoft-edge']
     },
