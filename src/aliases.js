@@ -9,7 +9,8 @@ const chromiumCmdArgs = [
     '--disable-background-networking',
     '--disable-ipc-flooding-protection',
     '--disable-background-timer-throttling',
-    '--disable-backgrounding-occluded-windows'
+    '--disable-backgrounding-occluded-windows',
+    '--autoplay-policy=no-user-gesture-required'
 ].join(' ');
 
 const edgeCmdArgs = [
