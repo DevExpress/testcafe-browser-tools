@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-tools",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "An utility library for performing platform-dependent actions on browsers.",
   "homepage": "https://github.com/DevExpress/testcafe-browser-tools",
   "bugs": "https://github.com/DevExpress/testcafe-browser-tools/issues",
@@ -15,10 +15,11 @@
   },
   "dependencies": {
     "array-find": "^1.0.0",
+    "debug": "^4.3.1",
     "dedent": "^0.7.0",
     "del": "^5.1.0",
-    "graceful-fs": "^4.1.11",
     "execa": "^3.3.0",
+    "graceful-fs": "^4.1.11",
     "linux-platform-info": "^0.0.3",
     "lodash": "^4.17.15",
     "mkdirp": "^0.5.1",
