@@ -4,6 +4,7 @@ import os from 'os';
 import path from 'path';
 import del from 'del';
 import execa from 'execa';
+import { ensureDir, pathExists, copy } from 'fs-extra';
 import OS from 'os-family';
 import nanoid from 'nanoid';
 import promisify from './promisify';
@@ -62,7 +63,7 @@ function readPipe (pipePath) {
 
 function spawnApp (pipePath, binaryPath, args) {
     return new Promise((resolve, reject) => {
-        const child = childProc.spawn(OPEN_PATH, ['-n', '-a', BINARIES.app, '--args', pipePath, binaryPath, ...args]);
+        const child = childProc.spawn(OPEN_PATH, ['-n', '-a', BINARIES.app, '--args', BINARIES.main, pipePath, binaryPath, ...args]);
 
         let outputData = '';
 
@@ -85,6 +86,11 @@ function spawnApp (pipePath, binaryPath, args) {
 }
 
 async function runWithMacApp (binaryPath, args) {
+    if (!await pathExists(BINARIES.appDir)) {
+        await ensureDir(BINARIES.appDir);
+        await copy(BINARIES.appLocalDir, BINARIES.appDir);
+    }
+
     const pipePath = getTempPipePath();
 
     await execPromise(`mkfifo ${pipePath}`);

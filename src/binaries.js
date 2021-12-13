@@ -1,11 +1,16 @@
 import { join } from 'path';
+import { homedir } from 'os';
 import OS from 'os-family';
 import { toAbsPath } from 'read-file-relative';
 import { platform } from 'linux-platform-info';
+import { name as packageName } from '../package.json';
 
 
-const MAC_APP_NAME    = 'TestCafe Browser Tools.app';
-const MAC_BINARY_PATH = binary => join(__dirname, `../bin/mac/${MAC_APP_NAME}/Contents/MacOS/${binary}`);
+const HIDDEN_DIR_PREFIX = '.';
+const MAC_APP_NAME      = 'TestCafe Browser Tools.app';
+const MAC_APP_DIR       = join(homedir(), HIDDEN_DIR_PREFIX + packageName, MAC_APP_NAME);
+const MAC_APP_LOCAL_DIR = join(__dirname, `../bin/mac/${MAC_APP_NAME}`);
+const MAC_BINARY_PATH   = binary => join(MAC_APP_DIR, `Contents/MacOS/${binary}`);
 
 var BINARIES = void 0;
 
@@ -23,7 +28,10 @@ if (OS.win) {
 }
 else if (OS.mac) {
     BINARIES = {
-        app:                MAC_BINARY_PATH('testcafe-browser-tools'),
+        app:                MAC_BINARY_PATH(packageName),
+        appDir:             MAC_APP_DIR,
+        appLocalDir:        MAC_APP_LOCAL_DIR,
+        main:               toAbsPath('../bin/mac/main'),
         open:               'open',
         findWindow:         'find-window',
         getWindowSize:      'get-window-size',
