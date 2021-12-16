@@ -27,6 +27,8 @@ const MACOSX_DEPLOYMENT_TARGET = '10.10';
 const MAC_APP_NAME             = 'TestCafe Browser Tools.app';
 const MAC_BINARY_PATH          = `bin/mac/${MAC_APP_NAME}/Contents/MacOS`;
 
+const VERBOSE = !!process.env.VERBOSE;
+
 const writeFile = util.promisify(fs.writeFile);
 
 tmp.setGracefulCleanup();
@@ -40,7 +42,7 @@ function make (options) {
 
         var dirPath = path.dirname(file.path).replace(/ /g, '\\ ');
 
-        execa('make -C ' + dirPath, { shell: true, env: { ...process.env, ...options } })
+        execa('make -C ' + dirPath, { stdio: VERBOSE ? 'inherit' : 'ignore', shell: true, env: { ...process.env, ...options } })
             .then(function () {
                 callback(null, file);
             })
