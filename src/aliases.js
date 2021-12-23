@@ -64,7 +64,7 @@ const ALIASES = {
         nameRe:             /safari/i,
         cmd:                '',
         path:               BINARIES.app,
-        macOpenCmdTemplate: 'open -n -a "{{{path}}}" --args /dev/null open {{{pageUrl}}} {{{cmd}}}'
+        macOpenCmdTemplate: `open -n -a "{{{path}}}" --args ${BINARIES.main} /dev/null open {{{pageUrl}}} {{{cmd}}}`
     },
 
     'edge': {
