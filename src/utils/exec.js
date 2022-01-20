@@ -6,7 +6,7 @@ import del from 'del';
 import execa from 'execa';
 import { ensureDir, pathExists, copy } from 'fs-extra';
 import OS from 'os-family';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import promisify from './promisify';
 import BINARIES from '../binaries';
 import flattenWhitespace from './flatten-whitespace';
