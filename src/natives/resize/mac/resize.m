@@ -14,7 +14,7 @@ int resize (int argc, const char * argv[]) {
     @autoreleasepool {
         NSString *processId = [NSString stringWithUTF8String:argv[1]];
         NSString *windowId  = [NSString stringWithUTF8String:argv[2]];
-            
+
         int width  = [[NSString stringWithUTF8String:argv[3]] intValue];
         int height = [[NSString stringWithUTF8String:argv[4]] intValue];
 
@@ -25,11 +25,8 @@ int resize (int argc, const char * argv[]) {
         bounds.size.width  = width;
         bounds.size.height = height;
 
-        NSValue *boxedBounds = [NSValue valueWithRect:bounds];
-
-        [window setBounds: boxedBounds];
+        [window setBounds: bounds];
     }
 
     return 0;
 }
-
