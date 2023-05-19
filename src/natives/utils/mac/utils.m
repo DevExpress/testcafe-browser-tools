@@ -9,21 +9,18 @@ id getApplicationForProcess (NSString *processId) {
 }
 
 id getWindowOfApplication (id app, NSString *windowId) {
-    id windows            = [app windows];
-    id windowsProperties  = [windows arrayByApplyingSelector:@selector(properties)];
+    id windows = [app windows];
 
-    NSUInteger index = [windowsProperties indexOfObjectPassingTest:^(NSDictionary *properties, NSUInteger index, BOOL *stop){ 
-        return [[properties[@"id"] stringValue] isEqualToString: windowId];
-    }];
+    for (id window in windows) {
+        if ([[window properties][@"id"] intValue] == [windowId intValue])
+            return window;
+    }
 
-    if (index == NSNotFound)
-        return nil;
-            
-    return windows[index];
+    return nil;
 }
 
 id getWindowOfProcess (NSString *processId, NSString *windowId) {
     id app = getApplicationForProcess(processId);
 
     return getWindowOfApplication(app, windowId);    
-}    
+}
