@@ -4,19 +4,9 @@ import OS from 'os-family';
 import { exec } from '../utils/exec';
 import exists from '../utils/fs-exists-promised';
 import { BrowserPathNotSetError, UnableToRunBrowsersError } from '../errors';
-import debug from 'debug';
-import { inspect } from 'util';
+import Logger from '../utils/logger';
 
-const LOGGER = debug('testcafe:browser-tools:open');
-
-function log (data) {
-    try {
-        LOGGER(inspect(data, { isTestCafeInspect: true, compact: false }));
-    }
-    catch (e) {
-        LOGGER(e.stack ? e.stack : String(e));
-    }
-}
+const logger = new Logger('testcafe:browser-tools:open');
 
 async function checkBrowserPath (browserInfo) {
     if (!browserInfo.path) {
@@ -84,11 +74,13 @@ export default async function (browserInfo, pageUrl) {
     var command = getOpenCommand(browserInfo, pageUrl);
 
     try {
-        log(command);
+        logger.log(command);
 
         await exec(command);
     }
     catch (err) {
+        logger.log(err);
+
         throw new UnableToRunBrowsersError({ path: browserInfo.path });
     }
 }

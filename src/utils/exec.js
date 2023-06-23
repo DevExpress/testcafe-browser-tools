@@ -12,7 +12,9 @@ import BINARIES from '../binaries';
 import flattenWhitespace from './flatten-whitespace';
 import getEnvironmentVariable from './get-environment-variable';
 import { NativeBinaryHasFailedError } from '../errors';
+import Logger from './logger';
 
+const logger = new Logger('testcafe:browser-tools:exec');
 
 const EXIT_CODE_REGEXP = /Exit code: (-?\d+)/;
 
@@ -45,7 +47,6 @@ function getTempPipePath () {
 
 var execFilePromise = promisify(childProc.execFile);
 var execPromise     = promisify(childProc.exec);
-
 
 function readPipe (pipePath) {
     return new Promise((resolve, reject) => {
@@ -98,7 +99,7 @@ async function runWithMacApp (binaryPath, args) {
     try {
         const [data] = await Promise.all([
             readPipe(pipePath),
-            spawnApp(pipePath, binaryPath, args)
+            spawnApp(pipePath, binaryPath, args),
         ]);
 
         const exitCodeMatch = data.match(EXIT_CODE_REGEXP);
@@ -127,6 +128,8 @@ export async function execFile (filePath, args) {
         return await execFilePromise(filePath, args);
     }
     catch (err) {
+        logger.log(err);
+
         if (err instanceof NativeBinaryHasFailedError)
             throw err;
 

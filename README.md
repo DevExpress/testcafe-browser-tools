@@ -12,7 +12,7 @@ To build native binaries from source files, execute the gulp task corresponding 
 'buildMac'
 'buildLinux'
 ```
-Note that the application for a particular platform must be built on a machine with the same platform.
+**Important note**: The application for a particular platform must be built on a machine with the same platform. Since this package can be used on old OS version such as NodeJS 16 docker container, it is important to build binaries on the old OS version for the binaries to contain corresponding dependencies(for example glibc-2.31 for node16 docker image).
 
 The *bin* directory contains pre-built native binaries. Consider using them if your contribution does not affect the native modules.
 
