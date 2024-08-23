@@ -39,7 +39,7 @@
     "dmd-plugin-async": "^0.1.1",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "express": "^4.17.1",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-chmod": "^1.3.0",
     "gulp-eslint": "^6.0.0",
     "gulp-flatten": "^0.4.0",
