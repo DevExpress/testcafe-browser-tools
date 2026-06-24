@@ -163,7 +163,7 @@ function cleanLib () {
 
 function transpileLib () {
     return childProcess
-        .spawn('npx tsc -p ./src/tsconfig.json', { shell: true, stdio: 'inherit' });
+        .spawn('npx --no-install tsc -p ./src/tsconfig.json', { shell: true, stdio: 'inherit' });
 }
 
 // TODO: fix dmd-plugin-async
