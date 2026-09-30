@@ -33,7 +33,6 @@
     "which-promise": "^1.0.0"
   },
   "devDependencies": {
-    "@testcafe/publish-please": "^5.6.0",
     "body-parser": "^1.13.2",
     "chai": "^3.2.0",
     "dmd-plugin-async": "^0.1.1",
@@ -54,9 +53,7 @@
     "typescript": "^4.8.3"
   },
   "scripts": {
-    "test": "gulp test",
-    "publish-please": "publish-please",
-    "prepublish": "publish-please guard"
+    "test": "gulp test"
   },
   "main": "./lib/index",
   "files": [
