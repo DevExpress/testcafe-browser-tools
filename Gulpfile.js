@@ -149,9 +149,10 @@ function lint () {
         .src([
             'src/**/*.js',
             'test/**/*.js',
-            '!test/playground/public/**/*',
             'Gulpfile.js'
-        ])
+        ], {
+            ignore: ['test/playground/public/**/*']
+        })
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
