@@ -5,10 +5,9 @@ const util         = require('util');
 const zlib         = require('zlib');
 const execa        = require('execa');
 const gulp         = require('gulp');
-const eslint       = require('gulp-eslint');
+const eslint       = require('gulp-eslint-new');
 const flatten      = require('gulp-flatten');
-const mocha        = require('gulp-mocha-simple');
-const msbuild      = require('gulp-msbuild');
+const msbuild      = require('gulp-msbuild/dist/index.js');
 const jsdoc        = require('jsdoc-to-markdown');
 const chmod        = require('gulp-chmod');
 const del          = require('del');
@@ -19,6 +18,7 @@ const tmp          = require('tmp');
 const tar          = require('tar-stream');
 const packageInfo  = require('./package.json');
 
+const { runCommands } = require('./gulp/run-shell-commands');
 
 const EXEC_MASK           = parseInt('111', 8);
 const UNIX_BINARY_PATH_RE = /^package\/bin\/(mac|linux)/;
@@ -133,14 +133,12 @@ function runPlayground () {
     require('./test/playground/index');
 }
 
-function test () {
-    return gulp
-        .src('test/tests/*-test.js')
-        .pipe(mocha({
-            ui:       'bdd',
-            reporter: 'spec',
-            timeout:  typeof v8debug === 'undefined' ? 2000 : Infinity // NOTE: disable timeouts in debug
-        }));
+async function test () {
+    const timeout = typeof v8debug !== 'undefined' || !!process.debugPort ? 0 : 2000;
+
+    await runCommands([
+        `npx mocha --full-trace --timeout ${timeout} "test/tests/*-test.js"`,
+    ]);
 }
 
 // General tasks
@@ -149,9 +147,10 @@ function lint () {
         .src([
             'src/**/*.js',
             'test/**/*.js',
-            '!test/playground/public/**/*',
             'Gulpfile.js'
-        ])
+        ], {
+            ignore: ['test/playground/public/**/*']
+        })
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());

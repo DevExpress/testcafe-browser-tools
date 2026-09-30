@@ -1,7 +1,0 @@
-{
-  "rules": {
-    "arrow-parens": [2, "as-needed"],
-    "arrow-spacing": [2, { "before": true, "after": true }],
-    "prefer-arrow-callback": 2
-  }
-}
