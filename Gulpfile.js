@@ -222,13 +222,12 @@ function publish () {
     var tarballPath         = path.join(tmpDir.name, tarballName);
     var modifiedTarballPath = path.join(tmpDir.name, modifiedTarballName);
 
-    return execa('npm pack ' + packageDir, { shell: true, env: process.env, cwd: tmpDir.name })
+    return execa('npm', ['pack', packageDir], { env: process.env, cwd: tmpDir.name })
         .then(function () {
             return fixPermissionsInTarball(tarballPath, modifiedTarballPath);
         })
         .then(function () {
-            return execa('npm publish ' + modifiedTarballName + ' ' + publishArguments.join(' '), {
-                shell: true,
+            return execa('npm', ['publish', modifiedTarballName, ...publishArguments], {
                 env:   process.env,
                 cwd:   tmpDir.name,
                 stdio: 'inherit'
