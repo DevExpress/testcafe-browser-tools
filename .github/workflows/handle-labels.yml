@@ -6,8 +6,14 @@ on:
   pull_request_target:
     types: [labeled, unlabeled]
 
+permissions: {}
+
 jobs:
   reaction:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       - uses: DevExpress/testcafe-build-system/actions/handle-labels@main
