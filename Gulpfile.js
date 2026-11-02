@@ -137,7 +137,7 @@ async function test () {
     const timeout = typeof v8debug !== 'undefined' || !!process.debugPort ? 0 : 2000;
 
     await runCommands([
-        `npx mocha --full-trace --timeout ${timeout} "test/tests/*-test.js"`,
+        `npx mocha --no --full-trace --timeout ${timeout} "test/tests/*-test.js"`,
     ]);
 }
 
