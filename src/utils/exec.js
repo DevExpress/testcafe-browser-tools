@@ -2,9 +2,8 @@ import childProc from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import del from 'del';
 import execa from 'execa';
-import { ensureDir, pathExists, copy } from 'fs-extra';
+import { ensureDir, pathExists, copy, remove } from 'fs-extra';
 import OS from 'os-family';
 import { nanoid } from 'nanoid';
 import promisify from './promisify';
@@ -115,7 +114,7 @@ async function runWithMacApp (binaryPath, args) {
         return data;
     }
     finally {
-        await del(pipePath, { force: true });
+        await remove(pipePath);
     }
 }
 

@@ -10,13 +10,14 @@ const flatten      = require('gulp-flatten');
 const msbuild      = require('gulp-msbuild/dist/index.js');
 const jsdoc        = require('jsdoc-to-markdown');
 const chmod        = require('gulp-chmod');
-const del          = require('del');
 const through      = require('through2');
 const Promise      = require('pinkie');
 const { platform } = require('linux-platform-info');
 const tmp          = require('tmp');
 const tar          = require('tar-stream');
 const packageInfo  = require('./package.json');
+
+const { pathExists, readdir, remove } = require('fs-extra');
 
 const { runCommands } = require('./gulp/run-shell-commands');
 
@@ -52,7 +53,7 @@ function make (options) {
 
 // Windows bin
 function cleanWindowsNatives () {
-    return del('bin/win');
+    return remove('bin/win');
 }
 
 function buildWindowsUtilsDLL () {
@@ -86,7 +87,7 @@ function copyWindowsExecutables () {
 
 // Mac bin
 function cleanMacNatives () {
-    return del(MAC_BINARY_PATH);
+    return remove(MAC_BINARY_PATH);
 }
 
 function buildMacExecutables () {
@@ -108,8 +109,18 @@ function buildMacApp () {
 }
 
 // Linux bin
-function cleanLinuxNatives () {
-    return del(['bin/linux/*.sh', 'bin/linux/' + platform]);
+async function cleanLinuxNatives () {
+    const linuxDir = 'bin/linux';
+
+    if (await pathExists(linuxDir)) {
+        const files = await readdir(linuxDir);
+
+        await Promise.all(files
+            .filter(file => !file.startsWith('.') && path.extname(file) === '.sh')
+            .map(file => remove(path.join(linuxDir, file))));
+    }
+
+    return remove(path.join(linuxDir, platform));
 }
 
 function buildLinuxExecutables () {
@@ -157,7 +168,7 @@ function lint () {
 }
 
 function cleanLib () {
-    return del('lib');
+    return remove('lib');
 }
 
 function transpileLib () {
