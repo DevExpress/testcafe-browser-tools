@@ -15,8 +15,9 @@ const Promise      = require('pinkie');
 const { platform } = require('linux-platform-info');
 const tmp          = require('tmp');
 const tar          = require('tar-stream');
-const { pathExists, readdir, remove } = require('fs-extra');
 const packageInfo  = require('./package.json');
+
+const { pathExists, readdir, remove } = require('fs-extra');
 
 const { runCommands } = require('./gulp/run-shell-commands');
 
